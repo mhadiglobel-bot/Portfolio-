@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import "./orbital-cards.css";
 import "./project-preview.css";
 import "./work.css";
 import "./responsive.css";
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#09070d",
+  themeColor: "#080709",
   colorScheme: "dark",
 };
 

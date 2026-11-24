@@ -132,9 +132,11 @@ const fragmentShader = `
       float fresnel = pow(1.0 - max(dot(n, -rd), 0.0), 2.8);
       float contour = 0.5 + 0.5 * sin(hit.y * 8.0 + hit.x * 4.0 + u_time * 0.38);
 
-      vec3 pink = vec3(1.0, 0.15, 0.63);
-      vec3 purple = vec3(0.42, 0.22, 0.98);
-      vec3 base = mix(pink, purple, smoothstep(-0.78, 0.82, hit.y + hit.x * 0.2));
+      vec3 pink = vec3(1.0, 0.169, 0.839);
+      vec3 purple = vec3(0.659, 0.333, 0.969);
+      vec3 violet = vec3(0.455, 0.106, 1.0);
+      vec3 base = mix(pink, purple, smoothstep(-0.78, 0.36, hit.y + hit.x * 0.2));
+      base = mix(base, violet, smoothstep(0.18, 0.92, hit.y - hit.x * 0.24));
       vec3 edge = mix(pink, purple, contour);
       vec3 shaded = base * (0.19 + diffuse * 0.58);
       shaded += vec3(0.82, 0.72, 1.0) * specular * 0.78;
@@ -301,6 +303,27 @@ export function OrbitalScene() {
   return (
     <div className="orbital-scene" aria-hidden="true">
       <canvas ref={canvasRef} className="orbital-canvas" />
+      <div className="orbital-card-orbit orbital-card-orbit--one">
+        <div className="orbital-card">
+          <span className="orbital-card-top"><span>01 / BUILD</span><i className="orbital-card-icon">&lt;/&gt;</i></span>
+          <strong>Systems with purpose</strong>
+          <span className="orbital-card-meter"><i /></span>
+        </div>
+      </div>
+      <div className="orbital-card-orbit orbital-card-orbit--two">
+        <div className="orbital-card">
+          <span className="orbital-card-top"><span>02 / DESIGN</span><i className="orbital-card-icon">◇</i></span>
+          <strong>Details with intent</strong>
+          <span className="orbital-card-meter orbital-card-meter--purple"><i /></span>
+        </div>
+      </div>
+      <div className="orbital-card-orbit orbital-card-orbit--three">
+        <div className="orbital-card">
+          <span className="orbital-card-top"><span>03 / SHIP</span><i className="orbital-card-icon">↗</i></span>
+          <strong>Ideas into reality</strong>
+          <span className="orbital-card-meter orbital-card-meter--violet"><i /></span>
+        </div>
+      </div>
       <div className="orbital-fallback" />
       <div className="orbital-halo orbital-halo--pink" />
       <div className="orbital-halo orbital-halo--violet" />

@@ -4,7 +4,7 @@
 .section-heading h2 { font-size: clamp(3.1rem, 6vw, 6rem); }
 .section-heading-note { max-width: 285px; margin: 0 2px 8px 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
 .project-card { position: relative; border: 1px solid rgba(230,208,247,.11); border-radius: 4px; background: linear-gradient(145deg, rgba(24,17,31,.94), rgba(13,10,18,.98)); box-shadow: 0 30px 100px rgba(0,0,0,.25); overflow: hidden; }
-.project-visual { position: relative; min-height: 520px; display: grid; place-items: center; padding: 70px 8% 76px; overflow: hidden; isolation: isolate; background: radial-gradient(ellipse at 50% 60%, rgba(121,50,154,.22), transparent 46%), linear-gradient(145deg, #15101b 0%, #0e0a13 68%, #130d1a 100%); perspective: 1200px; }
+.project-visual { position: relative; min-height: 520px; display: grid; place-items: center; padding: 70px 8% 76px; overflow: hidden; isolation: isolate; background: radial-gradient(ellipse at 50% 60%, rgba(121,50,154,.22), transparent 46%), linear-gradient(145deg, #19131D 0%, #100D13 68%, #100D13 100%); perspective: 1200px; }
 .project-visual::before { position: absolute; inset: 0; z-index: -1; content: ''; opacity: .24; background-image: linear-gradient(rgba(222,187,241,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(222,187,241,.07) 1px, transparent 1px); background-size: 54px 54px; mask-image: radial-gradient(ellipse at center, black, transparent 78%); }
 .project-glow { position: absolute; z-index: -1; border-radius: 50%; filter: blur(55px); pointer-events: none; }
 .project-glow--one { width: 260px; height: 260px; left: 8%; top: 12%; background: rgba(255,55,199,.16); }
@@ -12,16 +12,16 @@
 .audio-window { position: relative; z-index: 2; width: min(780px, 100%); border: 1px solid rgba(255,255,255,.16); border-radius: 9px; background: rgba(16,13,22,.93); box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 50px rgba(196,69,220,.12); overflow: hidden; transform: rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg)); transition: transform .25s ease-out; }
 .audio-window-top { height: 39px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025); }
 .window-dots { display: flex; gap: 5px; }
-.window-dots i { width: 6px; height: 6px; border-radius: 50%; background: #514757; }
-.window-dots i:first-child { background: #e47baf; }
-.window-dots i:nth-child(2) { background: #bd8b69; }
-.window-dots i:nth-child(3) { background: #8e80b4; }
-.window-title { color: #8b8193; font-size: 8px; font-weight: 600; letter-spacing: .15em; }
+.window-dots i { width: 6px; height: 6px; border-radius: 50%; background: #A7A0AD; }
+.window-dots i:first-child { background: #FF2BD6; }
+.window-dots i:nth-child(2) { background: #A855F7; }
+.window-dots i:nth-child(3) { background: #741BFF; }
+.window-title { color: #A7A0AD; font-size: 8px; font-weight: 600; letter-spacing: .15em; }
 .window-status { display: flex; align-items: center; gap: 6px; color: #9b91a2; font-size: 7px; letter-spacing: .1em; }
-.window-status i { width: 5px; height: 5px; border-radius: 50%; background: #8ad7ae; box-shadow: 0 0 7px #8ad7ae; }
+.window-status i { width: 5px; height: 5px; border-radius: 50%; background: #A855F7; box-shadow: 0 0 7px #A855F7; }
 .audio-workspace { display: grid; grid-template-columns: 142px 1fr; min-height: 340px; }
 .audio-sidebar { position: relative; padding: 21px 13px; border-right: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.018); }
 .audio-logo { margin-bottom: 38px; color: #eee8f3; font: 700 18px var(--font-display); letter-spacing: -.08em; }
 .audio-logo span { color: var(--pink); }
-.audio-side-label { margin-bottom: 12px; color: #766e7d; font-size: 7px; letter-spacing: .15em; }
-.audio-side-item { display: flex; align-items: center; gap: 9px; margin: 5px 0; padding: 8px 7px; color: #948a9e; font-size: 9px; border-radius: 3px; }
+.audio-side-label { margin-bottom: 12px; color: #A7A0AD; font-size: 7px; letter-spacing: .15em; }
+.audio-side-item { display: flex; align-items: center; gap: 9px; margin: 5px 0; padding: 8px 7px; color: #A7A0AD; font-size: 9px; border-radius: 3px; }
