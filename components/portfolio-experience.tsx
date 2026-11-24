@@ -139,6 +139,8 @@ export function PortfolioExperience() {
         const heroProgress = Math.min(1, Math.max(0, window.scrollY / Math.max(window.innerHeight, 1)));
         root.style.setProperty("--scroll-progress", (progress * 100).toFixed(2) + "%");
         root.style.setProperty("--hero-progress", heroProgress.toFixed(3));
+        root.style.setProperty("--hero-parallax", (-heroProgress * 34).toFixed(2) + "px");
+        root.style.setProperty("--hero-scale", (1 - heroProgress * 0.035).toFixed(3));
         document.querySelector(".site-header")?.classList.toggle("is-scrolled", window.scrollY > 28);
         scrollFrame = 0;
       });
