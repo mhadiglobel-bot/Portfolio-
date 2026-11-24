@@ -1,7 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { InteractiveSculpture } from "@/components/interactive-sculpture";
+import dynamic from "next/dynamic";
+
+const InteractiveSculpture = dynamic(
+  () => import("@/components/interactive-sculpture").then((module) => module.InteractiveSculpture),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="sculpture-stage" aria-hidden="true">
+        <div className="sculpture-fallback">
+          <span className="fallback-ring fallback-ring--one" />
+          <span className="fallback-ring fallback-ring--two" />
+          <span className="fallback-core" />
+        </div>
+        <div className="sculpture-caption">REAL-TIME / 3D / INTERACTIVE</div>
+      </div>
+    ),
+  },
+);
 
 const navigation = [
   { label: "Work", href: "#work" },
