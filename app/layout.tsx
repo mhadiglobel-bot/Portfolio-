@@ -8,11 +8,11 @@ const siteUrl = "https://portfolio-genzio1.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Muhammad Hadi — Developer & Digital Maker",
+    default: "Muhammad Hadi — Independent Developer & Digital Maker",
     template: "%s | Muhammad Hadi",
   },
   description:
-    "Muhammad Hadi is an independent developer building thoughtful digital products, responsive web experiences, and interactive systems.",
+    "Muhammad Hadi builds thoughtful digital products, expressive interfaces and interactive web experiences with care for every detail.",
   applicationName: "Muhammad Hadi Portfolio",
   alternates: {
     canonical: "/",
@@ -20,17 +20,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    title: "Muhammad Hadi — Developer & Digital Maker",
+    title: "Muhammad Hadi — Independent Developer & Digital Maker",
     description:
-      "Thoughtful interfaces, useful systems, and interactive experiences built with intent.",
+      "Digital products, expressive interfaces and interactive experiences built with intent.",
     siteName: "Muhammad Hadi",
     images: [{ url: "/og-card.svg", width: 1200, height: 630, alt: "Muhammad Hadi portfolio" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Muhammad Hadi — Developer & Digital Maker",
+    title: "Muhammad Hadi — Independent Developer & Digital Maker",
     description:
-      "Thoughtful interfaces, useful systems, and interactive experiences built with intent.",
+      "Digital products, expressive interfaces and interactive experiences built with intent.",
     images: ["/og-card.svg"],
   },
   icons: {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#070A10",
+  themeColor: "#080706",
   colorScheme: "dark",
 };
 
