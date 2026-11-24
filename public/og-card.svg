@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09070d"/><stop offset="1" stop-color="#171021"/></linearGradient>
+    <linearGradient id="type" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff79df"/><stop offset=".55" stop-color="#c45dff"/><stop offset="1" stop-color="#8277ff"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#d34fe0" stop-opacity=".42"/><stop offset="1" stop-color="#9d4cff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="930" cy="300" r="340" fill="url(#glow)"/>
+  <g fill="none" stroke-width="2">
+    <ellipse cx="925" cy="300" rx="225" ry="90" stroke="#ff74df" stroke-opacity=".55" transform="rotate(-34 925 300)"/>
+    <ellipse cx="925" cy="300" rx="225" ry="90" stroke="#9a70ff" stroke-opacity=".62" transform="rotate(48 925 300)"/>
+    <ellipse cx="925" cy="300" rx="225" ry="90" stroke="#f6c5f1" stroke-opacity=".28" transform="rotate(90 925 300)"/>
+    <circle cx="925" cy="300" r="74" stroke="url(#type)" stroke-opacity=".9"/>
+  </g>
+  <circle cx="925" cy="300" r="35" fill="#ff65d8" fill-opacity=".13" stroke="#ff8fe5" stroke-opacity=".7"/>
+  <text x="84" y="110" fill="#cbbad7" font-family="Arial,sans-serif" font-size="18" letter-spacing="5">MUHAMMAD HADI / PORTFOLIO</text>
+  <text x="80" y="300" fill="#f8f1fa" font-family="Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-5">Digital experiences</text>
+  <text x="80" y="395" fill="url(#type)" font-family="Arial,sans-serif" font-size="92" font-weight="700" letter-spacing="-6">with a pulse.</text>
+  <text x="84" y="500" fill="#a79caf" font-family="Arial,sans-serif" font-size="22">Thoughtful code. Distinctive design. Interactive experiences.</text>
+</svg>
