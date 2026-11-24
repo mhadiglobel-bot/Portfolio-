@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
-import "./orbital-cards.css";
-import "./project-preview.css";
-import "./work.css";
 import "./responsive.css";
 
 const siteUrl = "https://portfolio-genzio1.vercel.app";
@@ -11,11 +8,11 @@ const siteUrl = "https://portfolio-genzio1.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Muhammad Hadi — Digital experiences with a pulse",
+    default: "Muhammad Hadi — Developer & Digital Maker",
     template: "%s | Muhammad Hadi",
   },
   description:
-    "Muhammad Hadi is a developer and digital maker shaping thoughtful products, expressive interfaces, and interactive experiences for the web.",
+    "Muhammad Hadi is an independent developer building thoughtful digital products, responsive web experiences, and interactive systems.",
   applicationName: "Muhammad Hadi Portfolio",
   alternates: {
     canonical: "/",
@@ -23,17 +20,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    title: "Muhammad Hadi — Digital experiences with a pulse",
+    title: "Muhammad Hadi — Developer & Digital Maker",
     description:
-      "Thoughtful code, distinctive design, and interactive experiences for the web.",
+      "Thoughtful interfaces, useful systems, and interactive experiences built with intent.",
     siteName: "Muhammad Hadi",
     images: [{ url: "/og-card.svg", width: 1200, height: 630, alt: "Muhammad Hadi portfolio" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Muhammad Hadi — Digital experiences with a pulse",
+    title: "Muhammad Hadi — Developer & Digital Maker",
     description:
-      "Thoughtful code, distinctive design, and interactive experiences for the web.",
+      "Thoughtful interfaces, useful systems, and interactive experiences built with intent.",
     images: ["/og-card.svg"],
   },
   icons: {
@@ -48,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#080709",
+  themeColor: "#070A10",
   colorScheme: "dark",
 };
 
