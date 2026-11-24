@@ -26,7 +26,7 @@ const vertexShader = [
   "  vUv = uv;",
   "  gl_Position = projectionMatrix * mvPosition;",
   "}",
-].join("\\n");
+].join("\n");
 
 const fragmentShader = [
   "uniform float uTime;",
@@ -61,7 +61,7 @@ const fragmentShader = [
   "  #include <tonemapping_fragment>",
   "  #include <colorspace_fragment>",
   "}",
-].join("\\n");
+].join("\n");
 
 export function InteractiveSculpture() {
   const hostRef = useRef<HTMLDivElement>(null);
