@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://muhammad-hadi-portfolio.vercel.app/sitemap.xml",
+    sitemap: "https://portfolio-genzio1.vercel.app/sitemap.xml",
   };
 }

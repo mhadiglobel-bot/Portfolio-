@@ -5,7 +5,7 @@ import "./project-preview.css";
 import "./work.css";
 import "./responsive.css";
 
-const siteUrl = "https://muhammad-hadi-portfolio.vercel.app";
+const siteUrl = "https://portfolio-genzio1.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
