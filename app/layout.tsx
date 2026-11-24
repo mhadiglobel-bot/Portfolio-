@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
-import "./work.css";
 import "./responsive.css";
 
 const siteUrl = "https://portfolio-genzio1.vercel.app";
