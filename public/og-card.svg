@@ -1,39 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <radialGradient id="glow" cx="70%" cy="45%" r="60%">
-      <stop offset="0" stop-color="#9d3218" stop-opacity=".62"/>
-      <stop offset="1" stop-color="#080706" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="orb" cx="32%" cy="25%" r="72%">
-      <stop offset="0" stop-color="#ffe0c1"/>
-      <stop offset=".2" stop-color="#ff985b"/>
-      <stop offset=".58" stop-color="#b83e1b"/>
-      <stop offset="1" stop-color="#351006"/>
-    </radialGradient>
-    <linearGradient id="type" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffd5b2"/>
-      <stop offset="1" stop-color="#ef5a2b"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff45d4"/>
+      <stop offset=".52" stop-color="#c34cff"/>
+      <stop offset="1" stop-color="#8654ff"/>
     </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#9b4dff" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#9b4dff" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect width="1200" height="630" fill="#080706"/>
-  <rect width="1200" height="630" fill="url(#glow)"/>
-  <g opacity=".16" stroke="#f4c9ad">
-    <path d="M0 110h1200M0 210h1200M0 310h1200M0 410h1200M0 510h1200"/>
-    <path d="M100 0v630M200 0v630M300 0v630M400 0v630M500 0v630M600 0v630M700 0v630M800 0v630M900 0v630M1000 0v630M1100 0v630"/>
-  </g>
-  <g transform="translate(865 300)">
-    <ellipse rx="245" ry="105" fill="none" stroke="#ff9b64" stroke-opacity=".55" stroke-width="2" transform="rotate(-27)"/>
-    <ellipse rx="205" ry="95" fill="none" stroke="#ffd1ae" stroke-opacity=".32" stroke-width="2" transform="rotate(54)"/>
-    <ellipse rx="265" ry="130" fill="none" stroke="#ef5a2b" stroke-opacity=".38" stroke-width="1.5" transform="rotate(72)"/>
-    <path d="M-105-120C-40-185 72-163 130-92c62 75 40 186-28 230-75 49-194 12-223-75-23-69-1-139 16-155Z" fill="url(#orb)"/>
-    <circle cx="130" cy="-72" r="11" fill="#ffd6b6"/>
-  </g>
-  <g fill="#f5f0e9">
-    <text x="88" y="120" font-family="Arial,sans-serif" font-size="14" letter-spacing="4" opacity=".72">INDEPENDENT DEVELOPER / DIGITAL MAKER</text>
-    <text x="82" y="290" font-family="Georgia,serif" font-size="100">Muhammad</text>
-    <text x="82" y="390" font-family="Georgia,serif" font-size="100" fill="url(#type)" font-style="italic">Hadi.</text>
-    <text x="88" y="470" font-family="Arial,sans-serif" font-size="20" opacity=".72">Digital products, expressive interfaces and interactive systems.</text>
-  </g>
-  <path d="M88 535h90" stroke="#ff8a4c" stroke-width="2"/>
-  <text x="88" y="570" fill="#a59a90" font-family="Arial,sans-serif" font-size="12" letter-spacing="3">PORTFOLIO / 2026</text>
+  <rect width="1200" height="630" fill="#08070d"/>
+  <circle cx="940" cy="300" r="340" fill="url(#glow)"/>
+  <path d="M0 500H1200M0 540H1200" stroke="#ffffff" stroke-opacity=".07"/>
+  <circle cx="930" cy="280" r="190" fill="none" stroke="url(#g)" stroke-opacity=".65" stroke-width="2"/>
+  <circle cx="930" cy="280" r="145" fill="#7b35c8" fill-opacity=".15" stroke="#d6a1ff" stroke-opacity=".5"/>
+  <path d="M780 250C825 95 1045 85 1090 250C1128 390 950 500 825 410C745 350 730 305 780 250Z" fill="url(#g)" fill-opacity=".18" stroke="url(#g)" stroke-width="3"/>
+  <text x="88" y="112" fill="#c6b6d7" font-family="Arial,sans-serif" font-size="18" letter-spacing="5">INDEPENDENT DEVELOPER / DIGITAL MAKER</text>
+  <text x="82" y="282" fill="#f7f3fb" font-family="Arial,sans-serif" font-size="78" font-weight="600" letter-spacing="-5">Muhammad Hadi</text>
+  <text x="88" y="378" fill="url(#g)" font-family="Arial,sans-serif" font-size="68" font-weight="600" letter-spacing="-3">Digital experiences.</text>
+  <text x="90" y="455" fill="#b4a9c0" font-family="Arial,sans-serif" font-size="22">Thoughtful products, expressive interfaces and motion.</text>
+  <rect x="88" y="530" width="44" height="3" fill="url(#g)"/>
+  <text x="150" y="539" fill="#8d8298" font-family="Arial,sans-serif" font-size="14" letter-spacing="3">PORTFOLIO / 2026</text>
 </svg>
