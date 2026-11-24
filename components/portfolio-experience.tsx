@@ -245,7 +245,7 @@ export function PortfolioExperience() {
           </button>
         </div>
 
-        <nav id="mobile-navigation" className={"mobile-navigation" + (menuOpen ? " is-open" : "")} aria-label="Mobile navigation">
+        <nav id="mobile-navigation" className={"mobile-navigation" + (menuOpen ? " is-open" : "")} aria-label="Mobile navigation" aria-hidden={!menuOpen}>
           {navigation.map((item) => (
             <a key={item.href} href={item.href} onClick={closeMenu}>{item.label}</a>
           ))}
