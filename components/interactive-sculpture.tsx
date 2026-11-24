@@ -11,14 +11,47 @@ const vertexShader = [
   "varying vec3 vViewPosition;",
   "varying vec3 vPosition;",
   "varying vec2 vUv;",
+  "float hash31(vec3 p) {",
+  "  p = fract(p * 0.3183099 + vec3(0.1));",
+  "  p *= 17.0;",
+  "  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));",
+  "}",
+  "float noise3d(vec3 p) {",
+  "  vec3 i = floor(p);",
+  "  vec3 f = fract(p);",
+  "  f = f * f * (3.0 - 2.0 * f);",
+  "  float n000 = hash31(i + vec3(0.0, 0.0, 0.0));",
+  "  float n100 = hash31(i + vec3(1.0, 0.0, 0.0));",
+  "  float n010 = hash31(i + vec3(0.0, 1.0, 0.0));",
+  "  float n110 = hash31(i + vec3(1.0, 1.0, 0.0));",
+  "  float n001 = hash31(i + vec3(0.0, 0.0, 1.0));",
+  "  float n101 = hash31(i + vec3(1.0, 0.0, 1.0));",
+  "  float n011 = hash31(i + vec3(0.0, 1.0, 1.0));",
+  "  float n111 = hash31(i + vec3(1.0, 1.0, 1.0));",
+  "  float nx00 = mix(n000, n100, f.x);",
+  "  float nx10 = mix(n010, n110, f.x);",
+  "  float nx01 = mix(n001, n101, f.x);",
+  "  float nx11 = mix(n011, n111, f.x);",
+  "  return mix(mix(nx00, nx10, f.y), mix(nx01, nx11, f.y), f.z);",
+  "}",
+  "float fbm(vec3 p) {",
+  "  float value = 0.0;",
+  "  float amplitude = 0.5;",
+  "  for (int i = 0; i < 4; i++) {",
+  "    value += amplitude * noise3d(p);",
+  "    p *= 2.03;",
+  "    amplitude *= 0.5;",
+  "  }",
+  "  return value;",
+  "}",
   "void main() {",
   "  vec3 p = position;",
-  "  float waveA = sin(p.x * 3.1 + uTime * 0.72 + uPointer.x * 1.35);",
-  "  float waveB = cos(p.y * 3.4 - uTime * 0.58 + uPointer.y * 1.25);",
-  "  float waveC = sin((p.z + p.x * 0.65) * 4.0 + uTime * 0.44);",
-  "  float waveD = cos((p.y - p.z) * 2.7 - uTime * 0.36);",
-  "  float liquid = (waveA * waveB * 0.52 + waveC * 0.28 + waveD * 0.2);",
-  "  p += normal * (liquid * 0.145 + uScroll * 0.045);",
+  "  vec3 flow = normal * 2.15 + vec3(uTime * 0.12 + uPointer.x * 0.48, -uTime * 0.1 + uPointer.y * 0.44, uTime * 0.08);",
+  "  float noise = fbm(flow);",
+  "  float fold = sin(p.y * 3.0 + uTime * 0.52 + uPointer.x) * cos(p.x * 2.7 - uTime * 0.42 + uPointer.y);",
+  "  float displacement = (noise - 0.48) * 0.58 + fold * 0.075 + uScroll * 0.035;",
+  "  p += normal * displacement;",
+  "  p += normal * sin(p.z * 2.8 + p.x * 1.6 + uTime * 0.38) * 0.025;",
   "  vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);",
   "  vNormal = normalize(normalMatrix * normal);",
   "  vViewPosition = -mvPosition.xyz;",
@@ -41,23 +74,22 @@ const fragmentShader = [
   "  vec3 L = normalize(vec3(-0.48, 0.74, 0.82));",
   "  vec3 H = normalize(L + V);",
   "  float diffuse = max(dot(N, L), 0.0);",
-  "  float fresnel = pow(1.0 - max(dot(N, V), 0.0), 2.15);",
-  "  float specular = pow(max(dot(N, H), 0.0), 48.0);",
-  "  float bands = sin(vPosition.y * 3.0 + vPosition.x * 1.3 + uTime * 0.42 + uPointer.x * 0.8);",
-  "  float flow = smoothstep(-0.55, 0.75, bands * 0.5 + 0.5);",
-  "  vec3 shadow = vec3(0.085, 0.014, 0.008);",
-  "  vec3 ember = vec3(0.56, 0.075, 0.022);",
-  "  vec3 orange = vec3(0.98, 0.245, 0.055);",
-  "  vec3 gold = vec3(1.0, 0.62, 0.29);",
-  "  vec3 base = mix(shadow, ember, flow);",
-  "  base = mix(base, orange, smoothstep(0.18, 0.92, flow) * 0.78);",
-  "  base = mix(base, gold, fresnel * 0.84);",
-  "  float light = 0.22 + diffuse * 0.72;",
-  "  vec3 color = base * light;",
-  "  color += gold * specular * 1.5;",
-  "  color += orange * fresnel * 0.52;",
-  "  color += vec3(0.22, 0.035, 0.008) * (0.5 + 0.5 * sin(uTime * 0.3 + vUv.y * 5.0));",
-  "  gl_FragColor = vec4(color, 0.98);",
+  "  float fresnel = pow(1.0 - max(dot(N, V), 0.0), 2.3);",
+  "  float specular = pow(max(dot(N, H), 0.0), 54.0);",
+  "  float flow = sin(vPosition.y * 3.2 + vPosition.x * 2.1 + uTime * 0.34 + uPointer.x * 0.6);",
+  "  float molten = smoothstep(-0.38, 0.82, flow * 0.5 + 0.5);",
+  "  vec3 shadow = vec3(0.065, 0.01, 0.005);",
+  "  vec3 deep = vec3(0.26, 0.025, 0.009);",
+  "  vec3 orange = vec3(0.95, 0.19, 0.035);",
+  "  vec3 gold = vec3(1.0, 0.63, 0.34);",
+  "  vec3 base = mix(shadow, deep, molten);",
+  "  base = mix(base, orange, smoothstep(0.24, 0.92, molten) * 0.84);",
+  "  base = mix(base, gold, fresnel * 0.78);",
+  "  vec3 color = base * (0.24 + diffuse * 0.72);",
+  "  color += gold * specular * 1.7;",
+  "  color += orange * fresnel * 0.62;",
+  "  color += vec3(0.19, 0.025, 0.006) * (0.5 + 0.5 * sin(uTime * 0.26 + vUv.y * 6.0));",
+  "  gl_FragColor = vec4(color, 0.99);",
   "  #include <tonemapping_fragment>",
   "  #include <colorspace_fragment>",
   "}",
@@ -73,15 +105,6 @@ export function InteractiveSculpture() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isSmall = window.matchMedia("(max-width: 760px)").matches;
     let renderer: THREE.WebGLRenderer;
-    let animationFrame = 0;
-    let visible = true;
-    let disposed = false;
-    let lastFrame = 0;
-    const pointerTarget = new THREE.Vector2();
-    const pointerCurrent = new THREE.Vector2();
-    let scrollTarget = 0;
-    let scrollCurrent = 0;
-    let shaderUniforms: { [key: string]: { value: unknown } } | null = null;
 
     try {
       renderer = new THREE.WebGLRenderer({
@@ -96,15 +119,24 @@ export function InteractiveSculpture() {
       return;
     }
 
+    let animationFrame = 0;
+    let visible = true;
+    let disposed = false;
+    let lastFrame = 0;
+    const pointerTarget = new THREE.Vector2();
+    const pointerCurrent = new THREE.Vector2();
+    let scrollTarget = 0;
+    let scrollCurrent = 0;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 40);
-    camera.position.set(0, 0, 6.4);
+    camera.position.set(0, 0, isSmall ? 6.9 : 6.2);
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1 : 1.45));
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.16;
+    renderer.toneMappingExposure = 1.18;
     host.appendChild(renderer.domElement);
     renderer.domElement.className = "sculpture-canvas";
     renderer.domElement.setAttribute("aria-hidden", "true");
@@ -128,68 +160,55 @@ export function InteractiveSculpture() {
       side: THREE.DoubleSide,
       toneMapped: true,
     });
-    shaderUniforms = uniforms;
 
-    const liquid = new THREE.Mesh(new THREE.IcosahedronGeometry(1.36, 6), liquidMaterial);
+    const liquid = new THREE.Mesh(new THREE.SphereGeometry(1.48, 128, 128), liquidMaterial);
+    liquid.scale.set(1.02, 0.94, 0.96);
     root.add(liquid);
 
-    const ringMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xff8a4d,
-      metalness: 0.88,
-      roughness: 0.17,
+    const strandCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-1.32, -0.18, -0.24),
+      new THREE.Vector3(-1.18, 0.48, 0.12),
+      new THREE.Vector3(-0.58, 0.98, 0.34),
+      new THREE.Vector3(0.08, 0.9, 0.42),
+      new THREE.Vector3(0.72, 0.47, 0.24),
+      new THREE.Vector3(1.22, -0.24, -0.08),
+    ]);
+    const strandMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xff8648,
+      metalness: 0.68,
+      roughness: 0.18,
       clearcoat: 1,
       clearcoatRoughness: 0.08,
-      emissive: 0x5a1607,
-      emissiveIntensity: 0.36,
-    });
-    const ringMaterialSoft = new THREE.MeshStandardMaterial({
-      color: 0xffc08a,
-      metalness: 0.82,
-      roughness: 0.22,
-      transparent: true,
-      opacity: 0.58,
-      emissive: 0x5a1c08,
-      emissiveIntensity: 0.18,
-    });
-
-    const ringA = new THREE.Mesh(new THREE.TorusGeometry(1.78, 0.014, 12, 190), ringMaterial);
-    ringA.rotation.set(1.12, 0.18, 0.28);
-    root.add(ringA);
-
-    const ringB = new THREE.Mesh(new THREE.TorusGeometry(1.58, 0.008, 8, 170), ringMaterialSoft);
-    ringB.rotation.set(0.44, 1.02, 0.78);
-    root.add(ringB);
-
-    const ringC = new THREE.Mesh(new THREE.TorusGeometry(1.94, 0.006, 8, 170), ringMaterialSoft);
-    ringC.rotation.set(1.48, -0.62, -0.24);
-    root.add(ringC);
-
-    const satelliteMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffd3a1,
-      metalness: 0.34,
-      roughness: 0.13,
-      clearcoat: 1,
-      emissive: 0x9d310d,
+      emissive: 0x5d1708,
       emissiveIntensity: 0.34,
     });
-    const satellite = new THREE.Mesh(new THREE.SphereGeometry(0.105, 28, 28), satelliteMaterial);
-    satellite.position.set(1.48, 0.58, 0.3);
-    root.add(satellite);
+    const strand = new THREE.Mesh(new THREE.TubeGeometry(strandCurve, 140, 0.052, 16, false), strandMaterial);
+    root.add(strand);
 
-    const satelliteSmall = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(0.065, 2),
-      new THREE.MeshStandardMaterial({ color: 0xffa66b, metalness: 0.72, roughness: 0.2, emissive: 0x5b1707, emissiveIntensity: 0.3 }),
-    );
-    satelliteSmall.position.set(-1.55, -0.68, -0.2);
-    root.add(satelliteSmall);
+    const dropletMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xffb47c,
+      metalness: 0.4,
+      roughness: 0.13,
+      clearcoat: 1,
+      emissive: 0x79220a,
+      emissiveIntensity: 0.28,
+    });
+    const droplet = new THREE.Mesh(new THREE.SphereGeometry(0.12, 36, 36), dropletMaterial);
+    droplet.scale.set(0.72, 1.3, 0.72);
+    droplet.position.set(1.46, 0.52, 0.18);
+    root.add(droplet);
+
+    const dropletSmall = new THREE.Mesh(new THREE.SphereGeometry(0.07, 28, 28), dropletMaterial);
+    dropletSmall.position.set(-1.34, -0.62, 0.22);
+    root.add(dropletSmall);
 
     const particlePositions: number[] = [];
-    for (let index = 0; index < 112; index += 1) {
+    for (let index = 0; index < 88; index += 1) {
       const angle = index * 2.399963229728653;
-      const radius = 2.02 + (index % 9) * 0.045;
+      const radius = 1.95 + (index % 8) * 0.055;
       particlePositions.push(
         Math.cos(angle) * radius,
-        Math.sin(angle * 1.13) * (0.9 + (index % 5) * 0.1),
+        Math.sin(angle * 1.13) * (0.92 + (index % 5) * 0.09),
         Math.sin(angle) * (0.62 + (index % 7) * 0.08),
       );
     }
@@ -197,26 +216,26 @@ export function InteractiveSculpture() {
     particleGeometry.setAttribute("position", new THREE.Float32BufferAttribute(particlePositions, 3));
     const particleMaterial = new THREE.PointsMaterial({
       color: 0xffc08a,
-      size: isSmall ? 0.012 : 0.016,
+      size: isSmall ? 0.011 : 0.015,
       transparent: true,
-      opacity: 0.52,
+      opacity: 0.44,
       depthWrite: false,
       sizeAttenuation: true,
     });
     const particles = new THREE.Points(particleGeometry, particleMaterial);
     root.add(particles);
 
-    scene.add(new THREE.HemisphereLight(0xffd6b7, 0x160804, 1.15));
+    scene.add(new THREE.HemisphereLight(0xffd6b7, 0x160804, 1.2));
 
-    const keyLight = new THREE.DirectionalLight(0xfff0df, 3.2);
+    const keyLight = new THREE.DirectionalLight(0xfff0df, 3.4);
     keyLight.position.set(-3.2, 4.4, 4.6);
     scene.add(keyLight);
 
-    const warmLight = new THREE.PointLight(0xff5d25, 22, 9, 2);
+    const warmLight = new THREE.PointLight(0xff5d25, 24, 9, 2);
     warmLight.position.set(2.5, 1.4, 2.2);
     scene.add(warmLight);
 
-    const rimLight = new THREE.PointLight(0xffbd7a, 13, 8, 2);
+    const rimLight = new THREE.PointLight(0xffbd7a, 14, 8, 2);
     rimLight.position.set(-2.5, -1.8, -1.4);
     scene.add(rimLight);
 
@@ -226,7 +245,7 @@ export function InteractiveSculpture() {
       const height = Math.max(1, Math.floor(rect.height));
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
-      camera.position.z = width < 760 ? 7.1 : 6.4;
+      camera.position.z = width < 760 ? 6.9 : 6.2;
       camera.updateProjectionMatrix();
     };
 
@@ -246,7 +265,6 @@ export function InteractiveSculpture() {
     };
 
     const renderStatic = () => renderer.render(scene, camera);
-
     const stop = () => {
       if (animationFrame) {
         window.cancelAnimationFrame(animationFrame);
@@ -270,24 +288,23 @@ export function InteractiveSculpture() {
       const time = timestamp * 0.001;
       pointerCurrent.lerp(pointerTarget, 0.045);
       scrollCurrent += (scrollTarget - scrollCurrent) * 0.035;
+      uniforms.uTime.value = time;
+      uniforms.uPointer.value.copy(pointerCurrent);
+      uniforms.uScroll.value = scrollCurrent;
 
-      if (shaderUniforms) {
-        (shaderUniforms.uTime.value as number) = time;
-        (shaderUniforms.uPointer.value as THREE.Vector2).copy(pointerCurrent);
-        (shaderUniforms.uScroll.value as number) = scrollCurrent;
-      }
-
-      root.rotation.y = pointerCurrent.x * 0.24 + scrollCurrent * 0.32 + Math.sin(time * 0.2) * 0.045;
-      root.rotation.x = pointerCurrent.y * 0.16 + Math.cos(time * 0.17) * 0.035;
-      root.rotation.z = Math.sin(time * 0.14) * 0.035;
-      root.position.y = Math.sin(time * 0.42) * 0.045 - scrollCurrent * 0.055;
-      ringA.rotation.z += 0.0011;
-      ringB.rotation.x -= 0.0009;
-      ringC.rotation.y += 0.00065;
-      satellite.position.set(Math.cos(time * 0.42) * 1.52, Math.sin(time * 0.42) * 0.78, Math.sin(time * 0.35) * 0.28);
-      satellite.rotation.y += 0.0025;
-      satelliteSmall.rotation.x += 0.0018;
-      particles.rotation.y = -time * 0.018;
+      root.rotation.y = pointerCurrent.x * 0.23 + scrollCurrent * 0.28 + Math.sin(time * 0.18) * 0.035;
+      root.rotation.x = pointerCurrent.y * 0.15 + Math.cos(time * 0.16) * 0.028;
+      root.rotation.z = Math.sin(time * 0.13) * 0.022;
+      root.position.y = Math.sin(time * 0.4) * 0.04 - scrollCurrent * 0.045;
+      liquid.scale.set(
+        1.02 + Math.sin(time * 0.34) * 0.018,
+        0.94 + Math.cos(time * 0.31) * 0.022,
+        0.96 + Math.sin(time * 0.27) * 0.018,
+      );
+      strand.rotation.y = Math.sin(time * 0.22) * 0.055;
+      droplet.position.y = 0.52 + Math.sin(time * 0.48) * 0.08;
+      dropletSmall.position.x = -1.34 + Math.sin(time * 0.38) * 0.05;
+      particles.rotation.y = -time * 0.012;
 
       renderer.render(scene, camera);
       animationFrame = window.requestAnimationFrame(animate);
@@ -370,8 +387,6 @@ export function InteractiveSculpture() {
   return (
     <div className="sculpture-stage" ref={hostRef} aria-hidden="true">
       <div className="sculpture-fallback">
-        <span className="fallback-orbit fallback-orbit--one" />
-        <span className="fallback-orbit fallback-orbit--two" />
         <span className="fallback-liquid" />
       </div>
       <div className="sculpture-caption">LIQUID FORM / REAL-TIME 3D</div>
