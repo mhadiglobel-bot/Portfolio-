@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-  --ink: #FFFFFFFFF;
+  --ink: #FFFFFF;
   --muted: #A7A0AD;
-  --muted-soft: #77717f;
+  --muted-soft: #A7A0AD;
   --background: #080709;
   --surface: #100D13;
   --surface-raised: #19131D;
@@ -29,7 +29,7 @@ button { font: inherit; }
 
 .site-shell { overflow: clip; }
 .page-container { width: min(var(--page-width), calc(100% - 96px)); margin-inline: auto; }
-.skip-link { position: fixed; top: 12px; left: 12px; z-index: 100; padding: 10px 14px; color: #120b17; background: var(--pink-soft); transform: translateY(-160%); transition: transform .2s ease; }
+.skip-link { position: fixed; top: 12px; left: 12px; z-index: 100; padding: 10px 14px; color: #100D13; background: var(--pink-soft); transform: translateY(-160%); transition: transform .2s ease; }
 .skip-link:focus { transform: translateY(0); }
 .scroll-progress { position: fixed; z-index: 80; top: 0; left: 0; width: var(--scroll-progress); height: 2px; background: linear-gradient(90deg, var(--pink), var(--purple), #741BFF); box-shadow: 0 0 16px rgba(255, 79, 216, .6); }
 
@@ -73,7 +73,7 @@ button { font: inherit; }
 .button-primary:hover { transform: translateY(-3px); border-color: rgba(255,146,231,.82); box-shadow: 0 12px 40px rgba(188,65,212,.2); }
 .button-arrow { display: grid; place-items: center; width: 36px; height: 36px; color: #FFFFFF; background: linear-gradient(135deg, rgba(255,43,214,.85), rgba(131,76,255,.9)); }
 .button-arrow svg { width: 15px; height: 15px; }
-.text-link { display: inline-flex; align-items: center; gap: 9px; color: #FFFFFFFFF; font-size: 13px; transition: color .25s ease; }
+.text-link { display: inline-flex; align-items: center; gap: 9px; color: #FFFFFF; font-size: 13px; transition: color .25s ease; }
 .text-link:hover { color: var(--pink-soft); }
 .text-link svg { transition: transform .25s ease; }
 .text-link:hover svg { transform: translate(3px,-3px); }

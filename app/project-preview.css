@@ -17,11 +17,11 @@
 .window-dots i:nth-child(2) { background: #A855F7; }
 .window-dots i:nth-child(3) { background: #741BFF; }
 .window-title { color: #A7A0AD; font-size: 8px; font-weight: 600; letter-spacing: .15em; }
-.window-status { display: flex; align-items: center; gap: 6px; color: #9b91a2; font-size: 7px; letter-spacing: .1em; }
+.window-status { display: flex; align-items: center; gap: 6px; color: #A7A0AD; font-size: 7px; letter-spacing: .1em; }
 .window-status i { width: 5px; height: 5px; border-radius: 50%; background: #A855F7; box-shadow: 0 0 7px #A855F7; }
 .audio-workspace { display: grid; grid-template-columns: 142px 1fr; min-height: 340px; }
 .audio-sidebar { position: relative; padding: 21px 13px; border-right: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.018); }
-.audio-logo { margin-bottom: 38px; color: #eee8f3; font: 700 18px var(--font-display); letter-spacing: -.08em; }
+.audio-logo { margin-bottom: 38px; color: #FFFFFF; font: 700 18px var(--font-display); letter-spacing: -.08em; }
 .audio-logo span { color: var(--pink); }
 .audio-side-label { margin-bottom: 12px; color: #A7A0AD; font-size: 7px; letter-spacing: .15em; }
 .audio-side-item { display: flex; align-items: center; gap: 9px; margin: 5px 0; padding: 8px 7px; color: #A7A0AD; font-size: 9px; border-radius: 3px; }

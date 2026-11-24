@@ -23,7 +23,7 @@
   .mobile-navigation a { padding: 12px 2px; color: #A7A0AD; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 14px; }
   .mobile-navigation a:last-child { color: var(--pink-soft); border: 0; }
   .hero-section { min-height: 790px; min-height: 100svh; align-items: flex-start; }
-  .hero-section::before { background: radial-gradient(ellipse at 74% 50%, rgba(107,50,158,.18), transparent 44%), linear-gradient(110deg, #080709 0%, #0b0810 100%); }
+  .hero-section::before { background: radial-gradient(ellipse at 74% 50%, rgba(107,50,158,.18), transparent 44%), linear-gradient(110deg, #080709 0%, #100D13 100%); }
   .hero-grid { background-size: 54px 54px; opacity: .12; }
   .orbital-scene { top: 20%; right: -40%; width: 125%; height: 64%; opacity: .74; mask-image: linear-gradient(180deg, transparent 0%, #080709 14%, #080709 78%, transparent 100%); }
   .hero-content { padding-top: clamp(148px, 23vh, 210px); padding-bottom: 160px; }
