@@ -10,8 +10,6 @@ const InteractiveSculpture = dynamic(
     loading: () => (
       <div className="sculpture-stage" aria-hidden="true">
         <div className="sculpture-fallback">
-          <span className="fallback-orbit fallback-orbit--one" />
-          <span className="fallback-orbit fallback-orbit--two" />
           <span className="fallback-liquid" />
         </div>
       </div>
@@ -408,9 +406,9 @@ export function PortfolioExperience() {
             <div className="archive-card" data-tilt data-reveal>
               <div className="archive-art" data-distort data-cursor="EXPLORE" aria-hidden="true">
                 <div className="archive-art-grid" />
-                <div className="archive-art-orbit archive-art-orbit--one" />
-                <div className="archive-art-orbit archive-art-orbit--two" />
-                <div className="archive-art-orbit archive-art-orbit--three" />
+                <div className="archive-art-liquid archive-art-liquid--one" />
+                <div className="archive-art-liquid archive-art-liquid--two" />
+                <div className="archive-art-liquid archive-art-liquid--three" />
                 <div className="archive-art-core" />
                 <div className="archive-art-window archive-art-window--one"><span /><i /><i /><i /></div>
                 <div className="archive-art-window archive-art-window--two"><span /><b /><b /><b /></div>
