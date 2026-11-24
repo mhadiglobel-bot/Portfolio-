@@ -1,21 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
-
-const InteractiveSculpture = dynamic(
-  () => import("@/components/interactive-sculpture").then((module) => module.InteractiveSculpture),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="sculpture-stage" aria-hidden="true">
-        <div className="sculpture-fallback">
-          <span className="fallback-liquid" />
-        </div>
-      </div>
-    ),
-  },
-);
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 const navigation = [
   { label: "Work", href: "#work" },
@@ -23,66 +8,79 @@ const navigation = [
   { label: "About", href: "#about" },
 ];
 
-const focusAreas = [
+const projects = [
+  {
+    number: "01",
+    title: "Rank Ur Business",
+    category: "DIGITAL PRODUCT / BUSINESS DISCOVERY",
+    description:
+      "A business discovery platform built to make finding and exploring businesses feel clear, useful and straightforward.",
+    href: "https://urbusiness.tiers.rest/",
+    action: "Visit live experience",
+  },
+];
+
+const capabilities = [
   {
     number: "01",
     title: "Digital products",
-    description: "Useful interfaces and clear workflows, shaped around the people who rely on them.",
-    tags: "PRODUCT / INTERFACE",
-    symbol: "product",
+    description:
+      "Useful interfaces and thoughtful workflows shaped around real people and the way they work.",
+    symbol: "✳",
+    detail: "PRODUCT / EXPERIENCE",
   },
   {
     number: "02",
     title: "Web engineering",
-    description: "Fast, considered websites and platforms with the structure to grow beyond launch.",
-    tags: "WEB / ENGINEERING",
-    symbol: "web",
+    description:
+      "Fast, dependable websites and platforms with the structure to grow beyond their first release.",
+    symbol: "⌘",
+    detail: "FRONTEND / SYSTEMS",
   },
   {
     number: "03",
-    title: "Interactive systems",
-    description: "Motion, dimensional visuals and small details that make an experience feel alive.",
-    tags: "MOTION / REAL-TIME",
-    symbol: "motion",
+    title: "Motion & interaction",
+    description:
+      "Dimensional details, responsive movement and interactions that make an experience feel alive.",
+    symbol: "↗",
+    detail: "MOTION / INTERACTION",
   },
 ];
 
-const process = [
+const approach = [
   {
     number: "01",
-    title: "Find the real problem.",
-    description: "Start with the people, the context and the thing that actually needs to change.",
-    note: "CLARITY BEFORE COMPLEXITY",
+    title: "Start with the feeling.",
+    description:
+      "Understand what the experience should feel like before deciding how it should look. Clarity first, decoration last.",
+    note: "INTENTION BEFORE INTERFACE",
   },
   {
     number: "02",
-    title: "Give the idea a shape.",
-    description: "Build a visual language and a structure that make the experience feel obvious.",
-    note: "FORM WITH A REASON",
+    title: "Make complexity feel simple.",
+    description:
+      "Thoughtful structure and careful engineering let people focus on what they came to do, not on how the product works.",
+    note: "LESS FRICTION, MORE FLOW",
   },
   {
     number: "03",
-    title: "Make every detail work.",
-    description: "Engineer, test and refine the real thing until the small moments feel intentional.",
-    note: "FINISH IS PART OF THE DESIGN",
+    title: "Give every movement meaning.",
+    description:
+      "Motion should guide attention, explain change and add character. It should never make the experience harder to use.",
+    note: "MOTION WITH A PURPOSE",
   },
 ];
 
-// Add verified case studies here when they are ready to be published.
-// Audixo is intentionally not part of this portfolio archive.
-const projects: Array<{
-  number: string;
-  title: string;
-  category: string;
-  description: string;
-  href: string;
-  year: string;
-}> = [];
-
-function ArrowUpRight() {
+function ArrowIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none">
-      <path d="M3.5 12.5 12.5 3.5M4.5 3.5h8v8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    <svg aria-hidden="true" viewBox="0 0 18 18" fill="none">
+      <path
+        d="M4 14 14 4M5 4h9v9"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -98,16 +96,19 @@ function MenuGlyph({ open }: { open: boolean }) {
 
 export function PortfolioExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = document.documentElement;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const header = document.querySelector<HTMLElement>(".site-header");
     let observer: IntersectionObserver | null = null;
 
     revealItems.forEach((item, index) => {
-      item.style.setProperty("--reveal-delay", (Math.min(index % 4, 3) * 85) + "ms");
+      item.style.setProperty("--reveal-delay", Math.min(index % 4, 3) * 75 + "ms");
     });
 
     if (reducedMotion || !("IntersectionObserver" in window)) {
@@ -123,7 +124,7 @@ export function PortfolioExperience() {
             }
           });
         },
-        { threshold: 0.12, rootMargin: "0px 0px -9% 0px" },
+        { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
       );
       revealItems.forEach((item) => observer?.observe(item));
     }
@@ -135,11 +136,9 @@ export function PortfolioExperience() {
         const maxScroll = Math.max(root.scrollHeight - window.innerHeight, 1);
         const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
         const heroProgress = Math.min(1, Math.max(0, window.scrollY / Math.max(window.innerHeight, 1)));
-        root.style.setProperty("--scroll-progress", (progress * 100).toFixed(2) + "%");
-        root.style.setProperty("--hero-progress", heroProgress.toFixed(3));
-        root.style.setProperty("--hero-parallax", (-heroProgress * 34).toFixed(2) + "px");
-        root.style.setProperty("--hero-scale", (1 - heroProgress * 0.035).toFixed(3));
-        document.querySelector(".site-header")?.classList.toggle("is-scrolled", window.scrollY > 28);
+        root.style.setProperty("--page-progress", (progress * 100).toFixed(2) + "%");
+        sceneRef.current?.style.setProperty("--scroll-y", (-heroProgress * 34).toFixed(1) + "px");
+        header?.classList.toggle("is-scrolled", window.scrollY > 24);
         scrollFrame = 0;
       });
     };
@@ -148,16 +147,41 @@ export function PortfolioExperience() {
     window.addEventListener("scroll", updateScroll, { passive: true });
     window.addEventListener("resize", updateScroll, { passive: true });
 
-    const tiltItems = Array.from(document.querySelectorAll<HTMLElement>("[data-tilt]"));
-    const tiltHandlers = tiltItems.map((item) => {
+    const hero = heroRef.current;
+    const scene = sceneRef.current;
+    const onHeroPointerMove = (event: PointerEvent) => {
+      if (!finePointer || reducedMotion || !hero || !scene) return;
+      const rect = hero.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5;
+      const y = (event.clientY - rect.top) / Math.max(rect.height, 1) - 0.5;
+      scene.style.setProperty("--mx", (x * 18).toFixed(1) + "px");
+      scene.style.setProperty("--my", (y * 14).toFixed(1) + "px");
+      scene.style.setProperty("--rx", (y * -5).toFixed(2) + "deg");
+      scene.style.setProperty("--ry", (x * 8).toFixed(2) + "deg");
+    };
+    const resetHeroPointer = () => {
+      if (!scene) return;
+      scene.style.setProperty("--mx", "0px");
+      scene.style.setProperty("--my", "0px");
+      scene.style.setProperty("--rx", "0deg");
+      scene.style.setProperty("--ry", "0deg");
+    };
+
+    hero?.addEventListener("pointermove", onHeroPointerMove, { passive: true });
+    hero?.addEventListener("pointerleave", resetHeroPointer);
+
+    const tiltItems = finePointer
+      ? Array.from(document.querySelectorAll<HTMLElement>("[data-tilt]"))
+      : [];
+    const tiltCleanups = tiltItems.map((item) => {
       const onMove = (event: PointerEvent) => {
         const rect = item.getBoundingClientRect();
-        const x = Math.min(1, Math.max(0, (event.clientX - rect.left) / Math.max(rect.width, 1)));
-        const y = Math.min(1, Math.max(0, (event.clientY - rect.top) / Math.max(rect.height, 1)));
-        item.style.setProperty("--tilt-x", ((0.5 - y) * 5.5).toFixed(2) + "deg");
-        item.style.setProperty("--tilt-y", ((x - 0.5) * 7).toFixed(2) + "deg");
-        item.style.setProperty("--shine-x", (x * 100).toFixed(1) + "%");
-        item.style.setProperty("--shine-y", (y * 100).toFixed(1) + "%");
+        const x = (event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5;
+        const y = (event.clientY - rect.top) / Math.max(rect.height, 1) - 0.5;
+        item.style.setProperty("--tilt-x", (y * -3.2).toFixed(2) + "deg");
+        item.style.setProperty("--tilt-y", (x * 4.2).toFixed(2) + "deg");
+        item.style.setProperty("--shine-x", ((x + 0.5) * 100).toFixed(1) + "%");
+        item.style.setProperty("--shine-y", ((y + 0.5) * 100).toFixed(1) + "%");
       };
       const onLeave = () => {
         item.style.setProperty("--tilt-x", "0deg");
@@ -165,7 +189,7 @@ export function PortfolioExperience() {
         item.style.setProperty("--shine-x", "50%");
         item.style.setProperty("--shine-y", "50%");
       };
-      item.addEventListener("pointermove", onMove);
+      item.addEventListener("pointermove", onMove, { passive: true });
       item.addEventListener("pointerleave", onLeave);
       return () => {
         item.removeEventListener("pointermove", onMove);
@@ -173,117 +197,39 @@ export function PortfolioExperience() {
       };
     });
 
-    const distortion = document.getElementById("liquid-distortion-scale") as SVGAnimationElement | null;
-    const distortionItems = Array.from(document.querySelectorAll<HTMLElement>("[data-distort]"));
-    const distortionHandlers = distortionItems.map((item) => {
-      const onEnter = () => {
-        try {
-          distortion?.beginElement();
-        } catch {
-          // The visual remains usable if SVG filter animation is unavailable.
-        }
-      };
-      item.addEventListener("pointerenter", onEnter);
-      return () => item.removeEventListener("pointerenter", onEnter);
-    });
-
-    const cursor = cursorRef.current;
-    let cursorFrame = 0;
-    let cursorX = window.innerWidth / 2;
-    let cursorY = window.innerHeight / 2;
-    let targetX = cursorX;
-    let targetY = cursorY;
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-
-    const animateCursor = () => {
-      cursorX += (targetX - cursorX) * 0.19;
-      cursorY += (targetY - cursorY) * 0.19;
-      if (cursor) {
-        cursor.style.transform = "translate3d(" + cursorX + "px," + cursorY + "px,0) translate(-50%,-50%)";
-      }
-      if (Math.abs(targetX - cursorX) > 0.15 || Math.abs(targetY - cursorY) > 0.15) {
-        cursorFrame = window.requestAnimationFrame(animateCursor);
-      } else {
-        cursorFrame = 0;
-      }
-    };
-
-    const onPointerMove = (event: PointerEvent) => {
-      targetX = event.clientX;
-      targetY = event.clientY;
-      if (cursor && !cursorFrame) cursorFrame = window.requestAnimationFrame(animateCursor);
-
-      if (cursor) {
-        const hovered = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-cursor]");
-        cursor.dataset.mode = hovered ? "active" : "idle";
-        const label = cursor.querySelector<HTMLElement>(".cursor-label");
-        if (label) label.textContent = hovered?.dataset.cursor || "";
-      }
-    };
-
-    const onPointerDown = () => cursor?.classList.add("is-pressed");
-    const onPointerUp = () => cursor?.classList.remove("is-pressed");
-
-    if (cursor && finePointer && !reducedMotion) {
-      root.classList.add("has-custom-cursor");
-      window.addEventListener("pointermove", onPointerMove, { passive: true });
-      window.addEventListener("pointerdown", onPointerDown);
-      window.addEventListener("pointerup", onPointerUp);
-    }
-
     return () => {
       observer?.disconnect();
       window.removeEventListener("scroll", updateScroll);
       window.removeEventListener("resize", updateScroll);
       if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
-      tiltHandlers.forEach((cleanup) => cleanup());
-      distortionHandlers.forEach((cleanup) => cleanup());
-      if (cursorFrame) window.cancelAnimationFrame(cursorFrame);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("pointerup", onPointerUp);
-      root.classList.remove("motion-ready", "has-custom-cursor");
-      root.style.removeProperty("--scroll-progress");
-      root.style.removeProperty("--hero-progress");
+      hero?.removeEventListener("pointermove", onHeroPointerMove);
+      hero?.removeEventListener("pointerleave", resetHeroPointer);
+      tiltCleanups.forEach((cleanup) => cleanup());
+      root.classList.remove("motion-ready");
+      root.style.removeProperty("--page-progress");
     };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <main className="site-shell">
+    <div className="site-shell">
       <a className="skip-link" href="#main-content">Skip to content</a>
       <div className="scroll-progress" aria-hidden="true" />
 
-      <svg className="svg-defs" aria-hidden="true" focusable="false">
-        <filter id="liquid-distort" x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.035" numOctaves="2" seed="8" result="noise">
-            <animate attributeName="baseFrequency" values="0.012 0.035;0.028 0.075;0.012 0.035" dur="900ms" begin="indefinite" fill="freeze" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G">
-            <animate id="liquid-distortion-scale" attributeName="scale" values="0;20;0" dur="900ms" begin="indefinite" fill="freeze" />
-          </feDisplacementMap>
-        </filter>
-      </svg>
-
-      <div className="cursor-follower" ref={cursorRef} aria-hidden="true">
-        <span className="cursor-dot" />
-        <span className="cursor-ring"><span className="cursor-label" /></span>
-      </div>
-
       <header className="site-header">
         <div className="header-inner">
-          <a className="brand-mark" href="#top" aria-label="Muhammad Hadi, back to top" onClick={closeMenu} data-cursor="TOP">
+          <a className="brand-mark" href="#top" onClick={closeMenu} aria-label="Muhammad Hadi, back to top">
             <span className="brand-symbol">mh</span>
             <span className="brand-name">Muhammad Hadi</span>
           </a>
 
           <nav className="main-nav" aria-label="Main navigation">
             {navigation.map((item) => (
-              <a key={item.href} href={item.href} onClick={closeMenu} data-cursor="GO">{item.label}</a>
+              <a key={item.href} href={item.href} onClick={closeMenu}>{item.label}</a>
             ))}
-            <a className="nav-contact" href="mailto:mhadi.globel@gmail.com" onClick={closeMenu} data-cursor="EMAIL">
-              Let’s talk <ArrowUpRight />
+            <a className="nav-contact" href="mailto:mhadi.globel@gmail.com" onClick={closeMenu}>
+              Let’s talk <ArrowIcon />
             </a>
           </nav>
 
@@ -299,242 +245,280 @@ export function PortfolioExperience() {
           </button>
         </div>
 
-        <div id="mobile-navigation" className={"mobile-navigation" + (menuOpen ? " is-open" : "")}>
+        <nav id="mobile-navigation" className={"mobile-navigation" + (menuOpen ? " is-open" : "")} aria-label="Mobile navigation">
           {navigation.map((item) => (
             <a key={item.href} href={item.href} onClick={closeMenu}>{item.label}</a>
           ))}
-          <a href="mailto:mhadi.globel@gmail.com" onClick={closeMenu}>Let’s talk</a>
-        </div>
+          <a href="mailto:mhadi.globel@gmail.com" onClick={closeMenu}>Let’s talk <ArrowIcon /></a>
+        </nav>
       </header>
 
-      <div id="main-content">
-        <section className="hero-section" id="top" aria-labelledby="hero-title">
-          <div className="hero-grain" aria-hidden="true" />
-          <div className="hero-grid" aria-hidden="true" />
-          <div className="hero-liquid-glow hero-liquid-glow--one" aria-hidden="true" />
-          <div className="hero-liquid-glow hero-liquid-glow--two" aria-hidden="true" />
-          <InteractiveSculpture />
+      <main id="main-content">
+        <section className="hero-section" id="top" ref={heroRef} aria-labelledby="hero-title">
+          <div className="hero-background-grid" aria-hidden="true" />
+          <div className="hero-glow hero-glow--one" aria-hidden="true" />
+          <div className="hero-glow hero-glow--two" aria-hidden="true" />
 
-          <div className="hero-container page-container">
+          <div className="hero-scene" ref={sceneRef} aria-hidden="true">
+            <div className="scene-aura" />
+            <div className="scene-backplate" />
+            <div className="scene-loop scene-loop--one" />
+            <div className="scene-loop scene-loop--two" />
+            <div className="scene-core">
+              <span className="scene-core-highlight" />
+              <span className="scene-core-shadow" />
+            </div>
+            <div className="scene-ribbon scene-ribbon--one" />
+            <div className="scene-ribbon scene-ribbon--two" />
+            <div className="scene-spark scene-spark--one" />
+            <div className="scene-spark scene-spark--two" />
+            <div className="scene-spark scene-spark--three" />
+
+            <div className="scene-panel scene-panel--one">
+              <span className="scene-panel-index">01 / BUILD</span>
+              <strong>Systems with purpose</strong>
+              <span className="scene-panel-meter"><i /></span>
+            </div>
+            <div className="scene-panel scene-panel--two">
+              <span className="scene-panel-index">02 / DESIGN</span>
+              <strong>Details with intent</strong>
+              <span className="scene-panel-meter"><i /></span>
+            </div>
+            <div className="scene-panel scene-panel--three">
+              <span className="scene-panel-index">03 / SHIP</span>
+              <strong>Ideas into reality</strong>
+              <span className="scene-panel-meter"><i /></span>
+            </div>
+            <span className="scene-coordinate scene-coordinate--one">FORM / FUNCTION</span>
+            <span className="scene-coordinate scene-coordinate--two">INTERACTIVE STUDY 01</span>
+          </div>
+
+          <div className="hero-content page-container">
             <div className="hero-copy">
-              <p className="hero-kicker"><span className="kicker-dot" /> INDEPENDENT DEVELOPER <span className="kicker-slash">/</span> DIGITAL MAKER</p>
+              <p className="eyebrow hero-eyebrow"><span className="eyebrow-dot" /> INDEPENDENT DEVELOPER <i>/</i> DIGITAL MAKER</p>
               <h1 id="hero-title">
-                I build
-                <span>digital things</span>
-                <em>with a pulse.</em>
+                <span>I make digital</span>
+                <span>experiences</span>
+                <em className="gradient-text">feel alive.</em>
               </h1>
               <p className="hero-description">
-                I’m Muhammad Hadi. I turn ambitious ideas into thoughtful products, expressive interfaces and digital experiences built to last.
+                I’m Muhammad Hadi. I turn ambitious ideas into thoughtful products, expressive interfaces and experiences that stay with you.
               </p>
               <div className="hero-actions">
-                <a className="button button-primary" href="#work" data-cursor="EXPLORE">
-                  Explore the work <span className="button-arrow"><ArrowUpRight /></span>
+                <a className="button button-primary" href="#work">
+                  Explore the work <span className="button-icon"><ArrowIcon /></span>
                 </a>
-                <a className="text-link" href="mailto:mhadi.globel@gmail.com" data-cursor="EMAIL">
-                  Start a conversation <ArrowUpRight />
+                <a className="text-link" href="mailto:mhadi.globel@gmail.com">
+                  Start a conversation <ArrowIcon />
                 </a>
               </div>
             </div>
           </div>
 
-          <div className="hero-annotations" aria-hidden="true">
-            <span className="hero-annotation hero-annotation--top">FORM / FUNCTION</span>
-            <span className="hero-annotation hero-annotation--side">REAL-TIME OBJECT 01</span>
-            <span className="hero-annotation hero-annotation--bottom">BUILT TO RESPOND</span>
-          </div>
-
-          <div className="hero-bottom page-container">
-            <div className="hero-caption">
+          <div className="hero-footer page-container">
+            <div className="hero-footer-note">
               <span>Curiosity, made tangible.</span>
-              <span className="caption-rule" />
+              <i />
               <span>Independent by nature.</span>
             </div>
-            <a className="scroll-cue" href="#manifesto" data-cursor="SCROLL">
+            <a className="scroll-cue" href="#statement">
               <span>Scroll to explore</span>
-              <span className="scroll-cue-line"><i /></span>
+              <b><i /></b>
             </a>
-            <span className="hero-index">PORTFOLIO <b>/</b> 2026</span>
+            <span className="hero-index">PORTFOLIO <i>/</i> 2026</span>
           </div>
         </section>
 
-        <div className="ticker" aria-hidden="true">
+        <div className="ticker" aria-label="Areas of work">
           <div className="ticker-track">
             <span>PRODUCT THINKING</span><i>✳</i><span>INTERFACE DESIGN</span><i>✳</i><span>WEB ENGINEERING</span><i>✳</i><span>INTERACTIVE SYSTEMS</span><i>✳</i>
             <span>PRODUCT THINKING</span><i>✳</i><span>INTERFACE DESIGN</span><i>✳</i><span>WEB ENGINEERING</span><i>✳</i><span>INTERACTIVE SYSTEMS</span><i>✳</i>
           </div>
         </div>
 
-        <section className="manifesto-section page-container" id="manifesto">
-          <div className="manifesto-aside" data-reveal>
-            <p className="section-eyebrow"><span className="eyebrow-line" /> 01 / THE POINT OF THE WORK</p>
-            <span className="manifesto-index">MH — 01</span>
+        <section className="statement-section page-container" id="statement">
+          <div className="section-aside" data-reveal>
+            <p className="section-eyebrow"><span /> 01 / THE POINT OF THE WORK</p>
+            <span className="section-index">MH — 01</span>
           </div>
-          <div className="manifesto-content" data-reveal>
-            <h2>Good work has a feeling. <em>Great work has a reason.</em></h2>
-            <div className="manifesto-foot">
-              <span className="manifesto-orbit-mark" aria-hidden="true"><i /><i /><b /></span>
+          <div className="statement-content" data-reveal>
+            <h2>The best digital experiences don’t just <em className="gradient-text">work beautifully.</em> They make you feel something.</h2>
+            <div className="statement-foot">
+              <span className="statement-mark" aria-hidden="true"><i /><i /><b /></span>
               <p>The first impression matters. So do the small interactions, the structure underneath, and the moment everything comes together.</p>
             </div>
           </div>
-          <div className="manifesto-watermark" aria-hidden="true">01</div>
+          <span className="statement-watermark" aria-hidden="true">01</span>
         </section>
 
         <section className="work-section page-container" id="work" aria-labelledby="work-title">
           <div className="section-topline" data-reveal>
-            <p className="section-eyebrow"><span className="eyebrow-line" /> 02 / SELECTED WORK</p>
-            <span className="section-side-note">A growing archive / 2026</span>
+            <p className="section-eyebrow"><span /> 02 / SELECTED WORK</p>
+            <span className="section-note">A growing archive / 2026</span>
           </div>
           <div className="work-heading" data-reveal>
-            <h2 id="work-title">Made to be <em>experienced.</em></h2>
-            <p>A considered collection of products, systems and experiments. Each project will have room for its own story.</p>
+            <h2 id="work-title">Made to be <em className="gradient-text">experienced.</em></h2>
+            <p>A closer look at products and ideas shaped by curiosity, careful engineering and the freedom to make.</p>
           </div>
 
-          {projects.length > 0 ? (
-            <div className="project-grid">
-              {projects.map((project) => (
-                <a className="project-card" href={project.href} key={project.number} data-cursor="VIEW" data-tilt>
-                  <div className="project-card-visual"><span>{project.number}</span></div>
-                  <div className="project-card-info">
-                    <div><p>{project.category} / {project.year}</p><h3>{project.title}</h3></div>
-                    <ArrowUpRight />
-                    <p className="project-description">{project.description}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <div className="archive-card" data-tilt data-reveal>
-              <div className="archive-art" data-distort data-cursor="EXPLORE" aria-hidden="true">
-                <div className="archive-art-grid" />
-                <div className="archive-art-liquid archive-art-liquid--one" />
-                <div className="archive-art-liquid archive-art-liquid--two" />
-                <div className="archive-art-liquid archive-art-liquid--three" />
-                <div className="archive-art-core" />
-                <div className="archive-art-window archive-art-window--one"><span /><i /><i /><i /></div>
-                <div className="archive-art-window archive-art-window--two"><span /><b /><b /><b /></div>
-                <span className="archive-art-coordinate archive-art-coordinate--one">24° / 01</span>
-                <span className="archive-art-coordinate archive-art-coordinate--two">IDEAS IN MOTION</span>
-                <span className="archive-art-caption">WORK / INDEX</span>
-              </div>
-              <div className="archive-copy">
-                <p className="archive-status"><i /> CASE STUDIES / BEING CURATED</p>
-                <h3>The work deserves<br /><em>its own space.</em></h3>
-                <p>The archive is ready. Projects will be added with the context, decisions and details behind the build. No filler projects or borrowed case studies.</p>
-                <div className="archive-categories">
-                  <span>PRODUCTS</span><span>SYSTEMS</span><span>EXPERIMENTS</span>
+          <div className="project-grid">
+            {projects.map((project, index) => (
+              <a
+                className="project-card"
+                href={project.href}
+                key={project.number}
+                target="_blank"
+                rel="noreferrer"
+                data-tilt
+                data-reveal
+                style={{ "--card-delay": index * 100 + "ms" } as CSSProperties}
+              >
+                <div className="project-visual">
+                  <div className="project-visual-glow" />
+                  <div className="project-visual-orbit project-visual-orbit--one" />
+                  <div className="project-visual-orbit project-visual-orbit--two" />
+                  <div className="project-visual-mark">R</div>
+                  <div className="project-visual-label"><span>RANK</span><i /> <span>UR</span><i /> <span>BUSINESS</span></div>
+                  <span className="project-visual-corner">DIGITAL PRODUCT / 01</span>
                 </div>
-                <a className="text-link archive-link" href="https://github.com/mhadiglobel-bot" target="_blank" rel="noreferrer" data-cursor="OPEN">
-                  Explore the public GitHub <ArrowUpRight />
-                </a>
+                <div className="project-info">
+                  <div className="project-meta"><span>{project.number} / PRODUCT EXPERIENCE</span><span>LIVE / 2026</span></div>
+                  <h3>{project.title}</h3>
+                  <p className="project-category">{project.category}</p>
+                  <p className="project-description">{project.description}</p>
+                  <span className="project-link">{project.action} <ArrowIcon /></span>
+                </div>
+              </a>
+            ))}
+
+            <article className="archive-note" data-reveal>
+              <span className="archive-note-index">02 / THE ARCHIVE</span>
+              <div className="archive-note-art" aria-hidden="true">
+                <span className="archive-note-shape archive-note-shape--one" />
+                <span className="archive-note-shape archive-note-shape--two" />
+                <span className="archive-note-shape archive-note-shape--three" />
+                <b>+</b>
               </div>
-            </div>
-          )}
+              <div className="archive-note-copy">
+                <h3>More work is taking shape.</h3>
+                <p>New projects will find their place here as their stories are ready to be shared. No filler, no borrowed case studies.</p>
+              </div>
+            </article>
+          </div>
           <div className="work-footnote" data-reveal>
-            <span>WORK IS NEVER JUST THE SCREEN.</span>
-            <span>IT’S EVERYTHING THAT MAKES IT WORK.</span>
+            <span>SELECTED WORK / IN PROGRESS</span>
+            <span>Built with curiosity and care.</span>
           </div>
         </section>
 
-        <section className="focus-section" id="focus" aria-labelledby="focus-title">
+        <section className="capabilities-section">
           <div className="page-container">
-            <div className="focus-heading" data-reveal>
-              <p className="section-eyebrow"><span className="eyebrow-line" /> 03 / AREAS OF FOCUS</p>
-              <h2 id="focus-title">Different disciplines.<br /><em>One connected experience.</em></h2>
+            <div className="capabilities-heading" data-reveal>
+              <p className="section-eyebrow"><span /> 03 / WHAT I DO</p>
+              <h2>Good ideas deserve <em className="gradient-text">good execution.</em></h2>
             </div>
-            <div className="focus-grid">
-              {focusAreas.map((item) => (
-                <article className="focus-card" key={item.number} data-reveal data-cursor="DETAILS">
-                  <div className="focus-card-top"><span>{item.number}</span><span>{item.tags}</span></div>
-                  <div className={"focus-symbol focus-symbol--" + item.symbol} aria-hidden="true"><i /><i /><i /></div>
+            <div className="capability-grid">
+              {capabilities.map((item, index) => (
+                <article className="capability-card" key={item.number} data-reveal style={{ "--card-delay": index * 100 + "ms" } as CSSProperties}>
+                  <div className="capability-top"><span>{item.number}</span><span>{item.detail}</span></div>
+                  <div className="capability-symbol" aria-hidden="true">{item.symbol}</div>
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
-                  <span className="focus-card-line" />
+                  <span className="capability-line"><i /></span>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="approach-section" id="approach" aria-labelledby="approach-title">
-          <div className="page-container">
-            <div className="approach-layout">
-              <div className="approach-heading" data-reveal>
-                <p className="section-eyebrow"><span className="eyebrow-line" /> 04 / THE APPROACH</p>
-                <h2 id="approach-title">Good work lives in <em>the details.</em></h2>
-                <p>Not more effects. Better decisions. Every part should have a reason to be there.</p>
-                <span className="approach-stamp" aria-hidden="true">THOUGHTFUL<br />BY DESIGN</span>
-              </div>
-              <div className="approach-list">
-                {process.map((item) => (
-                  <article className="approach-item" key={item.number} data-reveal>
-                    <span className="approach-index">{item.number}</span>
-                    <div className="approach-text">
-                      <h3>{item.title}</h3>
-                      <p>{item.description}</p>
-                      <span className="approach-note">{item.note}</span>
-                    </div>
-                    <span className="approach-arrow"><ArrowUpRight /></span>
-                  </article>
-                ))}
-              </div>
+        <section className="approach-section page-container" id="approach">
+          <div className="approach-layout">
+            <div className="approach-heading" data-reveal>
+              <p className="section-eyebrow"><span /> 04 / THE WAY I THINK</p>
+              <h2>Good work lives in <em className="gradient-text">the details.</em></h2>
+              <p>Not more effects. Better decisions. Every part should have a reason to be there.</p>
+              <span className="approach-stamp" aria-hidden="true">MADE WITH<br />INTENTION</span>
+            </div>
+            <div className="approach-list">
+              {approach.map((item, index) => (
+                <article className="approach-item" key={item.number} data-reveal style={{ "--card-delay": index * 100 + "ms" } as CSSProperties}>
+                  <span className="approach-index">{item.number}</span>
+                  <div className="approach-text">
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                    <span className="approach-note">{item.note}</span>
+                  </div>
+                  <span className="approach-arrow"><ArrowIcon /></span>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="about-section page-container" id="about" aria-labelledby="about-title">
+        <section className="about-section page-container" id="about">
           <div className="about-visual" data-reveal>
-            <p className="section-eyebrow"><span className="eyebrow-line" /> 05 / A BIT MORE HUMAN</p>
-            <div className="about-emblem" aria-hidden="true">
-              <span className="about-emblem-ring about-emblem-ring--one" />
-              <span className="about-emblem-ring about-emblem-ring--two" />
-              <span className="about-emblem-core">mh</span>
-              <i />
+            <p className="section-eyebrow"><span /> 05 / A BIT MORE HUMAN</p>
+            <div className="portrait-scene" data-tilt>
+              <div className="portrait-aura" />
+              <div className="portrait-frame">
+                <img
+                  src="/hadi-portrait.webp"
+                  width="380"
+                  height="475"
+                  alt="Muhammad Hadi"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className="portrait-frame-line" />
+              </div>
+              <span className="portrait-label">MUHAMMAD HADI <i> / </i> DIGITAL MAKER</span>
+              <span className="portrait-index">MH / 2026</span>
             </div>
             <p className="about-caption">Curious by default.<br />Careful by choice.</p>
-            <span className="about-coordinate">INDEPENDENT / DIGITAL MAKER</span>
           </div>
+
           <div className="about-copy" data-reveal>
-            <h2 id="about-title">Hello, I’m <em>Muhammad Hadi.</em></h2>
+            <p className="section-eyebrow"><span /> HELLO, THERE</p>
+            <h2>Hello, I’m <em className="gradient-text">Muhammad Hadi.</em></h2>
             <p className="about-lede">I enjoy making things for the internet that feel considered, useful, and a little unexpected.</p>
             <p>I’m drawn to the intersection of design and engineering: where an idea becomes an interface, where a small interaction makes a product click, and where the details add up to something people genuinely enjoy using.</p>
             <p>I like exploring new tools, solving the tricky parts, and refining a build until the experience feels as good as the idea behind it.</p>
-            <a className="text-link about-link" href="https://github.com/mhadiglobel-bot" target="_blank" rel="noreferrer" data-cursor="OPEN">
-              Find me on GitHub <ArrowUpRight />
+            <a className="text-link about-link" href="https://github.com/mhadiglobel-bot" target="_blank" rel="noreferrer">
+              Find me on GitHub <ArrowIcon />
             </a>
           </div>
         </section>
 
-        <section className="contact-section" id="contact" aria-labelledby="contact-title">
-          <div className="contact-liquid" aria-hidden="true">
-            <span className="contact-liquid-ring contact-liquid-ring--one" />
-            <span className="contact-liquid-ring contact-liquid-ring--two" />
-            <span className="contact-liquid-core" />
+        <section className="contact-section" id="contact">
+          <div className="contact-orb" aria-hidden="true">
+            <span className="contact-orb-ring contact-orb-ring--one" />
+            <span className="contact-orb-ring contact-orb-ring--two" />
+            <span className="contact-orb-core" />
           </div>
-          <div className="page-container contact-inner" data-reveal>
-            <p className="section-eyebrow"><span className="eyebrow-line" /> 06 / HAVE SOMETHING IN MIND?</p>
-            <h2 id="contact-title">Let’s make<br /><em>it matter.</em></h2>
+          <div className="contact-inner page-container" data-reveal>
+            <p className="section-eyebrow"><span /> HAVE SOMETHING IN MIND?</p>
+            <h2>Let’s make<br /><em className="gradient-text">it matter.</em></h2>
             <p className="contact-copy">A thoughtful idea deserves a thoughtful build. Tell me what you’re imagining.</p>
-            <a className="contact-email" href="mailto:mhadi.globel@gmail.com" data-cursor="EMAIL">
-              <span>mhadi.globel@gmail.com</span>
-              <span className="contact-email-icon"><ArrowUpRight /></span>
+            <a className="contact-email" href="mailto:mhadi.globel@gmail.com">
+              mhadi.globel@gmail.com <span><ArrowIcon /></span>
             </a>
-            <span className="contact-footnote">No forms. No hoops. Just an email.</span>
+            <small className="contact-footnote">No forms. No hoops. Just an email.</small>
           </div>
         </section>
-      </div>
+      </main>
 
       <footer className="site-footer page-container">
-        <a className="brand-mark footer-brand" href="#top" aria-label="Back to top" data-cursor="TOP">
+        <a className="brand-mark footer-brand" href="#top" aria-label="Back to top">
           <span className="brand-symbol">mh</span>
           <span className="brand-name">Muhammad Hadi</span>
         </a>
         <p>Made with curiosity and care.</p>
         <div className="footer-links">
-          <a href="https://github.com/mhadiglobel-bot" target="_blank" rel="noreferrer" data-cursor="OPEN">GitHub <ArrowUpRight /></a>
-          <a href="mailto:mhadi.globel@gmail.com" data-cursor="EMAIL">Email <ArrowUpRight /></a>
+          <a href="https://github.com/mhadiglobel-bot" target="_blank" rel="noreferrer">GitHub <ArrowIcon /></a>
+          <a href="mailto:mhadi.globel@gmail.com">Email <ArrowIcon /></a>
         </div>
         <span className="footer-year">© 2026</span>
       </footer>
-    </main>
+    </div>
   );
 }
