@@ -12,100 +12,109 @@ const fragment = [
   "uniform float uActive;",
   "uniform vec4 uTrail[12];",
   "",
-  "float smoothMin(float a, float b, float k) {",
-  "  float h = max(k-abs(a-b),0.0)/k;",
+  "mat2 rot(float a) {",
+  "  float c=cos(a), s=sin(a);",
+  "  return mat2(c,-s,s,c);",
+  "}",
+  "float smin(float a, float b, float k) {",
+  "  float h=max(k-abs(a-b),0.0)/k;",
   "  return min(a,b)-h*h*k*0.25;",
   "}",
-  "float smoothMax(float a,float b,float k) {",
-  "  return -smoothMin(-a,-b,k);",
-  "}",
+  "float smax(float a,float b,float k){return -smin(-a,-b,k);}",
   "float ellipsoid(vec3 p,vec3 r) {",
   "  float k0=length(p/r);",
   "  float k1=length(p/(r*r));",
   "  return k0*(k0-1.0)/max(k1,0.0001);",
   "}",
-  "float mapField(vec3 p) {",
-  "  float t=uTime*0.16;",
-  "  vec2 mouse=(uTrail[0].xy-.5)*vec2(uResolution.x/uResolution.y,1.0)*2.3;",
-  "  vec2 delta=p.xy-mouse;",
-  "  float influence=exp(-dot(delta,delta)*0.82)*uActive;",
-  "  p.xy-=uDirection*0.45*influence;",
-  "  p.z-=0.5*influence;",
-  "  p.x+=0.15*sin(p.y*2.3+t*1.7)+0.1*sin(p.z*2.2-t);",
-  "  p.y+=0.12*cos(p.x*2.0-t*1.3);",
+  "float field(vec3 p) {",
+  "  float t=uTime*0.76;",
+  "  vec2 mouse=(uTrail[0].xy-0.5)*vec2(uResolution.x/uResolution.y,1.0)*3.15;",
+  "  float d=length(p.xy-mouse);",
+  "  float impact=uActive*exp(-d*d*0.86);",
+  "  float wave=sin(d*8.0-uTime*7.0)*exp(-d*1.4)*uActive;",
+  "  p.xy-=uDirection*(impact*0.72+wave*0.12);",
+  "  p.z-=impact*0.72;",
+  "  p.xy=rot(0.34*sin(t*0.55)+0.13*t)*p.xy;",
+  "  p.xz=rot(0.27*cos(t*0.39)+0.17*t)*p.xz;",
+  "  p.yz=rot(0.24*sin(t*0.43)-0.10*t)*p.yz;",
   "  vec3 q=p;",
-  "  float a=ellipsoid(q-vec3(-0.95+sin(t)*0.22,0.66+cos(t*0.7)*0.2,0.1),vec3(1.65,1.16,1.11));",
-  "  float b=ellipsoid(q-vec3(1.10+cos(t*0.84)*0.22,-0.34+sin(t)*0.25,0.36),vec3(1.56,1.8,1.09));",
-  "  float c=ellipsoid(q-vec3(-0.35,-1.16+sin(t*1.2)*0.2,-0.05),vec3(1.62,0.91,1.08));",
-  "  float d=ellipsoid(q-vec3(0.13,0.04+sin(t*0.66)*0.15,-0.64),vec3(1.33,1.4,0.91));",
-  "  float surface=smoothMin(smoothMin(a,b,0.8),smoothMin(c,d,0.65),0.7);",
-  "  vec3 hole=q-vec3(-0.12+sin(t)*0.19,-0.12,1.05);",
-  "  float cavity=ellipsoid(hole,vec3(0.83,0.71,0.66));",
-  "  surface=smoothMax(surface,-cavity,0.27);",
-  "  surface+=0.055*sin(q.x*4.0+q.z*3.0+t*1.4)*sin(q.y*3.9-t*1.2);",
-  "  return surface;",
+  "  q.x+=0.18*sin(q.y*2.15+t*1.25)+0.10*cos(q.z*2.4-t*.8);",
+  "  q.y+=0.17*cos(q.x*2.1-t*1.3);",
+  "  q.z+=0.13*sin(q.x*2.75+q.y*1.8+t*1.65);",
+  "  float a=ellipsoid(q-vec3(-.91+0.60*sin(t*.78), .41+.45*cos(t*.57),.16),",
+  "    vec3(1.50+.12*sin(t*.56),1.18,1.12));",
+  "  float b=ellipsoid(q-vec3(.96+.56*cos(t*.62),-.25+.55*sin(t*.92),.13),",
+  "    vec3(1.23,1.44+.21*sin(t*.53),1.08));",
+  "  float c=ellipsoid(q-vec3(-.23+.33*sin(t*.41),-1.08+.49*cos(t*.72),-.19),",
+  "    vec3(1.54, .76+.21*sin(t*.80),1.12));",
+  "  float body=smin(smin(a,b,.52),c,.54);",
+  "  vec3 cut=vec3(.19+.68*sin(t*.68), -.25+.57*cos(t*.53), .84+.15*sin(t*.64));",
+  "  float cavity=ellipsoid(q-cut,vec3(.86+.1*sin(t*.87),.74,.78));",
+  "  body=smax(body,-cavity,.25);",
+  "  float second=ellipsoid(q-vec3(-1.55*cos(t*.45),.38*sin(t*.61),.79),vec3(.36,.53,.50));",
+  "  body=smax(body,-second,.11);",
+  "  body+=.033*sin(q.x*4.6+q.z*3.0+t*1.6)*sin(q.y*4.3-t*1.1);",
+  "  return body;",
   "}",
-  "vec3 calcNormal(vec3 p) {",
-  "  vec2 e=vec2(0.007,0.);",
-  "  return normalize(vec3(",
-  "    mapField(p+e.xyy)-mapField(p-e.xyy),",
-  "    mapField(p+e.yxy)-mapField(p-e.yxy),",
-  "    mapField(p+e.yyx)-mapField(p-e.yyx)",
-  "  ));",
+  "vec3 normalAt(vec3 p) {",
+  "  float h=.008;",
+  "  vec2 e=vec2(1.,-1.)*h;",
+  "  return normalize(",
+  "    e.xyy*field(p+e.xyy)+e.yyx*field(p+e.yyx)+",
+  "    e.yxy*field(p+e.yxy)+e.xxx*field(p+e.xxx)",
+  "  );",
   "}",
-  "void main() {",
-  "  vec2 uv=(gl_FragCoord.xy-0.5*uResolution)/uResolution.y;",
-  "  vec3 ro=vec3(0.0,0.0,4.7);",
-  "  vec3 rd=normalize(vec3(uv*1.64,-2.25));",
-  "  float t=0.0;",
+  "void main(){",
+  "  vec2 uv=(gl_FragCoord.xy-.5*uResolution)/uResolution.y;",
+  "  vec3 ro=vec3(0.,0.,4.75);",
+  "  vec3 rd=normalize(vec3(uv*1.38,-2.1));",
+  "  float d=0., z=0.;",
   "  bool hit=false;",
-  "  for(int i=0;i<42;i++) {",
-  "    vec3 p=ro+rd*t;",
-  "    float d=mapField(p);",
-  "    if(d<0.011){hit=true;break;}",
-  "    t+=max(d*0.82,0.024);",
-  "    if(t>9.0)break;",
+  "  for(int i=0;i<46;i++){",
+  "    d=field(ro+rd*z);",
+  "    if(d<.012){hit=true;break;}",
+  "    z+=max(.024,d*.84);",
+  "    if(z>8.0)break;",
   "  }",
-  "  if(!hit) {",
-  "    gl_FragColor=vec4(0.0);",
-  "    return;",
-  "  }",
-  "  vec3 p=ro+rd*t;",
-  "  vec3 n=calcNormal(p);",
+  "  if(!hit){gl_FragColor=vec4(0.);return;}",
+  "  vec3 p=ro+rd*z;",
+  "  vec3 n=normalAt(p);",
   "  vec3 view=-rd;",
+  "  float t=uTime*.76;",
+  "  vec3 lightA=vec3(-1.12*cos(t*.89)+.42*sin(t*.31),",
+  "                   .96*sin(t*.72)+.2*cos(t*.35),2.08);",
+  "  vec3 lightB=vec3(1.26*sin(t*.47+.7),",
+  "                   -.76*cos(t*.55),1.42);",
+  "  vec3 L=lightA-p;",
+  "  vec3 L2=lightB-p;",
+  "  float attenuation=exp(-dot(L.xy,L.xy)*.64);",
+  "  float attenuation2=exp(-dot(L2.xy,L2.xy)*.46);",
+  "  vec3 Ln=normalize(L);",
+  "  vec3 Ln2=normalize(L2);",
+  "  float diffuse=pow(max(dot(n,Ln),0.),1.9)*attenuation;",
+  "  float secondary=pow(max(dot(n,Ln2),0.),2.3)*attenuation2;",
+  "  float spec=pow(max(dot(n,normalize(Ln+view)),0.),14.)*attenuation;",
+  "  float spec2=pow(max(dot(n,normalize(Ln2+view)),0.),19.)*attenuation2;",
+  "  float rim=pow(1.-max(dot(n,view),0.),3.6);",
+  "  vec2 mouse=(uTrail[0].xy-0.5)*vec2(uResolution.x/uResolution.y,1.0)*3.15;",
+  "  vec3 mouseLight=normalize(vec3(mouse-p.xy,1.35));",
+  "  float touch=pow(max(dot(n,normalize(mouseLight+view)),0.),11.)",
+  "        *exp(-dot(p.xy-mouse,p.xy-mouse)*.88)*uActive;",
   "",
-  "  vec2 mouse=(uTrail[0].xy-.5)*vec2(uResolution.x/uResolution.y,1.0)*2.2;",
-  "  vec3 pink=vec3(1.0,0.025,0.30);",
-  "  vec3 violet=vec3(0.48,0.07,1.0);",
-  "  vec3 glow=vec3(0.86,0.30,1.0);",
-  "",
-  "  vec3 pinkLight=normalize(vec3(-0.5,0.58,1.7));",
-  "  vec3 purpleLight=normalize(vec3(0.83,-0.52,1.25));",
-  "  vec3 followLight=normalize(vec3(mouse-p.xy,2.05));",
-  "  vec3 hPink=normalize(pinkLight+view);",
-  "  vec3 hPurple=normalize(purpleLight+view);",
-  "  vec3 hFollow=normalize(followLight+view);",
-  "",
-  "  float lamPink=pow(max(dot(n,pinkLight),0.0),1.9);",
-  "  float lamPurple=pow(max(dot(n,purpleLight),0.0),2.25);",
-  "  float specPink=pow(max(dot(n,hPink),0.0),7.0);",
-  "  float specPurple=pow(max(dot(n,hPurple),0.0),8.0);",
-  "  float specFollow=pow(max(dot(n,hFollow),0.0),4.5);",
-  "  float fresnel=pow(1.0-max(dot(n,view),0.0),3.0);",
-  "",
-  "  float pocket=exp(-dot(p.xy-mouse,p.xy-mouse)*0.38);",
-  "  float flow=0.5+0.5*sin(p.x*1.25+p.y*1.15-uTime*0.21);",
-  "  float softVein=pow(max(0.0,n.x*0.35+n.y*0.62+n.z*0.2+0.15),3.0);",
-  "  vec3 color=vec3(0.008,0.002,0.016);",
-  "  color += pink*(0.014*lamPink+0.76*pow(specPink,1.9)+0.048*fresnel);",
-  "  color += violet*(0.012*lamPurple+0.69*pow(specPurple,2.05)+0.034*fresnel);",
-  "  color += mix(pink,glow,flow)*(0.038*softVein+0.024*lamPink*lamPurple);",
-  "  color += mix(pink,violet,flow)*(0.86*pow(specFollow,1.35)*pocket*uActive);",
-  "  color += vec3(1.,0.47,0.76)*(0.26*pow(specPink,2.7)+0.13*pow(specFollow,1.5)*pocket*uActive);",
-  "  float shadow=smoothstep(-0.13,0.4,dot(n,vec3(-0.45,-0.3,0.7)));",
-  "  color*=mix(0.035,1.0,shadow*shadow);",
-  "  float vignette=1.0-smoothstep(0.55,1.75,length(uv));",
-  "  gl_FragColor=vec4(color*vignette,0.89);",
+  "  vec3 rose=vec3(1.,.022,.37);",
+  "  vec3 pink=vec3(1.,.10,.66);",
+  "  vec3 violet=vec3(.42,.025,1.);",
+  "  vec3 base=vec3(.010,.002,.018);",
+  "  float shadows=smoothstep(-.32,.55,dot(n,normalize(vec3(-.35,.5,.78))));",
+  "  vec3 color=base+rose*(.013+.044*shadows);",
+  "  color+=rose*(2.05*pow(diffuse,1.55)+.82*spec);",
+  "  color+=violet*(.20*pow(secondary,1.50)+.34*spec2+.031*rim);",
+  "  color+=pink*(.20*pow(diffuse,2.)+.15*spec);",
+  "  color+=mix(rose,violet,.35+.3*sin(t*.7))*(.55*touch);",
+  "  color*=mix(.10,1.0,shadows);",
+  "  float lens=1.0-smoothstep(.52,1.65,length(uv));",
+  "  color*=lens;",
+  "  gl_FragColor=vec4(min(color,vec3(1.)),.96);",
   "}"
 ].join("\n");
 
@@ -211,7 +220,7 @@ export default function CursorGlow() {
     const direction = { x: 0.02, y: 0.01 };
 
     const resize = () => {
-      const scale = Math.min(0.52, 900 / Math.max(window.innerWidth, window.innerHeight));
+      const scale = Math.min(0.43, 820 / Math.max(window.innerWidth, window.innerHeight));
       canvas.width = Math.max(1, Math.round(window.innerWidth * scale));
       canvas.height = Math.max(1, Math.round(window.innerHeight * scale));
       gl!.viewport(0, 0, canvas.width, canvas.height);
@@ -220,13 +229,11 @@ export default function CursorGlow() {
 
     const draw = (time: number) => {
       frame = 0;
-      if (!enabled.matches || document.hidden || !lastMove || time - lastMove > 1850) {
-        gl!.clear(gl!.COLOR_BUFFER_BIT);
-        return;
-      }
+      if (!enabled.matches || document.hidden) return;
 
+      // Reference animation morphs even while the cursor is stationary.
       frame = requestAnimationFrame(draw);
-      if (time - tick < 30) return;
+      if (time - tick < 42) return;
       tick = time;
 
       for (let i = 0; i < TRAIL_SIZE; i++) {
@@ -307,13 +314,24 @@ export default function CursorGlow() {
     };
 
     resize();
+    frame = requestAnimationFrame(draw);
     field.dataset.rendered = "fluid";
+    const visibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      } else if (!frame && enabled.matches) {
+        frame = requestAnimationFrame(draw);
+      }
+    };
+    document.addEventListener("visibilitychange", visibility);
     window.addEventListener("resize", resize);
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointermove", fallback, { passive: true });
 
     return () => {
       cancelAnimationFrame(frame);
+      document.removeEventListener("visibilitychange", visibility);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointermove", fallback);
