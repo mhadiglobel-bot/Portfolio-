@@ -6,7 +6,6 @@ export type Project = {
   category: string;
   description: string;
   href: string;
-  domain: string;
   image: string;
   tags: string[];
   year: string;
@@ -27,7 +26,6 @@ export const projects: Project[] = [
     description:
       "A browser-based audio studio for recording, trimming, vocal separation and effects — a focused workflow that keeps the sound front and centre.",
     href: "https://audixo.tiers.rest",
-    domain: "audixo.tiers.rest",
     image: "/projects/audixo.jpg",
     tags: ["Audio tool", "Web app", "Interface"],
     year: "2026",
@@ -42,7 +40,6 @@ export const projects: Project[] = [
     description:
       "A discovery platform helping local businesses and online brands get found, with search, filters and listings designed to make exploring feel effortless.",
     href: "https://urbusiness.tiers.rest",
-    domain: "urbusiness.tiers.rest",
     image: "/projects/urbusiness.jpg",
     tags: ["Directory", "Search", "SaaS"],
     year: "2026",
@@ -57,7 +54,6 @@ export const projects: Project[] = [
     description:
       "A polished storefront for jewellery, footwear and lifestyle essentials, shaped around a clear, mobile-first shopping experience.",
     href: "https://aldenrovell.com",
-    domain: "aldenrovell.com",
     image: "/projects/aldenrovell.jpg",
     tags: ["E-commerce", "Storefront", "Brand"],
     year: "2026",
@@ -72,7 +68,6 @@ export const projects: Project[] = [
     description:
       "A ground-services platform for Umrah travellers and agencies — airport transfers, intercity transport and package enquiries in one considered flow.",
     href: "https://www.mirfaqinternational.com",
-    domain: "mirfaqinternational.com",
     image: "/projects/mirfaq.jpg",
     tags: ["Travel", "Booking", "Platform"],
     year: "2026",
@@ -87,7 +82,6 @@ export const projects: Project[] = [
     description:
       "A cold-outreach automation platform that turns inboxes, leads and follow-up sequences into one visual workflow — built to feel fast, clear and effortless.",
     href: "https://genzioai.vercel.app",
-    domain: "genzioai.vercel.app",
     image: "/projects/genzioai.jpg",
     tags: ["AI SaaS", "Automation", "Product"],
     year: "2026",

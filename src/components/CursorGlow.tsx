@@ -6,35 +6,42 @@ export default function CursorGlow() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
     const el = ref.current;
     if (!el) return;
 
+    let raf = 0;
     let x = window.innerWidth / 2;
     let y = window.innerHeight / 2;
-    let cx = x;
-    let cy = y;
-    let raf = 0;
 
     const move = (event: PointerEvent) => {
       x = event.clientX;
       y = event.clientY;
-      el.style.opacity = "1";
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        el.style.transform = `translate3d(${x - 250}px, ${y - 250}px, 0)`;
+        el.style.opacity = "1";
+        raf = 0;
+      });
     };
 
-    const loop = () => {
-      cx += (x - cx) * 0.12;
-      cy += (y - cy) * 0.12;
-      el.style.transform = `translate3d(${cx - 300}px, ${cy - 300}px, 0)`;
-      raf = requestAnimationFrame(loop);
+    const hide = () => {
+      el.style.opacity = "0";
     };
 
     window.addEventListener("pointermove", move, { passive: true });
-    raf = requestAnimationFrame(loop);
+    window.addEventListener("blur", hide);
 
     return () => {
       window.removeEventListener("pointermove", move);
-      cancelAnimationFrame(raf);
+      window.removeEventListener("blur", hide);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 
@@ -42,11 +49,10 @@ export default function CursorGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-0 h-[600px] w-[600px] opacity-0 mix-blend-screen transition-opacity duration-500"
+      className="pointer-events-none fixed left-0 top-0 z-0 h-[500px] w-[500px] opacity-0 transition-[opacity,transform] duration-300 ease-out will-change-transform"
       style={{
         background:
-          "radial-gradient(circle, rgba(168,85,247,0.12) 0%, rgba(255,61,154,0.07) 35%, transparent 65%)",
-        filter: "blur(20px)",
+          "radial-gradient(circle, rgba(168,85,247,0.105) 0%, rgba(255,61,154,0.065) 34%, transparent 68%)",
       }}
     />
   );

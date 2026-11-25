@@ -8,119 +8,131 @@ export default function FluidGlow() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let width = 0;
-    let height = 0;
+    let width = 1;
+    let height = 1;
     let dpr = 1;
-    let raf = 0;
+    let timer = 0;
     let visible = true;
+    let tick = 0;
 
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = Math.max(1, Math.floor(width * dpr));
-      canvas.height = Math.max(1, Math.floor(height * dpr));
-    };
-    resize();
-
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-
-    const mouse = { x: width * 0.5, y: height * 0.5 };
-    const smooth = { x: width * 0.5, y: height * 0.5 };
-
-    const onMove = (event: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = event.clientX - rect.left;
-      mouse.y = event.clientY - rect.top;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        visible = entries[0]?.isIntersecting ?? true;
-      },
-      { threshold: 0.01 }
-    );
-    observer.observe(canvas);
+    const mouse = { x: 0.5, y: 0.5 };
+    const smooth = { x: 0.5, y: 0.5 };
 
     const blobs = [
-      { bx: 0.28, by: 0.36, r: 0.42, color: [255, 61, 154], phase: 0, speed: 0.00028 },
-      { bx: 0.72, by: 0.62, r: 0.48, color: [168, 85, 247], phase: 2.1, speed: -0.00022 },
-      { bx: 0.5, by: 0.5, r: 0.34, color: [124, 58, 237], phase: 4.3, speed: 0.00034 },
-      { bx: 0.6, by: 0.3, r: 0.26, color: [232, 121, 249], phase: 1.4, speed: -0.0003 },
+      { x: 0.26, y: 0.36, radius: 0.44, color: "255,61,154", phase: 0, speed: 0.38 },
+      { x: 0.73, y: 0.62, radius: 0.48, color: "168,85,247", phase: 2.1, speed: -0.3 },
+      { x: 0.5, y: 0.48, radius: 0.34, color: "124,58,237", phase: 4.3, speed: 0.24 },
     ];
 
-    let t = 0;
     const draw = () => {
-      raf = requestAnimationFrame(draw);
-      if (!visible) return;
-
-      t += 1;
-      smooth.x += (mouse.x - smooth.x) * 0.05;
-      smooth.y += (mouse.y - smooth.y) * 0.05;
+      tick += coarse ? 0.018 : 0.026;
+      smooth.x += (mouse.x - smooth.x) * 0.075;
+      smooth.y += (mouse.y - smooth.y) * 0.075;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "#07060b";
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.globalCompositeOperation = "lighter";
+      ctx.clearRect(0, 0, width, height);
+      ctx.globalCompositeOperation = "screen";
 
       blobs.forEach((blob) => {
-        const driftX = Math.sin(t * blob.speed + blob.phase) * 0.12;
-        const driftY = Math.cos(t * blob.speed * 1.3 + blob.phase) * 0.1;
-        const cursorPullX = (smooth.x / width - 0.5) * 0.18;
-        const cursorPullY = (smooth.y / height - 0.5) * 0.18;
-
-        const x = (blob.bx + driftX + cursorPullX) * width;
-        const y = (blob.by + driftY + cursorPullY) * height;
-        const radius = blob.r * Math.min(width, height);
-
+        const driftX = Math.sin(tick * blob.speed + blob.phase) * 0.055;
+        const driftY = Math.cos(tick * blob.speed * 1.25 + blob.phase) * 0.05;
+        const cursorX = coarse ? 0 : (smooth.x - 0.5) * 0.13;
+        const cursorY = coarse ? 0 : (smooth.y - 0.5) * 0.13;
+        const x = (blob.x + driftX + cursorX) * width;
+        const y = (blob.y + driftY + cursorY) * height;
+        const radius = blob.radius * Math.min(width, height);
         const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        gradient.addColorStop(0, `rgba(${blob.color.join(",")}, 0.22)`);
-        gradient.addColorStop(0.45, `rgba(${blob.color.join(",")}, 0.08)`);
-        gradient.addColorStop(1, `rgba(${blob.color.join(",")}, 0)`);
-
+        gradient.addColorStop(0, `rgba(${blob.color}, 0.2)`);
+        gradient.addColorStop(0.42, `rgba(${blob.color}, 0.075)`);
+        gradient.addColorStop(1, `rgba(${blob.color}, 0)`);
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // cursor disturbance
-      const cursorRadius = Math.min(width, height) * 0.34;
-      const cursorGradient = ctx.createRadialGradient(
-        smooth.x,
-        smooth.y,
-        0,
-        smooth.x,
-        smooth.y,
-        cursorRadius
-      );
-      cursorGradient.addColorStop(0, "rgba(255, 61, 154, 0.16)");
-      cursorGradient.addColorStop(0.35, "rgba(168, 85, 247, 0.1)");
-      cursorGradient.addColorStop(1, "rgba(124, 58, 237, 0)");
-      ctx.fillStyle = cursorGradient;
-      ctx.beginPath();
-      ctx.arc(smooth.x, smooth.y, cursorRadius, 0, Math.PI * 2);
-      ctx.fill();
+      if (!coarse) {
+        const x = smooth.x * width;
+        const y = smooth.y * height;
+        const radius = Math.min(width, height) * 0.27;
+        const cursorGradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        cursorGradient.addColorStop(0, "rgba(255,61,154,0.13)");
+        cursorGradient.addColorStop(0.4, "rgba(168,85,247,0.085)");
+        cursorGradient.addColorStop(1, "rgba(124,58,237,0)");
+        ctx.fillStyle = cursorGradient;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
       ctx.globalCompositeOperation = "source-over";
     };
 
-    raf = requestAnimationFrame(draw);
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1 : 1.25);
+      width = Math.max(1, canvas.clientWidth);
+      height = Math.max(1, canvas.clientHeight);
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
+      draw();
+    };
+
+    const start = () => {
+      if (!timer && visible && !document.hidden) {
+        draw();
+        timer = window.setInterval(draw, coarse ? 50 : 34);
+      }
+    };
+
+    const stop = () => {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = 0;
+      }
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      mouse.y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    };
+
+    const onVisibilityChange = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        visible = entries[0]?.isIntersecting ?? true;
+        if (visible) start();
+        else stop();
+      },
+      { threshold: 0.01 }
+    );
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+    observer.observe(canvas);
+    if (!coarse) window.addEventListener("pointermove", onPointerMove, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    resize();
+    start();
 
     return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
+      stop();
       observer.disconnect();
-      window.removeEventListener("pointermove", onMove);
+      resizeObserver.disconnect();
+      if (!coarse) window.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
 
@@ -128,7 +140,7 @@ export default function FluidGlow() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 h-full w-full"
+      className="hero-fluid-canvas pointer-events-none absolute inset-0 h-full w-full"
     />
   );
 }

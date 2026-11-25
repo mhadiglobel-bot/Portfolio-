@@ -69,30 +69,15 @@ export default function ProjectCard({ project, flipped = false }: ProjectCardPro
               flipped ? "lg:order-2" : ""
             }`}
           >
-            <div className="relative z-10 flex items-center gap-2 border-b border-white/[0.08] bg-[#0d0917]/85 px-3 py-2.5 backdrop-blur-xl sm:px-4">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-              </span>
-              <span className="mx-2 flex-1 truncate rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-center font-mono text-[8px] tracking-[0.08em] text-white/35">
-                {project.domain}
-              </span>
-              <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-400/15 bg-emerald-400/[0.06] px-2 py-1 font-mono text-[7px] uppercase tracking-[0.18em] text-emerald-300/70">
-                <span className="h-1 w-1 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
-                Live
-              </span>
-            </div>
-
-            <div className="relative aspect-[16/10] overflow-hidden">
-              <div data-project-media className="absolute -inset-y-[6%] inset-x-0">
+            <div className="relative aspect-[16/10] overflow-hidden bg-[#09070e]">
+              <div data-project-media className="absolute inset-0">
                 <div data-project-image className="relative h-full w-full">
                   <Image
                     src={project.image}
                     alt={`${project.name} — ${project.tagline} homepage`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 60vw"
-                    className="object-cover object-left-top transition-[transform,filter] duration-[900ms] ease-out group-hover:scale-[1.035] group-hover:brightness-[1.06]"
+                    className="object-contain object-top transition-transform duration-[900ms] ease-out group-hover:scale-[1.025]"
                   />
                 </div>
               </div>

@@ -3,177 +3,134 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-const NAME = "MUHAMMAD HADI";
-
 export default function IntroLoader() {
   const [active, setActive] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
-  const topCurtainRef = useRef<HTMLDivElement>(null);
-  const bottomCurtainRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const countRef = useRef<HTMLSpanElement>(null);
+  const leftCurtainRef = useRef<HTMLDivElement>(null);
+  const rightCurtainRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const kickerRef = useRef<HTMLParagraphElement>(null);
+  const arrowRef = useRef<HTMLButtonElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
-  const finishedRef = useRef(false);
+  const enterRef = useRef<() => void>(() => {});
+  const exitingRef = useRef(false);
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
-
-    if (document.documentElement.getAttribute("data-intro") !== "active") {
+    if (!root || document.documentElement.getAttribute("data-intro") !== "active") {
       setActive(false);
       return;
     }
 
-    finishedRef.current = false;
+    exitingRef.current = false;
     window.scrollTo(0, 0);
 
-    const finish = () => {
-      if (finishedRef.current) return;
-      finishedRef.current = true;
-
+    const complete = () => {
       document.documentElement.setAttribute("data-intro", "done");
-      try {
-        window.sessionStorage.setItem("mh:intro", "played");
-      } catch {
-        /* storage can be unavailable in private mode */
-      }
-
       const w = window as Window & { __mhIntro?: boolean };
       delete w.__mhIntro;
-
-      timelineRef.current?.kill();
       timelineRef.current = null;
       setActive(false);
       window.dispatchEvent(new Event("portfolio:intro-done"));
     };
 
-    const chars = root.querySelectorAll<HTMLElement>("[data-intro-char]");
-    const counter = { value: 0 };
+    const enter = () => {
+      if (exitingRef.current) return;
+      exitingRef.current = true;
+      timelineRef.current?.kill();
 
-    const tl = gsap.timeline({
-      defaults: { ease: "power3.out" },
-      onComplete: finish,
-    });
-    timelineRef.current = tl;
-
-    tl.set(chars, { yPercent: 118, rotate: 4, opacity: 1 })
-      .fromTo(
-        "[data-intro-chrome]",
-        { autoAlpha: 0, y: -10 },
-        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 },
-        0
-      )
-      .to(
-        counter,
-        {
-          value: 100,
-          duration: 1.4,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            if (countRef.current) {
-              countRef.current.textContent = String(Math.round(counter.value)).padStart(3, "0");
-            }
+      const exit = gsap.timeline({ onComplete: complete });
+      timelineRef.current = exit;
+      exit
+        .to(
+          [titleRef.current, kickerRef.current, arrowRef.current],
+          {
+            autoAlpha: 0,
+            y: -26,
+            scale: 0.985,
+            duration: 0.42,
+            stagger: 0.035,
+            ease: "power2.in",
           },
-        },
-        0
+          0
+        )
+        .to(
+          leftCurtainRef.current,
+          { xPercent: -102, duration: 1.05, ease: "expo.inOut" },
+          0.18
+        )
+        .to(
+          rightCurtainRef.current,
+          { xPercent: 102, duration: 1.05, ease: "expo.inOut" },
+          0.18
+        )
+        .to(root, { autoAlpha: 0, duration: 0.16, ease: "none" }, 1.04);
+    };
+
+    enterRef.current = enter;
+
+    const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+    timelineRef.current = intro;
+    intro
+      .fromTo(
+        kickerRef.current,
+        { autoAlpha: 0, y: 16 },
+        { autoAlpha: 1, y: 0, duration: 0.65, delay: 0.12 }
       )
       .fromTo(
-        "[data-intro-bar]",
-        { scaleX: 0 },
-        { scaleX: 1, duration: 1.4, ease: "power2.inOut" },
-        0
-      )
-      .to(chars, {
-        yPercent: 0,
-        rotate: 0,
-        duration: 0.9,
-        stagger: 0.03,
-        ease: "expo.out",
-      }, 0.4)
-      .fromTo(
-        "[data-intro-meta]",
-        { autoAlpha: 0, y: 14 },
-        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08 },
-        0.95
+        titleRef.current,
+        { autoAlpha: 0, y: 54, scale: 0.965 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 1.05, ease: "expo.out" },
+        "-=0.18"
       )
       .fromTo(
-        "[data-intro-arrow]",
-        { autoAlpha: 0, y: 8 },
-        { autoAlpha: 1, y: 0, duration: 0.6 },
-        1.1
-      )
-      .to(chars, {
-        yPercent: -118,
-        rotate: -4,
-        duration: 0.55,
-        stagger: 0.016,
-        ease: "power3.in",
-      }, 2.6)
-      .to(
-        "[data-intro-meta], [data-intro-arrow]",
-        { autoAlpha: 0, y: -12, duration: 0.35 },
-        2.6
-      )
-      .to(
-        "[data-intro-chrome]",
-        { autoAlpha: 0, duration: 0.35 },
-        2.65
-      )
-      .to(
-        contentRef.current,
-        { autoAlpha: 0, y: -40, duration: 0.45, ease: "power2.in" },
-        2.7
-      )
-      .to(
-        topCurtainRef.current,
-        { yPercent: -100, duration: 0.9, ease: "expo.inOut" },
-        2.9
-      )
-      .to(
-        bottomCurtainRef.current,
-        { yPercent: 100, duration: 0.9, ease: "expo.inOut" },
-        2.9
+        arrowRef.current,
+        { autoAlpha: 0, y: 12 },
+        { autoAlpha: 1, y: 0, duration: 0.55 },
+        "-=0.35"
       );
 
-    const safety = window.setTimeout(finish, 7000);
+    let touchStartY = 0;
+    const onWheel = (event: WheelEvent) => {
+      if (event.deltaY > 0) {
+        event.preventDefault();
+        enter();
+      }
+    };
+    const onTouchStart = (event: TouchEvent) => {
+      touchStartY = event.touches[0]?.clientY ?? 0;
+    };
+    const onTouchEnd = (event: TouchEvent) => {
+      const endY = event.changedTouches[0]?.clientY ?? touchStartY;
+      if (touchStartY - endY > 28) enter();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "ArrowDown" ||
+        event.key === "PageDown" ||
+        event.key === "Enter" ||
+        event.code === "Space"
+      ) {
+        event.preventDefault();
+        enter();
+      }
+    };
 
-    const accelerate = () => {
-      const current = timelineRef.current;
-      if (current && !finishedRef.current) {
-        current.timeScale(2.5);
-      }
-    };
-    const onWheel = () => accelerate();
-    const onPointer = () => accelerate();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
-        accelerate();
-      }
-    };
-    window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("pointerdown", onPointer);
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      window.clearTimeout(safety);
       window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("pointerdown", onPointer);
-      window.removeEventListener("keydown", onKey);
-      tl.kill();
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("keydown", onKeyDown);
+      timelineRef.current?.kill();
       timelineRef.current = null;
+      enterRef.current = () => {};
     };
   }, []);
-
-  const skip = () => {
-    const tl = timelineRef.current;
-    if (tl) {
-      tl.timeScale(8);
-    } else {
-      document.documentElement.setAttribute("data-intro", "done");
-      window.dispatchEvent(new Event("portfolio:intro-done"));
-      setActive(false);
-    }
-  };
 
   if (!active) return null;
 
@@ -183,157 +140,43 @@ export default function IntroLoader() {
       data-intro-loader
       role="dialog"
       aria-modal="true"
-      aria-label="Loading Muhammad Hadi's portfolio"
-      className="fixed inset-0 z-[200] overflow-hidden text-white"
+      aria-label="Muhammad Hadi portfolio introduction"
+      className="intro-screen fixed inset-0 z-[200] overflow-hidden text-white"
     >
-      <div
-        ref={topCurtainRef}
-        className="absolute inset-x-0 top-0 h-1/2 bg-[#050409]"
-        aria-hidden="true"
-      >
-        <div className="intro-grid absolute inset-0 opacity-50" />
-        <div className="absolute -left-40 top-0 h-[420px] w-[420px] rounded-full bg-purple/15 blur-[140px]" />
+      <div ref={leftCurtainRef} className="intro-curtain intro-curtain--left" aria-hidden="true">
+        <div className="intro-grid absolute inset-0 opacity-45" />
+        <div className="intro-curtain-glow intro-curtain-glow--left" />
       </div>
-      <div
-        ref={bottomCurtainRef}
-        className="absolute inset-x-0 bottom-0 h-1/2 bg-[#050409]"
-        aria-hidden="true"
-      >
-        <div className="intro-grid absolute inset-0 opacity-50" />
-        <div className="absolute -right-32 bottom-0 h-[420px] w-[420px] rounded-full bg-pink/12 blur-[140px]" />
+      <div ref={rightCurtainRef} className="intro-curtain intro-curtain--right" aria-hidden="true">
+        <div className="intro-grid absolute inset-0 opacity-45" />
+        <div className="intro-curtain-glow intro-curtain-glow--right" />
       </div>
 
-      <div
-        ref={contentRef}
-        className="relative z-10 flex h-full flex-col px-5 py-5 sm:px-8 sm:py-7 md:px-12 md:py-9"
-      >
-        <div
-          data-intro-chrome
-          className="flex shrink-0 items-center justify-between gap-4"
+      <div className="intro-content absolute inset-0 z-10 flex flex-col items-center justify-center px-5 text-center">
+        <p
+          ref={kickerRef}
+          className="intro-kicker mb-7 font-mono text-[8px] uppercase tracking-[0.34em] text-white/40 sm:text-[10px]"
         >
-          <div className="flex items-center gap-3">
-            <span className="font-display grid h-8 w-8 place-items-center rounded-lg border border-white/15 bg-gradient-to-br from-pink/25 to-purple/20 text-[11px] font-bold tracking-tight text-white shadow-[0_0_28px_-8px_rgba(255,61,154,0.8)]">
-              mh
-            </span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.32em] text-white/35 sm:text-[9px]">
-              Portfolio / 2026
-            </span>
-          </div>
+          Independent developer <span className="px-2 text-pink/70">/</span> Product engineer
+        </p>
 
-          <span className="hidden items-center gap-2 font-mono text-[8px] uppercase tracking-[0.32em] text-white/25 sm:flex">
-            <span className="h-1 w-1 rounded-full bg-pink intro-blink" />
-            Loading experience
+        <h1 ref={titleRef} aria-label="Muhammad Hadi" className="intro-title font-display">
+          <span className="intro-title__word">MUHAMMAD</span>
+          <span className="intro-title__word intro-title__word--accent">HADI</span>
+        </h1>
+
+        <button
+          ref={arrowRef}
+          type="button"
+          onClick={() => enterRef.current()}
+          aria-label="Enter the portfolio"
+          className="intro-enter mt-9 flex flex-col items-center gap-3"
+        >
+          <span className="intro-enter-label font-mono text-[8px] uppercase tracking-[0.3em] text-white/35">
+            Scroll to enter
           </span>
-
-          <button
-            type="button"
-            onClick={skip}
-            className="group flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.035] px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.24em] text-white/45 transition-colors hover:border-pink/40 hover:text-white sm:px-4 sm:text-[9px]"
-          >
-            Skip intro
-            <span
-              aria-hidden="true"
-              className="transition-transform duration-300 group-hover:rotate-45"
-            >
-              ↗
-            </span>
-          </button>
-        </div>
-
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center py-10 text-center">
-          <div
-            data-intro-meta
-            className="intro-meta flex items-center gap-3 font-mono text-[8px] uppercase tracking-[0.34em] text-white/35 sm:text-[9px]"
-          >
-            <span className="h-px w-6 bg-white/20 sm:w-10" />
-            Independent developer
-            <span className="text-pink">/</span>
-            <span className="hidden sm:inline">Product engineer</span>
-            <span className="h-px w-6 bg-white/20 sm:hidden" />
-          </div>
-
-          <h1
-            aria-label="Muhammad Hadi"
-            className="font-display mt-5 flex whitespace-nowrap text-[clamp(2.05rem,8.6vw,7.6rem)] font-semibold leading-none tracking-[-0.045em] text-white sm:mt-7"
-          >
-            {NAME.split("").map((char, index) => (
-              <span
-                key={`${char}-${index}`}
-                aria-hidden="true"
-                className="inline-block overflow-hidden align-bottom"
-              >
-                <span
-                  data-intro-char
-                  className="intro-name-char inline-block will-change-transform"
-                >
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              </span>
-            ))}
-          </h1>
-
-          <div
-            data-intro-meta
-            data-intro-arrow
-            className="intro-meta mt-6 flex flex-col items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-white/40"
-          >
-            <span>Scroll to enter</span>
-            <span className="intro-arrow text-lg leading-none text-pink">↓</span>
-          </div>
-
-          <div
-            data-intro-meta
-            className="intro-meta mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 font-mono text-[8px] uppercase tracking-[0.26em] text-white/30 sm:mt-7 sm:text-[9px]"
-          >
-            <span>Design engineering</span>
-            <span className="h-1 w-1 rounded-full bg-white/20" />
-            <span>Interaction systems</span>
-            <span className="h-1 w-1 rounded-full bg-white/20" />
-            <span className="text-white/45">Five live products</span>
-          </div>
-        </div>
-
-        <div data-intro-chrome className="shrink-0">
-          <div className="flex items-end justify-between gap-6">
-            <div className="hidden space-y-1.5 font-mono text-[8px] uppercase tracking-[0.2em] text-white/30 sm:block sm:text-[9px]">
-              <p className="flex items-center gap-2">
-                <span className="text-pink/70">&gt;</span>
-                <span className="text-white/25">init</span>
-                <span>portfolio_2026</span>
-                <span className="text-emerald-400/80">✓</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-pink/70">&gt;</span>
-                <span className="text-white/25">compile</span>
-                <span>motion / webgl / type</span>
-                <span className="text-emerald-400/80">✓</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-pink/70">&gt;</span>
-                <span className="text-white/25">status</span>
-                <span>ready</span>
-                <span className="text-pink/80">•</span>
-              </p>
-            </div>
-
-            <div className="ml-auto text-right">
-              <div className="font-mono text-[8px] uppercase tracking-[0.28em] text-white/30 sm:text-[9px]">
-                Loading
-              </div>
-              <div className="font-display mt-1 text-2xl font-semibold leading-none tracking-tight text-white/85 sm:text-3xl">
-                <span ref={countRef}>000</span>
-                <span className="ml-0.5 text-[0.55em] font-normal text-white/25">%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 h-px w-full bg-white/10">
-            <div
-              data-intro-bar
-              className="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-pink via-purple to-violet shadow-[0_0_18px_rgba(255,61,154,0.8)]"
-            />
-          </div>
-        </div>
+          <span className="intro-arrow text-2xl leading-none text-pink" aria-hidden="true">↓</span>
+        </button>
       </div>
     </div>
   );

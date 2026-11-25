@@ -10,12 +10,13 @@ export default function SmoothScroll() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 0.9,
       smoothWheel: true,
-      wheelMultiplier: 0.95,
-      touchMultiplier: 1.15,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.05,
     });
 
     if (document.documentElement.getAttribute("data-intro") === "active") {
@@ -35,19 +36,18 @@ export default function SmoothScroll() {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
 
     const ctx = gsap.context(() => {
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(
           el,
-          { y: 36, autoAlpha: 0 },
+          { y: 26, autoAlpha: 0 },
           {
             y: 0,
             autoAlpha: 1,
-            duration: 0.9,
+            duration: 0.78,
             ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 88%", once: true },
+            scrollTrigger: { trigger: el, start: "top 89%", once: true },
           }
         );
       });
@@ -55,14 +55,14 @@ export default function SmoothScroll() {
       gsap.utils.toArray<HTMLElement>("[data-reveal-stagger]").forEach((parent) => {
         gsap.fromTo(
           Array.from(parent.children),
-          { y: 28, autoAlpha: 0 },
+          { y: 22, autoAlpha: 0 },
           {
             y: 0,
             autoAlpha: 1,
-            duration: 0.8,
-            stagger: 0.08,
+            duration: 0.72,
+            stagger: 0.06,
             ease: "power3.out",
-            scrollTrigger: { trigger: parent, start: "top 88%", once: true },
+            scrollTrigger: { trigger: parent, start: "top 89%", once: true },
           }
         );
       });
@@ -106,9 +106,9 @@ export default function SmoothScroll() {
       gsap.utils.toArray<HTMLElement>("[data-media-parallax]").forEach((el) => {
         gsap.fromTo(
           el,
-          { yPercent: -4 },
+          { yPercent: -3 },
           {
-            yPercent: 4,
+            yPercent: 3,
             ease: "none",
             scrollTrigger: {
               trigger: el.closest("a") ?? el,
@@ -145,9 +145,9 @@ export default function SmoothScroll() {
         if (media) {
           gsap.fromTo(
             media,
-            { yPercent: -4 },
+            { yPercent: -2 },
             {
-              yPercent: 4,
+              yPercent: 2,
               ease: "none",
               scrollTrigger: {
                 trigger: card,
@@ -162,7 +162,7 @@ export default function SmoothScroll() {
         if (image) {
           gsap.fromTo(
             image,
-            { scale: 1.06 },
+            { scale: 1.025 },
             {
               scale: 1,
               ease: "none",
@@ -177,45 +177,33 @@ export default function SmoothScroll() {
         }
       });
 
-      // 3D scene transitions for each section
       gsap.utils.toArray<HTMLElement>("section[id]").forEach((section) => {
         if (section.id === "top") return;
         gsap.fromTo(
           section,
+          { y: 24, autoAlpha: 0.92 },
           {
-            opacity: 0.55,
-            y: 60,
-            rotateX: 5,
-            scale: 0.985,
-            transformPerspective: 1300,
-            transformOrigin: "50% 100%",
-          },
-          {
-            opacity: 1,
             y: 0,
-            rotateX: 0,
-            scale: 1,
-            duration: 1.15,
+            autoAlpha: 1,
+            duration: 0.78,
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
-              start: "top 86%",
+              start: "top 90%",
               once: true,
             },
           }
         );
       });
 
-      // 3D tilt for cards marked .tilt-card
-      const tiltCards = gsap.utils.toArray<HTMLElement>(".tilt-card");
-      tiltCards.forEach((card) => {
+      gsap.utils.toArray<HTMLElement>(".tilt-card").forEach((card) => {
         const onMove = (event: PointerEvent) => {
           if (event.pointerType !== "mouse") return;
           const rect = card.getBoundingClientRect();
           const x = (event.clientX - rect.left) / rect.width - 0.5;
           const y = (event.clientY - rect.top) / rect.height - 0.5;
-          card.style.setProperty("--rx", `${(-y * 6).toFixed(2)}deg`);
-          card.style.setProperty("--ry", `${(x * 7).toFixed(2)}deg`);
+          card.style.setProperty("--rx", `${(-y * 4).toFixed(2)}deg`);
+          card.style.setProperty("--ry", `${(x * 5).toFixed(2)}deg`);
         };
         const onLeave = () => {
           card.style.setProperty("--rx", "0deg");
@@ -225,7 +213,6 @@ export default function SmoothScroll() {
         card.addEventListener("pointerleave", onLeave);
       });
     });
-
 
     const onClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;
