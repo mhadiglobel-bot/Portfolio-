@@ -12,11 +12,25 @@ export default function SmoothScroll() {
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
 
+    const reel = document.getElementById("work");
+    let previousWheel = 0;
     const lenis = new Lenis({
       duration: 0.9,
       smoothWheel: true,
       wheelMultiplier: 0.9,
       touchMultiplier: 1.05,
+      virtualScroll: (input) => {
+        if (input.event.type !== "wheel" || !reel?.dataset.pinned) return true;
+        const bounds = reel.getBoundingClientRect();
+        if (bounds.top <= 32 && bounds.bottom >= innerHeight - 32) {
+          const time = performance.now();
+          const elapsed = Math.max(8, Math.min(110, time - previousWheel));
+          const limit = innerHeight * elapsed / 650;
+          input.deltaY = Math.sign(input.deltaY) * Math.min(Math.abs(input.deltaY), limit);
+          previousWheel = time;
+        }
+        return true;
+      },
     });
 
     if (document.documentElement.getAttribute("data-intro") === "active") {

@@ -1,3 +1,4 @@
+import RollingText from "./RollingText";
 import SectionLabel from "./SectionLabel";
 
 const steps = [
@@ -55,7 +56,7 @@ export default function Approach() {
                 </span>
                 <div>
                   <h3 className="font-display text-xl font-medium tracking-tight text-white sm:text-2xl">
-                    {step.title}
+                    <RollingText>{step.title}</RollingText>
                   </h3>
                   <p className="mt-3 max-w-md text-sm leading-7 text-white/45">
                     {step.text}
