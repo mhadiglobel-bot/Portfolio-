@@ -7,18 +7,96 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const media = gsap.matchMedia();
+
     media.add("(prefers-reduced-motion: no-preference)", () => {
-      const camera = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+      const section = root.current;
+      const stage = section?.querySelector<HTMLElement>(".signature-stage");
+      const seal = section?.querySelector<HTMLElement>(".signature-seal");
+      const art = section?.querySelector<HTMLElement>(".signature-art");
+      const sealImage = seal?.querySelector<HTMLImageElement>("img");
+      const type = section?.querySelector<HTMLElement>(".signature-type");
+      const orbits = section?.querySelector<HTMLElement>(".signature-orbits");
+
+      if (!section || !stage || !seal || !art || !sealImage || !type || !orbits) return;
+
+      const coverScale = () => {
+        const rect = seal.getBoundingClientRect();
+        if (!rect.width || !rect.height) return 3;
+        return Math.max(window.innerWidth / seal.offsetWidth, window.innerHeight / seal.offsetHeight) * 1.16;
+      };
+
+      const centerX = () => {
+        const rect = art.getBoundingClientRect();
+        return window.innerWidth / 2 - (rect.left + rect.width / 2);
+      };
+
+      const centerY = () => {
+        const rect = art.getBoundingClientRect();
+        return window.innerHeight / 2 - (rect.top + rect.height / 2);
+      };
+
+      const transition = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => "+=" + Math.round(window.innerHeight * 1.12),
+          pin: stage,
+          pinSpacing: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
       });
-      camera.to(".signature-seal", { rotateY: -32, rotateZ: 16, scale: 1.32, yPercent: 14 }, 0)
-        .to(".signature-type", { yPercent: -20 }, 0)
-        .to(".signature-orbits", { rotation: -38, scale: 1.3 }, 0);
+
+      transition
+        .to(type, {
+          yPercent: -22,
+          autoAlpha: 0,
+          filter: "blur(14px)",
+          ease: "none",
+          duration: 0.38,
+        }, 0)
+        .to(orbits, {
+          rotation: 48,
+          scale: 1.45,
+          autoAlpha: 0,
+          ease: "none",
+          duration: 0.68,
+        }, 0)
+        .to(seal, {
+          x: centerX,
+          y: centerY,
+          scale: coverScale,
+          rotateY: 0,
+          rotateZ: 0,
+          borderRadius: "0%",
+          filter: "blur(0px)",
+          boxShadow: "0 0 120px rgba(255, 61, 154, 0.34)",
+          ease: "none",
+          duration: 0.82,
+        }, 0)
+        .to(sealImage, {
+          borderRadius: "0%",
+          ease: "none",
+          duration: 0.82,
+        }, 0)
+        .to(seal, {
+          scale: () => coverScale() * 1.07,
+          filter: "blur(30px)",
+          autoAlpha: 0,
+          ease: "none",
+          duration: 0.18,
+        }, 0.82);
+
+      const refresh = () => ScrollTrigger.refresh();
+      window.addEventListener("portfolio:intro-done", refresh);
+      return () => window.removeEventListener("portfolio:intro-done", refresh);
     }, root);
+
     return () => media.revert();
   }, []);
 

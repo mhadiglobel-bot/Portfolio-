@@ -5,6 +5,7 @@ export default function About() {
     <section id="about" className="container-x profile-spread">
       <figure className="profile-figure" data-reveal>
         <div className="profile-photo">
+          <span className="profile-photo__index" aria-hidden="true">MH / 2026</span>
           <Image src="/hadi-portrait.webp" alt="Muhammad Hadi" width={640} height={800} sizes="(max-width: 700px) 85vw, 32vw" />
         </div>
         <figcaption>Muhammad Hadi <span>Developer</span></figcaption>

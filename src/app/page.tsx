@@ -16,8 +16,8 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
-        <Marquee />
         <Work />
+        <Marquee />
         <About />
         <Statement />
         <Capabilities />
