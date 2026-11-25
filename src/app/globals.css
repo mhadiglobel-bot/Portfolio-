@@ -630,7 +630,7 @@ html[data-intro="active"] body {
 
 .intro-screen {
   isolation: isolate;
-  background: #050409;
+  background: transparent;
 }
 
 .intro-curtain {
