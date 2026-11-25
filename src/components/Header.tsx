@@ -32,7 +32,7 @@ export default function Header() {
       <div className="container-x">
         <div
           className={clsx(
-            "mt-3 flex items-center justify-between rounded-full px-3 py-2.5 transition-all duration-500 sm:px-4",
+            "site-header-shell mt-3 flex items-center justify-between rounded-full px-3 py-2.5 transition-all duration-500 sm:px-4",
             scrolled ? "glass-strong" : "border border-transparent"
           )}
         >

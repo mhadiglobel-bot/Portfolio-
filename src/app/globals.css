@@ -951,3 +951,25 @@ html[data-intro="active"] body {
     stroke-dashoffset: 0 !important;
   }
 }
+
+
+/* Reveal the header and page together after the intro curtains part. */
+#main-content {
+  opacity: 1;
+  transition: opacity 0.82s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-intro="active"] #main-content {
+  opacity: 0;
+}
+
+.site-header-shell {
+  transition:
+    opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-intro="active"] .site-header-shell {
+  opacity: 0;
+  transform: translate3d(0, -12px, 0);
+}
