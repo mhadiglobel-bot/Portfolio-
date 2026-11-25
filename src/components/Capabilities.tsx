@@ -1,3 +1,4 @@
+import RollingText from "./RollingText";
 import SectionLabel from "./SectionLabel";
 
 const capabilities = [
@@ -113,7 +114,7 @@ export default function Capabilities() {
                   {capability.kicker}
                 </p>
                 <h3 className="font-display mt-2 text-2xl font-medium tracking-tight text-white">
-                  {capability.title}
+                  <RollingText>{capability.title}</RollingText>
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-white/45">{capability.text}</p>
               </div>

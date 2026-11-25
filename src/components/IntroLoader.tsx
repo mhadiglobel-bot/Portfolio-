@@ -20,6 +20,18 @@ export default function IntroLoader() {
       return;
     }
 
+    const fit = () => {
+      const title = titleRef.current;
+      if (!title) return;
+      const portrait = matchMedia("(max-width: 800px) and (orientation: portrait)").matches;
+      const area = root.getBoundingClientRect();
+      root.style.setProperty("--name-width", String((portrait ? area.height * .80 : area.width * .946) / title.offsetWidth));
+      root.style.setProperty("--name-height", String((portrait ? area.width * .60 : Math.min(area.height * .47, area.width * .24)) / title.offsetHeight));
+    };
+    const observer = new ResizeObserver(fit);
+    observer.observe(root);
+    if (titleRef.current) observer.observe(titleRef.current);
+    fit();
     exitingRef.current = false;
     window.scrollTo(0, 0);
     arrowRef.current?.focus({ preventScroll: true });
@@ -108,6 +120,7 @@ export default function IntroLoader() {
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
+      observer.disconnect();
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
@@ -137,7 +150,7 @@ export default function IntroLoader() {
           Independent developer <span className="px-2 text-pink/70">/</span> Product engineer
         </p>
 
-        <h1 ref={titleRef} aria-label="Muhammad Hadi" className="intro-title font-display">
+        <div className="intro-axis"><div className="intro-fit"><h1 ref={titleRef} aria-label="Muhammad Hadi" className="intro-title font-display">
           {["MUHAMMAD", "HADI"].map((word, wordIndex) => (
             <span className="intro-word" key={word} aria-hidden="true">
               {Array.from(word, (letter, index) => (
@@ -148,7 +161,7 @@ export default function IntroLoader() {
               ))}
             </span>
           ))}
-        </h1>
+        </h1></div></div>
 
         <button
           ref={arrowRef}

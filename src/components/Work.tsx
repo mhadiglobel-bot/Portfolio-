@@ -1,5 +1,6 @@
 "use client";
 
+import RollingText from "./RollingText";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { projects } from "@/lib/projects";
@@ -22,12 +23,17 @@ export default function Work() {
     let start = 0;
     let travel = 1;
 
+    let presented: number | undefined;
+    let previousFrame = 0;
     const measureImages = () => {
       const stageRect = stage.getBoundingClientRect();
       slides.forEach((slide) => {
         const image = slide.querySelector<HTMLElement>(".reel-image");
         if (!image) return;
+        const previous = image.style.transform;
+        image.style.transform = "none";
         const rect = image.getBoundingClientRect();
+        image.style.transform = previous;
         if (!rect.width || !rect.height) return;
 
         const x = stageRect.left + stageRect.width / 2 - (rect.left + rect.width / 2);
@@ -40,11 +46,20 @@ export default function Work() {
       });
     };
 
-    const render = () => {
+    const render = (time: number) => {
       frame = 0;
       if (!motion.matches) return;
 
-      const position = Math.min(1, Math.max(0, (scrollY - start) / travel)) * (slides.length - 1);
+      const target = Math.min(1, Math.max(0, (scrollY - start) / travel)) * (slides.length - 1);
+      const dt = Math.min(48, Math.max(1, time - previousFrame)) / 1000;
+      previousFrame = time;
+      if (presented === undefined || scrollY < start - stage.clientHeight || scrollY > start + travel + stage.clientHeight) presented = target;
+      const delta = target - presented;
+      const maxStep = dt * 1.15;
+      presented += Math.sign(delta) * Math.min(maxStep, Math.abs(delta) * (1 - Math.exp(-9 * dt)));
+      if (Math.abs(delta) < .002) presented = target;
+      else frame = requestAnimationFrame(render);
+      const position = presented;
       const step = Math.min(slides.length - 1, Math.floor(position));
       const incoming = Math.max(0, (position - step - 0.42) / 0.58);
       const blend = incoming * incoming * (3 - 2 * incoming);
@@ -107,6 +122,7 @@ export default function Work() {
     };
 
     jump.current = (index) => {
+      presented = index;
       const top = start + travel * index / (slides.length - 1);
       window.scrollTo({ top, behavior: "instant" });
     };
@@ -150,7 +166,7 @@ export default function Work() {
               <article className="reel-slide" key={project.index}>
                 <div className="reel-copy">
                   <p className="folio-label">{project.index} / 05 &nbsp; · &nbsp; {project.category}</p>
-                  <h3>{project.name}</h3>
+                  <h3><RollingText>{project.name}</RollingText></h3>
                   <p className="reel-description">{project.description}</p>
                   <a className="folio-link" href={project.href} target="_blank" rel="noopener noreferrer" aria-label={"Open " + project.name + " in a new tab"}>
                     View live project <span aria-hidden="true">↗</span>

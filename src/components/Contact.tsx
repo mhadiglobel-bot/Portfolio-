@@ -1,3 +1,4 @@
+import RollingText from "./RollingText";
 export default function Contact() {
   return (
     <section id="contact" className="contact-spread">
@@ -8,7 +9,7 @@ export default function Contact() {
         <a href="mailto:mhadi.globel@gmail.com" className="contact-card" aria-label="Email Muhammad Hadi at mhadi.globel@gmail.com">
           <span className="contact-card__details">
             <span className="contact-card__eyebrow"><i aria-hidden="true" /> DIRECT EMAIL</span>
-            <span className="contact-card__email">mhadi.globel@gmail.com</span>
+            <span className="contact-card__email"><RollingText>mhadi.globel@gmail.com</RollingText></span>
             <span className="contact-card__hint">Start a conversation</span>
           </span>
           <span className="contact-card__action" aria-hidden="true">

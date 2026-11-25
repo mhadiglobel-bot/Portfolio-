@@ -3,7 +3,6 @@ export default function Footer() {
     <footer className="border-t border-white/5">
       <div className="container-x flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <img src="/icon.png" alt="" width="40" height="40" className="rounded-full" />
           <div>
             <div className="text-sm font-semibold tracking-tight text-white/90">
               Muhammad Hadi
