@@ -167,7 +167,7 @@ export default function Hero() {
                   className={`hero-card absolute z-20 hidden md:block ${card.position}`}
                 >
                   <div
-                    className={`glass rounded-2xl p-4 ${card.float}`}
+                    className={`glass rounded-2xl bg-[#0b0812]/70 p-4 ${card.float}`}
                     style={{ animationDelay: card.delay }}
                   >
                     <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.22em] text-white/40">
