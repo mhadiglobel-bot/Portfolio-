@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 export default function IntroLoader() {
   const [active, setActive] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
-  const leftCurtainRef = useRef<HTMLDivElement>(null);
-  const rightCurtainRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const kickerRef = useRef<HTMLParagraphElement>(null);
   const arrowRef = useRef<HTMLButtonElement>(null);
@@ -24,6 +22,7 @@ export default function IntroLoader() {
 
     exitingRef.current = false;
     window.scrollTo(0, 0);
+    arrowRef.current?.focus({ preventScroll: true });
 
     const complete = () => {
       document.documentElement.setAttribute("data-intro", "done");
@@ -41,30 +40,16 @@ export default function IntroLoader() {
 
       const exit = gsap.timeline({ onComplete: complete });
       timelineRef.current = exit;
-      exit
-        .to(
-          [titleRef.current, kickerRef.current, arrowRef.current],
-          {
-            autoAlpha: 0,
-            y: -26,
-            scale: 0.985,
-            duration: 0.42,
-            stagger: 0.035,
-            ease: "power2.in",
-          },
-          0
-        )
-        .to(
-          leftCurtainRef.current,
-          { xPercent: -102, duration: 1.05, ease: "expo.inOut" },
-          0.18
-        )
-        .to(
-          rightCurtainRef.current,
-          { xPercent: 102, duration: 1.05, ease: "expo.inOut" },
-          0.18
-        )
-        .to(root, { autoAlpha: 0, duration: 0.16, ease: "none" }, 1.04);
+      exit.to(root.querySelectorAll(".intro-glyph"), {
+        xPercent: (i) => (i - 5.5) * 17,
+        yPercent: (i) => 75 + (i % 4) * 34,
+        rotation: (i) => (i - 5.5) * 3,
+        filter: "blur(7px)", opacity: 0,
+        stagger: { each: .025, from: "center" }, duration: .72, ease: "power2.in",
+      }, 0)
+        .to([kickerRef.current, arrowRef.current], { opacity: 0, duration: .24 }, 0)
+        .fromTo(root, { "--wipe": "-35%" }, { "--wipe": "110%", duration: .92, ease: "power2.inOut" }, .23);
+
     };
 
     enterRef.current = enter;
@@ -105,6 +90,7 @@ export default function IntroLoader() {
       if (touchStartY - endY > 28) enter();
     };
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Tab") { event.preventDefault(); arrowRef.current?.focus(); return; }
       if (
         event.key === "ArrowDown" ||
         event.key === "PageDown" ||
@@ -143,15 +129,6 @@ export default function IntroLoader() {
       aria-label="Muhammad Hadi portfolio introduction"
       className="intro-screen fixed inset-0 z-[200] overflow-hidden text-white"
     >
-      <div ref={leftCurtainRef} className="intro-curtain intro-curtain--left" aria-hidden="true">
-        <div className="intro-grid absolute inset-0 opacity-45" />
-        <div className="intro-curtain-glow intro-curtain-glow--left" />
-      </div>
-      <div ref={rightCurtainRef} className="intro-curtain intro-curtain--right" aria-hidden="true">
-        <div className="intro-grid absolute inset-0 opacity-45" />
-        <div className="intro-curtain-glow intro-curtain-glow--right" />
-      </div>
-
       <div className="intro-content absolute inset-0 z-10 flex flex-col items-center justify-center px-5 text-center">
         <p
           ref={kickerRef}
@@ -161,8 +138,16 @@ export default function IntroLoader() {
         </p>
 
         <h1 ref={titleRef} aria-label="Muhammad Hadi" className="intro-title font-display">
-          <span className="intro-title__word">MUHAMMAD</span>
-          <span className="intro-title__word intro-title__word--accent">HADI</span>
+          {["MUHAMMAD", "HADI"].map((word, wordIndex) => (
+            <span className="intro-word" key={word} aria-hidden="true">
+              {Array.from(word, (letter, index) => (
+                <span className="intro-glyph" key={index}
+                  style={{ "--ink": (index + wordIndex * 8) / 11 * 100 + "%" } as CSSProperties}>
+                  {letter}
+                </span>
+              ))}
+            </span>
+          ))}
         </h1>
 
         <button

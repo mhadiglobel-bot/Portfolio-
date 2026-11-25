@@ -12,7 +12,7 @@ export default function Statement() {
       />
       <div className="container-x relative">
         <div data-reveal>
-          <SectionLabel index="01">The point of the work</SectionLabel>
+          <SectionLabel index="03">The point of the work</SectionLabel>
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.45fr_1fr] lg:items-end">
