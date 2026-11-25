@@ -176,7 +176,56 @@ export default function SmoothScroll() {
           );
         }
       });
+
+      // 3D scene transitions for each section
+      gsap.utils.toArray<HTMLElement>("section[id]").forEach((section) => {
+        if (section.id === "top") return;
+        gsap.fromTo(
+          section,
+          {
+            opacity: 0.55,
+            y: 60,
+            rotateX: 5,
+            scale: 0.985,
+            transformPerspective: 1300,
+            transformOrigin: "50% 100%",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            scale: 1,
+            duration: 1.15,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 86%",
+              once: true,
+            },
+          }
+        );
+      });
+
+      // 3D tilt for cards marked .tilt-card
+      const tiltCards = gsap.utils.toArray<HTMLElement>(".tilt-card");
+      tiltCards.forEach((card) => {
+        const onMove = (event: PointerEvent) => {
+          if (event.pointerType !== "mouse") return;
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - 0.5;
+          const y = (event.clientY - rect.top) / rect.height - 0.5;
+          card.style.setProperty("--rx", `${(-y * 6).toFixed(2)}deg`);
+          card.style.setProperty("--ry", `${(x * 7).toFixed(2)}deg`);
+        };
+        const onLeave = () => {
+          card.style.setProperty("--rx", "0deg");
+          card.style.setProperty("--ry", "0deg");
+        };
+        card.addEventListener("pointermove", onMove);
+        card.addEventListener("pointerleave", onLeave);
+      });
     });
+
 
     const onClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;

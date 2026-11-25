@@ -70,7 +70,7 @@ export default function Hero() {
         aria-hidden="true"
       >
         <span className="font-mono text-[7px] uppercase tracking-[0.42em] text-white/15 [writing-mode:vertical-rl]">
-          Build 03 / Fluid field
+          Build 04 / Fluid field
         </span>
       </div>
 
@@ -143,8 +143,8 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hero-card hidden w-[260px] lg:block">
-            <div className="glass rounded-2xl bg-[#0a0712]/80 p-5">
+          <div className="hero-card hidden w-[230px] lg:block">
+            <div className="glass rounded-2xl bg-[#0a0712]/80 p-4">
               <div className="flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.2em] text-white/30">
                 <span className="flex items-center gap-1.5">
                   <span className="h-1 w-1 rounded-full bg-pink" />
@@ -184,6 +184,37 @@ export default function Hero() {
           </span>
           <span>WebGL / Canvas</span>
           <span className="text-white/15">Scene 01</span>
+        </div>
+
+        <div className="hero-card absolute bottom-6 left-6 z-20 hidden w-[230px] xl:block">
+          <div className="glass rounded-2xl bg-[#0a0712]/80 p-4">
+            <div className="flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.2em] text-white/30">
+              <span className="flex items-center gap-1.5">
+                <span className="h-1 w-1 rounded-full bg-pink" />
+                render.log
+              </span>
+              <span>live</span>
+            </div>
+            <div className="mt-3 space-y-0.5 font-mono text-[9px] leading-[1.6] text-white/45">
+              <p>
+                <span className="text-white/25">01</span>{" "}
+                <span className="text-emerald-300/70">init</span> scene graph
+              </p>
+              <p>
+                <span className="text-white/25">02</span>{" "}
+                <span className="text-purple-300/80">bind</span> pointer mesh
+              </p>
+              <p>
+                <span className="text-white/25">03</span>{" "}
+                <span className="text-pink">emit</span> fluid disturbance
+              </p>
+              <p>
+                <span className="text-white/25">04</span>{" "}
+                <span className="text-white/70">render</span> frame{" "}
+                <span className="cursor-blink inline-block h-2.5 w-[4px] translate-y-[2px] bg-pink/80" />
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="hero-meta relative z-10 mt-12 flex items-center justify-between gap-4 border-t border-white/5 pt-5 text-[9px] uppercase tracking-[0.28em] text-white/35 sm:text-[10px]">

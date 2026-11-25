@@ -5,15 +5,12 @@ import gsap from "gsap";
 
 const NAME = "MUHAMMAD HADI";
 
-const bootLines = [
-  { label: "init", value: "portfolio_2026", done: true },
-  { label: "compile", value: "motion / webgl / type", done: true },
-  { label: "status", value: "ready", done: false },
-];
-
 export default function IntroLoader() {
   const [active, setActive] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
+  const topCurtainRef = useRef<HTMLDivElement>(null);
+  const bottomCurtainRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const finishedRef = useRef(false);
@@ -63,14 +60,14 @@ export default function IntroLoader() {
       .fromTo(
         "[data-intro-chrome]",
         { autoAlpha: 0, y: -10 },
-        { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 },
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 },
         0
       )
       .to(
         counter,
         {
           value: 100,
-          duration: 1.15,
+          duration: 1.4,
           ease: "power2.inOut",
           onUpdate: () => {
             if (countRef.current) {
@@ -83,55 +80,67 @@ export default function IntroLoader() {
       .fromTo(
         "[data-intro-bar]",
         { scaleX: 0 },
-        { scaleX: 1, duration: 1.15, ease: "power2.inOut" },
+        { scaleX: 1, duration: 1.4, ease: "power2.inOut" },
         0
       )
       .to(chars, {
         yPercent: 0,
         rotate: 0,
-        duration: 0.86,
-        stagger: 0.032,
+        duration: 0.9,
+        stagger: 0.03,
         ease: "expo.out",
-      }, 0.38)
+      }, 0.4)
       .fromTo(
         "[data-intro-meta]",
         { autoAlpha: 0, y: 14 },
-        { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.08 },
-        0.92
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08 },
+        0.95
+      )
+      .fromTo(
+        "[data-intro-arrow]",
+        { autoAlpha: 0, y: 8 },
+        { autoAlpha: 1, y: 0, duration: 0.6 },
+        1.1
       )
       .to(chars, {
         yPercent: -118,
         rotate: -4,
-        duration: 0.56,
-        stagger: 0.018,
+        duration: 0.55,
+        stagger: 0.016,
         ease: "power3.in",
-      }, 1.62)
+      }, 2.6)
       .to(
-        "[data-intro-meta]",
-        { autoAlpha: 0, y: -12, duration: 0.38 },
-        1.62
+        "[data-intro-meta], [data-intro-arrow]",
+        { autoAlpha: 0, y: -12, duration: 0.35 },
+        2.6
       )
       .to(
-        "[data-intro-chrome], [data-intro-boot]",
-        { autoAlpha: 0, duration: 0.38 },
-        1.66
+        "[data-intro-chrome]",
+        { autoAlpha: 0, duration: 0.35 },
+        2.65
       )
       .to(
-        root,
-        {
-          clipPath: "inset(0% 0% 100% 0%)",
-          duration: 0.84,
-          ease: "expo.inOut",
-        },
-        1.86
+        contentRef.current,
+        { autoAlpha: 0, y: -40, duration: 0.45, ease: "power2.in" },
+        2.7
+      )
+      .to(
+        topCurtainRef.current,
+        { yPercent: -100, duration: 0.9, ease: "expo.inOut" },
+        2.9
+      )
+      .to(
+        bottomCurtainRef.current,
+        { yPercent: 100, duration: 0.9, ease: "expo.inOut" },
+        2.9
       );
 
-    const safety = window.setTimeout(finish, 6000);
+    const safety = window.setTimeout(finish, 7000);
 
     const accelerate = () => {
-      const tl = timelineRef.current;
-      if (tl && !finishedRef.current) {
-        tl.timeScale(3);
+      const current = timelineRef.current;
+      if (current && !finishedRef.current) {
+        current.timeScale(2.5);
       }
     };
     const onWheel = () => accelerate();
@@ -158,7 +167,7 @@ export default function IntroLoader() {
   const skip = () => {
     const tl = timelineRef.current;
     if (tl) {
-      tl.timeScale(9);
+      tl.timeScale(8);
     } else {
       document.documentElement.setAttribute("data-intro", "done");
       window.dispatchEvent(new Event("portfolio:intro-done"));
@@ -175,18 +184,29 @@ export default function IntroLoader() {
       role="dialog"
       aria-modal="true"
       aria-label="Loading Muhammad Hadi's portfolio"
-      className="intro-shell fixed inset-0 z-[200] overflow-hidden bg-[#050409] text-white"
+      className="fixed inset-0 z-[200] overflow-hidden text-white"
     >
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="intro-grid absolute inset-0 opacity-60" />
-        <div className="absolute -left-40 top-1/4 h-[520px] w-[520px] rounded-full bg-purple/15 blur-[150px]" />
-        <div className="absolute -right-32 bottom-0 h-[460px] w-[460px] rounded-full bg-pink/12 blur-[150px]" />
-        <div className="absolute left-1/2 top-1/2 h-[280px] w-[70vw] max-w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/10 blur-[130px]" />
-        <div className="intro-scanline absolute inset-x-0 h-px" />
-        <div className="absolute inset-3 hidden border border-white/[0.04] sm:block" />
+      <div
+        ref={topCurtainRef}
+        className="absolute inset-x-0 top-0 h-1/2 bg-[#050409]"
+        aria-hidden="true"
+      >
+        <div className="intro-grid absolute inset-0 opacity-50" />
+        <div className="absolute -left-40 top-0 h-[420px] w-[420px] rounded-full bg-purple/15 blur-[140px]" />
+      </div>
+      <div
+        ref={bottomCurtainRef}
+        className="absolute inset-x-0 bottom-0 h-1/2 bg-[#050409]"
+        aria-hidden="true"
+      >
+        <div className="intro-grid absolute inset-0 opacity-50" />
+        <div className="absolute -right-32 bottom-0 h-[420px] w-[420px] rounded-full bg-pink/12 blur-[140px]" />
       </div>
 
-      <div className="relative z-10 flex h-full flex-col px-5 py-5 sm:px-8 sm:py-7 md:px-12 md:py-9">
+      <div
+        ref={contentRef}
+        className="relative z-10 flex h-full flex-col px-5 py-5 sm:px-8 sm:py-7 md:px-12 md:py-9"
+      >
         <div
           data-intro-chrome
           className="flex shrink-0 items-center justify-between gap-4"
@@ -275,20 +295,25 @@ export default function IntroLoader() {
 
         <div data-intro-chrome className="shrink-0">
           <div className="flex items-end justify-between gap-6">
-            <div
-              data-intro-boot
-              className="hidden space-y-1.5 font-mono text-[8px] uppercase tracking-[0.2em] text-white/30 sm:block sm:text-[9px]"
-            >
-              {bootLines.map((line) => (
-                <p key={line.label} className="flex items-center gap-2">
-                  <span className="text-pink/70">&gt;</span>
-                  <span className="text-white/25">{line.label}</span>
-                  <span>{line.value}</span>
-                  <span className={line.done ? "text-emerald-400/80" : "text-pink/80"}>
-                    {line.done ? "✓" : "•"}
-                  </span>
-                </p>
-              ))}
+            <div className="hidden space-y-1.5 font-mono text-[8px] uppercase tracking-[0.2em] text-white/30 sm:block sm:text-[9px]">
+              <p className="flex items-center gap-2">
+                <span className="text-pink/70">&gt;</span>
+                <span className="text-white/25">init</span>
+                <span>portfolio_2026</span>
+                <span className="text-emerald-400/80">✓</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="text-pink/70">&gt;</span>
+                <span className="text-white/25">compile</span>
+                <span>motion / webgl / type</span>
+                <span className="text-emerald-400/80">✓</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="text-pink/70">&gt;</span>
+                <span className="text-white/25">status</span>
+                <span>ready</span>
+                <span className="text-pink/80">•</span>
+              </p>
             </div>
 
             <div className="ml-auto text-right">
