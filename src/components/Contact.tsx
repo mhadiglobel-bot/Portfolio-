@@ -13,8 +13,15 @@ export default function Contact() {
           <SectionLabel index="06">Have something in mind?</SectionLabel>
         </div>
 
+        <div className="mt-7 flex justify-center" data-reveal>
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/15 bg-emerald-400/[0.05] px-3.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.24em] text-emerald-300/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.9)]" />
+            Available for select projects — 2026
+          </span>
+        </div>
+
         <h2
-          className="display-xl font-display mt-8 text-balance text-center text-white"
+          className="display-xl font-display mt-6 text-balance text-center text-white"
           data-reveal
         >
           Let&apos;s make it <span className="serif-i gradient-text">matter.</span>

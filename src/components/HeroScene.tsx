@@ -58,6 +58,7 @@ function Sculpture() {
   const knot = useRef<THREE.Mesh>(null);
   const core = useRef<THREE.Mesh>(null);
   const glow = useRef<THREE.Mesh>(null);
+  const lowPower = typeof window !== "undefined" && window.innerWidth < 768;
 
   const scroll = useRef(0);
 
@@ -120,7 +121,8 @@ function Sculpture() {
             clearcoatRoughness={0.08}
             iridescence={1}
             iridescenceIOR={1.55}
-            iridescenceThicknessRange={[120, 900]}
+            iridescenceThicknessMinimum={120}
+            iridescenceThicknessMaximum={900}
             envMapIntensity={2.6}
             emissive="#5b21b6"
             emissiveIntensity={0.22}
@@ -147,18 +149,25 @@ function Sculpture() {
 
       <Rings />
       <pointLight position={[0, 0, 0]} intensity={6} distance={3} color="#ff8ad8" />
-      <Sparkles count={70} scale={7} size={2.2} speed={0.24} opacity={0.55} color="#f5d0fe" />
+      <Sparkles
+        count={lowPower ? 32 : 70}
+        scale={lowPower ? 5.6 : 7}
+        size={2.2}
+        speed={0.24}
+        opacity={0.55}
+        color="#f5d0fe"
+      />
     </group>
   );
 }
 
-function Shards() {
+function Shards({ count }: { count: number }) {
   const group = useRef<THREE.Group>(null);
 
   const shards = useMemo(
     () =>
-      Array.from({ length: 12 }, (_, index) => {
-        const angle = (index / 12) * Math.PI * 2;
+      Array.from({ length: count }, (_, index) => {
+        const angle = (index / count) * Math.PI * 2;
         const radius = 2.55 + (index % 3) * 0.28;
         return {
           position: [
@@ -171,7 +180,7 @@ function Shards() {
           color: index % 3 === 0 ? "#ff3d9a" : index % 3 === 1 ? "#c084fc" : "#ffffff",
         };
       }),
-    []
+    [count]
   );
 
   useFrame((state, delta) => {
@@ -212,9 +221,10 @@ export default function HeroScene() {
 
   return (
     <Canvas
-      dpr={[1, isMobile ? 1.5 : 1.8]}
+      dpr={[1, isMobile ? 1.35 : 1.8]}
       camera={{ position: [0, 0, 7], fov: 38 }}
-      gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
+      gl={{ alpha: true, antialias: !isMobile, powerPreference: "high-performance" }}
+      performance={{ min: 0.6 }}
       style={{ background: "transparent" }}
       frameloop={reduced ? "demand" : "always"}
     >
@@ -223,7 +233,7 @@ export default function HeroScene() {
       <pointLight position={[-5, -3, 4]} intensity={90} color="#8b5cf6" distance={18} />
       <pointLight position={[0, 3, 6]} intensity={45} color="#ffffff" distance={16} />
 
-      <Environment resolution={isMobile ? 128 : 256} frames={1}>
+      <Environment resolution={isMobile ? 96 : 256} frames={1}>
         <Lightformer
           intensity={4}
           color="#ff3d9a"
@@ -254,16 +264,18 @@ export default function HeroScene() {
       </Environment>
 
       <Sculpture />
-      <Shards />
+      <Shards count={isMobile ? 7 : 12} />
 
-      <EffectComposer multisampling={0}>
-        <Bloom
-          intensity={1.05}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.4}
-          mipmapBlur
-        />
-      </EffectComposer>
+      {!isMobile && (
+        <EffectComposer multisampling={0}>
+          <Bloom
+            intensity={1.05}
+            luminanceThreshold={0.2}
+            luminanceSmoothing={0.4}
+            mipmapBlur
+          />
+        </EffectComposer>
+      )}
     </Canvas>
   );
 }

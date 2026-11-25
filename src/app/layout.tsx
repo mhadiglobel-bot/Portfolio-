@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Instrument_Serif, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import CursorGlow from "@/components/CursorGlow";
+import IntroLoader from "@/components/IntroLoader";
 import SmoothScroll from "@/components/SmoothScroll";
 
 const inter = Inter({
@@ -61,6 +62,8 @@ const personSchema = {
   sameAs: ["https://github.com/mhadiglobel-bot"],
 };
 
+const introBootScript = `(function(){try{var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('mh:intro');if(reduce||seen==='played'){document.documentElement.setAttribute('data-intro','skip');}else{document.documentElement.setAttribute('data-intro','active');window.__mhIntro=true;}}catch(error){document.documentElement.setAttribute('data-intro','skip');}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -71,7 +74,14 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable}`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: introBootScript }} />
+        <noscript>
+          <style>{`[data-intro-loader]{display:none!important}`}</style>
+        </noscript>
+      </head>
       <body>
+        <IntroLoader />
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>

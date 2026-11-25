@@ -18,6 +18,16 @@ export default function SmoothScroll() {
       touchMultiplier: 1.15,
     });
 
+    if (document.documentElement.getAttribute("data-intro") === "active") {
+      lenis.stop();
+    }
+
+    const handleIntroDone = () => {
+      lenis.start();
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    window.addEventListener("portfolio:intro-done", handleIntroDone);
+
     const onScroll = () => ScrollTrigger.update();
     lenis.on("scroll", onScroll);
 
@@ -109,6 +119,63 @@ export default function SmoothScroll() {
           }
         );
       });
+
+      const rail = document.querySelector<HTMLElement>("[data-project-rail]");
+      if (rail) {
+        gsap.fromTo(
+          rail,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#work",
+              start: "top 70%",
+              end: "bottom 72%",
+              scrub: 0.6,
+            },
+          }
+        );
+      }
+
+      gsap.utils.toArray<HTMLElement>("[data-project]").forEach((card) => {
+        const media = card.querySelector<HTMLElement>("[data-project-media]");
+        const image = card.querySelector<HTMLElement>("[data-project-image]");
+
+        if (media) {
+          gsap.fromTo(
+            media,
+            { yPercent: -4 },
+            {
+              yPercent: 4,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+              },
+            }
+          );
+        }
+
+        if (image) {
+          gsap.fromTo(
+            image,
+            { scale: 1.06 },
+            {
+              scale: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 95%",
+                end: "top 45%",
+                scrub: true,
+              },
+            }
+          );
+        }
+      });
     });
 
     const onClick = (event: MouseEvent) => {
@@ -128,6 +195,7 @@ export default function SmoothScroll() {
 
     return () => {
       document.removeEventListener("click", onClick);
+      window.removeEventListener("portfolio:intro-done", handleIntroDone);
       ctx.revert();
       lenis.off("scroll", onScroll);
       lenis.destroy();

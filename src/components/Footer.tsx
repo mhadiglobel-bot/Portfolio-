@@ -16,7 +16,10 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex items-center gap-6 text-[11px] uppercase tracking-[0.2em] text-white/40">
+        <div className="flex flex-wrap items-center gap-6 text-[11px] uppercase tracking-[0.2em] text-white/40">
+          <span className="hidden font-mono text-[8px] tracking-[0.18em] text-white/20 md:inline">
+            Next.js / Three.js / GSAP
+          </span>
           <a
             href="https://github.com/mhadiglobel-bot"
             target="_blank"
