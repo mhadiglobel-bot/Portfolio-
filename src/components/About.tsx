@@ -1,21 +1,14 @@
-import Image from "next/image";
+import RollingText from "./RollingText";
 
 export default function About() {
-  return (
-    <section id="about" className="container-x profile-spread">
-      <figure className="profile-figure" data-reveal>
-        <div className="profile-photo">
-          <Image src="/hadi-portrait.webp" alt="Muhammad Hadi" width={1199} height={1312} unoptimized />
-        </div>
-        <figcaption><strong>Muhammad Hadi</strong> <span>Web developer</span></figcaption>
-      </figure>
-      <div data-reveal>
-        <p className="folio-label">About me</p>
-        <h2 className="editorial-title">From a first idea<br />to a <em>live product.</em></h2>
-        <p className="editorial-copy">I’m Muhammad Hadi. I use AI-assisted coding to explore ideas, then work through the code, interface and deployment myself.</p>
-        <p className="editorial-copy">My day-to-day work spans technical SEO, GitHub and the command line. I care as much about how a site gets found and maintained as how it feels to use.</p>
-        <a className="folio-link" href="https://github.com/mhadiglobel-bot" target="_blank" rel="noopener noreferrer">Find me on GitHub <span aria-hidden="true">↗</span></a>
-      </div>
-    </section>
-  );
+  return <section id="about" className="portrait-scene" aria-labelledby="portrait-heading">
+    <div className="portrait-light" aria-hidden="true"><img src="/hadi-portrait.webp" alt="" width="1199" height="1312" loading="lazy" /></div>
+    <div className="container-x portrait-copy">
+      <p className="folio-label">About Muhammad Hadi</p>
+      <h2 id="portrait-heading"><RollingText>From a first idea</RollingText><br/><em><RollingText>to a live product.</RollingText></em></h2>
+      <p>I use AI-assisted coding to explore an idea, then build the interface, work through the code and take it live.</p>
+      <p>My day-to-day tools are GitHub, the command line and technical SEO. I care about how a site feels, how people find it and how it holds up after launch.</p>
+      <a className="folio-link" href="https://github.com/mhadiglobel-bot">Find me on GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>;
 }

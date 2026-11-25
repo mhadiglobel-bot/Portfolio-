@@ -81,8 +81,8 @@ export default function Capabilities() {
 
         <div className="mt-8 flex flex-wrap items-end justify-between gap-6" data-reveal>
           <h2 className="display-lg font-display max-w-2xl text-white">
-            Good ideas deserve good{" "}
-            <span className="serif-i gradient-text">execution.</span>
+            <RollingText>Good ideas deserve good</RollingText>{" "}
+            <span className="serif-i gradient-text"><RollingText>execution.</RollingText></span>
           </h2>
           <p className="max-w-xs text-sm leading-7 text-white/45">
             Three disciplines, one standard: every part should earn its place in the

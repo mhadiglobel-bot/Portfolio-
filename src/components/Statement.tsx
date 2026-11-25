@@ -1,3 +1,4 @@
+import RollingText from "./RollingText";
 import SectionLabel from "./SectionLabel";
 
 const lead = "The best digital experiences don't just work beautifully.";
@@ -27,7 +28,7 @@ export default function Statement() {
                   data-statement-word
                   className="mr-[0.24em] inline-block"
                 >
-                  {word}
+                  <RollingText>{word}</RollingText>
                 </span>
               ))}
             </span>
@@ -39,7 +40,7 @@ export default function Statement() {
                   data-statement-accent
                   className="mr-[0.24em] inline-block"
                 >
-                  {word}
+                  <RollingText>{word}</RollingText>
                 </span>
               ))}
             </span>

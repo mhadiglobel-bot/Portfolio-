@@ -37,7 +37,7 @@ export default function Header() {
           )}
         >
           <a href="#top" className="flex items-center gap-3" aria-label="Muhammad Hadi — back to top">
-            <img src="/icon.png" alt="" width="40" height="40" className="rounded-full" />
+            <img src="/brand-mark.png" alt="" width="40" height="40" className="rounded-full" />
             <span className="hidden text-sm font-semibold tracking-tight text-white/90 sm:block">
               Muhammad Hadi
             </span>
