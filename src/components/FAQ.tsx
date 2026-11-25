@@ -5,34 +5,16 @@ import SectionLabel from "./SectionLabel";
 
 const faqs = [
   {
-    question: "What kind of work do you take on?",
-    answer:
-      "Product-focused work where interface, motion, and engineering all matter — SaaS, internal tools, marketing sites, and interactive experiences. I work best with teams that care about the details.",
+    question: "Can you improve an existing website?",
+    answer: "Yes. Send the live site and tell me what feels slow, hard to use or difficult to find in search. I can work from the existing codebase.",
   },
   {
-    question: "How do you approach a new project?",
-    answer:
-      "Clarity first. I start with the feeling the experience should have, then shape structure, then refine the details. Motion and visuals come after the foundation is solid.",
+    question: "What does your development workflow look like?",
+    answer: "I prototype the interface, review the code in GitHub, and test the interactions on desktop and mobile before shipping.",
   },
   {
-    question: "Do you work with existing codebases?",
-    answer:
-      "Yes. I’m comfortable stepping into an existing product, understanding the system, and improving it without breaking what already works.",
-  },
-  {
-    question: "What stack do you usually use?",
-    answer:
-      "Next.js, React, TypeScript, Tailwind, GSAP, and Three.js when a project calls for it. I choose tools based on the problem, not the trend.",
-  },
-  {
-    question: "Are you available for new projects?",
-    answer:
-      "I take on a small number of projects at a time so each one gets real attention. If you have something in mind, reach out and we’ll see if it’s a fit.",
-  },
-  {
-    question: "Do you care about performance?",
-    answer:
-      "It’s a core part of the work. Fast load, smooth scroll, and no jank are non-negotiable — especially on mobile.",
+    question: "What should I include in my first email?",
+    answer: "A link or a rough idea, who the site is for, and the first thing you want it to do. If you have a launch date or an existing repository, include that too.",
   },
 ];
 
@@ -49,16 +31,8 @@ export default function FAQ() {
         <div className="mt-8 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start" data-reveal>
           <div>
             <h2 className="display-lg font-display max-w-md text-white">
-              Good questions deserve <span className="serif-i gradient-text">clear answers.</span>
+              Before we <span className="serif-i gradient-text">start.</span>
             </h2>
-            <p className="mt-5 max-w-sm text-sm leading-7 text-white/45">
-              A few things people usually want to know before we start working
-              together.
-            </p>
-            <div className="mt-8 hidden items-center gap-3 font-mono text-[9px] uppercase tracking-[0.26em] text-white/30 lg:flex">
-              <span className="h-1 w-1 rounded-full bg-pink" />
-              Click to expand
-            </div>
           </div>
 
           <div className="space-y-3" data-reveal-stagger>
@@ -87,6 +61,7 @@ export default function FAQ() {
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : index)}
                     aria-expanded={isOpen}
+                    aria-controls={`answer-${index}`}
                     className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-6"
                   >
                     <span className="flex items-center gap-3">
@@ -119,6 +94,7 @@ export default function FAQ() {
                   </button>
 
                   <div
+                    id={`answer-${index}`} aria-hidden={!isOpen}
                     className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
                   >

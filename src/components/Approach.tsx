@@ -26,7 +26,7 @@ export default function Approach() {
     <section id="approach" className="relative py-24 md:py-32">
       <div className="container-x grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="lg:sticky lg:top-28 lg:self-start" data-reveal>
-          <SectionLabel index="04">The way I think</SectionLabel>
+          <SectionLabel index="05">The way I think</SectionLabel>
           <h2 className="display-lg font-display mt-8 max-w-md text-white">
             Good work lives in the{" "}
             <span className="serif-i gradient-text">details.</span>

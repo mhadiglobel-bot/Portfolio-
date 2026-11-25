@@ -37,9 +37,7 @@ export default function Header() {
           )}
         >
           <a href="#top" className="flex items-center gap-3" aria-label="Muhammad Hadi — back to top">
-            <span className="grid h-9 w-9 place-items-center rounded-xl border border-white/15 bg-gradient-to-br from-pink/20 to-purple/20 text-[13px] font-bold tracking-tight text-white shadow-[0_0_30px_-6px_rgba(255,61,154,0.7)]">
-              MH
-            </span>
+            <img src="/icon.png" alt="" width="40" height="40" className="rounded-full" />
             <span className="hidden text-sm font-semibold tracking-tight text-white/90 sm:block">
               Muhammad Hadi
             </span>
@@ -99,6 +97,7 @@ export default function Header() {
 
       <div
         id="mobile-navigation"
+        inert={!open}
         className={clsx(
           "fixed inset-0 -z-10 bg-[#07060b]/95 backdrop-blur-2xl transition-opacity duration-300 md:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0"

@@ -120,66 +120,8 @@ export default function SmoothScroll() {
         );
       });
 
-      const rail = document.querySelector<HTMLElement>("[data-project-rail]");
-      if (rail) {
-        gsap.fromTo(
-          rail,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#work",
-              start: "top 70%",
-              end: "bottom 72%",
-              scrub: 0.6,
-            },
-          }
-        );
-      }
-
-      gsap.utils.toArray<HTMLElement>("[data-project]").forEach((card, index) => {
-        const media = card.querySelector<HTMLElement>("[data-project-media]");
-        const image = card.querySelector<HTMLElement>("[data-project-image]");
-
-        if (media) {
-          gsap.fromTo(
-            media,
-            { yPercent: -2 },
-            {
-              yPercent: 2,
-              ease: "none",
-              scrollTrigger: {
-                trigger: card,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true,
-              },
-            }
-          );
-        }
-
-        if (image) {
-          const direction = index % 2 === 0 ? -1 : 1;
-          gsap.fromTo(
-            image,
-            { scale: 0.92, rotateY: direction * 14, rotateX: 5, transformPerspective: 1000 },
-            {
-              scale: 1, rotateY: 0, rotateX: 0,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: card,
-                start: "top bottom",
-                end: "center 58%",
-                scrub: true,
-              },
-            }
-          );
-        }
-      });
-
       gsap.utils.toArray<HTMLElement>("section[id]").forEach((section) => {
-        if (section.id === "top") return;
+        if (section.id === "top" || section.id === "work") return;
         gsap.fromTo(
           section,
           { y: 24, autoAlpha: 0.92 },

@@ -75,7 +75,7 @@ export default function Capabilities() {
     <section className="relative py-24 md:py-32">
       <div className="container-x">
         <div data-reveal>
-          <SectionLabel index="03">What I do</SectionLabel>
+          <SectionLabel index="04">What I do</SectionLabel>
         </div>
 
         <div className="mt-8 flex flex-wrap items-end justify-between gap-6" data-reveal>
