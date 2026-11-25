@@ -1,15 +1,27 @@
 import type { CSSProperties } from "react";
 
-export default function RollingText({ children }: { children: string }) {
-  let offset = 0;
+type Props = {
+  children: string;
+  animateOnLoad?: boolean;
+  delayOffset?: number;
+  staggerMs?: number;
+};
+
+export default function RollingText({
+  children,
+  animateOnLoad = false,
+  delayOffset = 0,
+  staggerMs = 16,
+}: Props) {
+  let offset = delayOffset;
   return (
-    <span className="roll-text">
+    <span className={animateOnLoad ? "roll-text roll-text--load" : "roll-text"}>
       <span className="sr-only">{children}</span>
       <span aria-hidden="true">
         {children.split(" ").map((word, index) => (
           <span key={index}>{index > 0 && " "}<span className="roll-word">
             {Array.from(word, (glyph, i) => (
-              <span className="roll-letter" key={i} style={{ "--delay": (offset++ * 16) + "ms" } as CSSProperties}>{glyph}</span>
+              <span className="roll-letter" key={i} style={{ "--delay": (offset++ * staggerMs) + "ms" } as CSSProperties}>{glyph}</span>
             ))}
           </span></span>
         ))}
