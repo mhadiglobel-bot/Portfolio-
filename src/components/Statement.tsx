@@ -1,5 +1,8 @@
 import SectionLabel from "./SectionLabel";
 
+const lead = "The best digital experiences don't just work beautifully.";
+const accent = "They make you feel something.";
+
 export default function Statement() {
   return (
     <section id="statement" className="relative py-24 md:py-36">
@@ -13,9 +16,33 @@ export default function Statement() {
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.45fr_1fr] lg:items-end">
-          <h2 className="display-lg font-display max-w-3xl text-balance text-white" data-reveal>
-            The best digital experiences don&apos;t just work beautifully.{" "}
-            <span className="text-white/35">They make you feel something.</span>
+          <h2
+            aria-label={`${lead} ${accent}`}
+            className="display-lg font-display max-w-3xl text-balance text-white"
+          >
+            <span aria-hidden="true">
+              {lead.split(" ").map((word, index) => (
+                <span
+                  key={`lead-${index}`}
+                  data-statement-word
+                  className="mr-[0.24em] inline-block"
+                >
+                  {word}
+                </span>
+              ))}
+            </span>
+            <span aria-hidden="true" className="mt-2 block">
+              {accent.split(" ").map((word, index) => (
+                <span
+                  key={`accent-${index}`}
+                  data-statement-word
+                  data-statement-accent
+                  className="mr-[0.24em] inline-block"
+                >
+                  {word}
+                </span>
+              ))}
+            </span>
           </h2>
           <p
             className="max-w-md text-sm leading-7 text-white/45 lg:pb-2 lg:pl-6"

@@ -70,6 +70,45 @@ export default function SmoothScroll() {
           },
         });
       });
+
+      const statementWords = gsap.utils.toArray<HTMLElement>("[data-statement-word]");
+      if (statementWords.length) {
+        gsap.fromTo(
+          statementWords,
+          { opacity: 0.14 },
+          {
+            opacity: (_index, target) =>
+              target instanceof HTMLElement && target.hasAttribute("data-statement-accent")
+                ? 0.55
+                : 1,
+            stagger: 0.06,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#statement",
+              start: "top 78%",
+              end: "bottom 55%",
+              scrub: 0.7,
+            },
+          }
+        );
+      }
+
+      gsap.utils.toArray<HTMLElement>("[data-media-parallax]").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { yPercent: -4 },
+          {
+            yPercent: 4,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el.closest("a") ?? el,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          }
+        );
+      });
     });
 
     const onClick = (event: MouseEvent) => {

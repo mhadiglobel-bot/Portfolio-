@@ -1,10 +1,71 @@
+import Image from "next/image";
 import SectionLabel from "./SectionLabel";
 
-const rows = [
-  { name: "Northline Studio", tag: "Design", gradient: "from-pink to-purple" },
-  { name: "Atlas Roasters", tag: "Food & drink", gradient: "from-purple to-violet" },
-  { name: "Paper & Pixel", tag: "Agency", gradient: "from-violet to-pink" },
+const featured = {
+  index: "01",
+  name: "Genzio AI",
+  tagline: "AI outreach platform",
+  description:
+    "A cold-outreach automation platform that turns inboxes, leads and follow-up sequences into one visual workflow — built to feel fast, clear and effortless.",
+  href: "https://genzioai.vercel.app",
+  image: "/projects/genzioai.jpg",
+  domain: "genzioai.vercel.app",
+  tags: ["AI SaaS", "Automation", "Product engineering"],
+};
+
+const projects = [
+  {
+    index: "02",
+    name: "Audixo",
+    tagline: "Online audio studio",
+    description:
+      "A browser-based audio studio for recording, trimming, vocal separation and effects — a focused workflow that keeps the sound front and centre.",
+    href: "https://audixo.tiers.rest",
+    image: "/projects/audixo.jpg",
+    tags: ["Audio tool", "Web app"],
+  },
+  {
+    index: "03",
+    name: "Rank Ur Business",
+    tagline: "Business discovery platform",
+    description:
+      "A directory helping local businesses and online brands get found, with search, filters and listings designed to make exploring feel straightforward.",
+    href: "https://urbusiness.tiers.rest",
+    image: "/projects/urbusiness.jpg",
+    tags: ["Directory", "SaaS"],
+  },
+  {
+    index: "04",
+    name: "Mirfaq International",
+    tagline: "Umrah transport platform",
+    description:
+      "A ground-services platform for Umrah travellers and agencies — airport transfers, intercity transport and package enquiries in one considered flow.",
+    href: "https://www.mirfaqinternational.com",
+    image: "/projects/mirfaq.jpg",
+    tags: ["Travel", "Booking"],
+  },
+  {
+    index: "05",
+    name: "Alden Rovell",
+    tagline: "Curated commerce storefront",
+    description:
+      "A polished storefront for jewellery, footwear and lifestyle essentials, shaped around a clear, mobile-first shopping experience.",
+    href: "https://aldenrovell.com",
+    image: "/projects/aldenrovell.jpg",
+    tags: ["E-commerce", "Retail"],
+  },
 ];
+
+function Arrow() {
+  return (
+    <span
+      aria-hidden="true"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.04] text-white/70 transition-all duration-500 group-hover:rotate-45 group-hover:border-pink/40 group-hover:bg-pink/10 group-hover:text-white"
+    >
+      ↗
+    </span>
+  );
+}
 
 export default function Work() {
   return (
@@ -18,162 +79,166 @@ export default function Work() {
           <h2 className="display-lg font-display max-w-xl text-white">
             Made to be <span className="serif-i gradient-text">experienced.</span>
           </h2>
-          <p className="max-w-sm text-sm leading-7 text-white/45">
-            A closer look at products and ideas shaped by curiosity, careful engineering
-            and the freedom to make.
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-5 lg:grid-cols-[1.55fr_1fr]">
-          <a
-            href="https://urbusiness.tiers.rest/"
-            target="_blank"
-            rel="noreferrer noopener"
-            data-reveal
-            className="glass card-hover group relative overflow-hidden rounded-[28px] p-2"
-          >
-            <div className="grid h-full gap-2 lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="flex flex-col justify-between rounded-[22px] p-6 sm:p-8">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.2em]">
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/50">
-                      Digital product / 01
-                    </span>
-                    <span className="rounded-full border border-pink/30 bg-pink/10 px-3 py-1 text-pink">
-                      Live / 2026
-                    </span>
-                  </div>
-
-                  <h3 className="font-display mt-6 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                    Rank Ur Business
-                  </h3>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-white/35">
-                    Product experience
-                  </p>
-                  <p className="mt-4 max-w-sm text-sm leading-7 text-white/50">
-                    A business discovery platform built to make finding and exploring
-                    businesses feel clear, useful and straightforward.
-                  </p>
-                </div>
-
-                <div className="mt-8 flex items-center gap-3 text-sm font-medium text-white/80">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-purple text-white shadow-[0_10px_30px_-8px_rgba(255,61,154,0.7)] transition-transform duration-500 group-hover:rotate-45">
-                    ↗
-                  </span>
-                  Visit live experience
-                </div>
-              </div>
-
-              <div className="relative min-h-[300px] overflow-hidden rounded-[22px] border border-white/10 bg-[#0b0714] lg:min-h-0">
-                <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-purple/25 blur-3xl" />
-                <div className="absolute -bottom-24 -left-10 h-52 w-52 rounded-full bg-pink/15 blur-3xl" />
-
-                <div className="relative flex items-center gap-2 border-b border-white/10 px-4 py-3">
-                  <span className="h-2 w-2 rounded-full bg-white/15" />
-                  <span className="h-2 w-2 rounded-full bg-white/15" />
-                  <span className="h-2 w-2 rounded-full bg-white/15" />
-                  <div className="ml-3 flex-1 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-center text-[9px] tracking-wider text-white/30">
-                    rankurbusiness.app
-                  </div>
-                </div>
-
-                <div className="relative p-5">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-[8px] uppercase tracking-[0.3em] text-white/35">
-                        Discover
-                      </div>
-                      <div className="font-display mt-1 text-xl font-semibold text-white">
-                        Find your next
-                      </div>
-                    </div>
-                    <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[9px] text-white/40">
-                      Nearby
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.6"
-                      className="h-3.5 w-3.5 text-white/30"
-                      aria-hidden="true"
-                    >
-                      <circle cx="11" cy="11" r="7" />
-                      <path d="m20 20-3.5-3.5" />
-                    </svg>
-                    <div className="h-1.5 w-24 rounded-full bg-white/10" />
-                    <div className="ml-auto flex h-6 w-14 items-center justify-center rounded-md bg-gradient-to-r from-pink to-purple text-[8px] font-semibold text-white">
-                      Search
-                    </div>
-                  </div>
-
-                  <div className="mt-4 space-y-2">
-                    {rows.map((row) => (
-                      <div
-                        key={row.name}
-                        className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2"
-                      >
-                        <div
-                          className={`h-7 w-7 rounded-lg bg-gradient-to-br ${row.gradient} opacity-80`}
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-[10px] font-medium text-white/70">
-                            {row.name}
-                          </div>
-                          <div className="mt-1 h-1 w-16 rounded-full bg-white/10" />
-                        </div>
-                        <span className="rounded-full border border-white/10 px-2 py-0.5 text-[8px] text-white/35">
-                          {row.tag}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {["4.9", "120+", "Live"].map((stat) => (
-                      <div
-                        key={stat}
-                        className="rounded-xl border border-white/10 bg-white/[0.03] px-2 py-2 text-center"
-                      >
-                        <div className="font-display text-xs font-semibold text-white/80">
-                          {stat}
-                        </div>
-                        <div className="mt-1 text-[7px] uppercase tracking-[0.2em] text-white/25">
-                          metric
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </a>
-
-          <div
-            data-reveal
-            className="glass card-hover relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-[28px] p-7"
-          >
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-purple/10 blur-3xl" />
-            <div className="grid h-12 w-12 place-items-center rounded-full border border-dashed border-white/20 text-2xl text-white/40">
-              +
-            </div>
-            <div className="relative">
-              <h3 className="font-display text-2xl font-medium leading-tight text-white/90">
-                More work is taking shape.
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-white/45">
-                New projects will find their place here as their stories are ready to be
-                shared. No filler, no borrowed case studies.
-              </p>
-            </div>
-            <div className="mt-8 flex items-center justify-between text-[9px] uppercase tracking-[0.24em] text-white/30">
-              <span>Selected work</span>
-              <span>In progress</span>
+          <div className="max-w-sm">
+            <p className="text-sm leading-7 text-white/45">
+              A selection of live products I&apos;ve designed and engineered — from AI
+              outreach and audio tools to travel, commerce and local discovery.
+            </p>
+            <div className="mt-4 flex items-center gap-2 text-[9px] uppercase tracking-[0.24em] text-white/30">
+              <span className="h-1 w-1 rounded-full bg-pink" />
+              05 live projects / 2026
             </div>
           </div>
+        </div>
+
+        <a
+          href={featured.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          data-reveal
+          className="glass card-hover group mt-14 block overflow-hidden rounded-[30px] p-2 sm:rounded-[34px]"
+        >
+          <div className="grid gap-2 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="flex flex-col justify-between rounded-[24px] p-6 sm:p-8 lg:p-9">
+              <div>
+                <div className="flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.2em]">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/50">
+                    Featured / {featured.index}
+                  </span>
+                  <span className="rounded-full border border-pink/30 bg-pink/10 px-3 py-1 text-pink">
+                    Live / 2026
+                  </span>
+                </div>
+
+                <h3 className="font-display mt-7 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                  {featured.name}
+                </h3>
+                <p className="mt-2 text-[10px] uppercase tracking-[0.24em] text-white/35">
+                  {featured.tagline}
+                </p>
+                <p className="mt-5 max-w-sm text-sm leading-7 text-white/50">
+                  {featured.description}
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {featured.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[9px] uppercase tracking-[0.18em] text-white/40"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-10 flex items-center gap-3 text-sm font-medium text-white/80">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-purple text-white shadow-[0_10px_30px_-8px_rgba(255,61,154,0.7)] transition-transform duration-500 group-hover:rotate-45">
+                  ↗
+                </span>
+                Visit live project
+              </div>
+            </div>
+
+            <div className="relative aspect-[16/11] overflow-hidden rounded-[24px] border border-white/10 bg-[#0b0714] lg:aspect-auto lg:min-h-[520px]">
+              <div className="relative z-10 flex items-center gap-2 border-b border-white/10 bg-[#0d0917]/80 px-4 py-3 backdrop-blur-xl">
+                <span className="h-2 w-2 rounded-full bg-white/15" />
+                <span className="h-2 w-2 rounded-full bg-white/15" />
+                <span className="h-2 w-2 rounded-full bg-white/15" />
+                <div className="ml-3 flex-1 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-center text-[9px] tracking-wider text-white/35">
+                  {featured.domain}
+                </div>
+              </div>
+
+              <div className="absolute inset-x-0 bottom-0 top-[45px] overflow-hidden">
+                <div
+                  className="absolute -inset-y-[5%] inset-x-0"
+                  data-media-parallax
+                >
+                  <Image
+                    src={featured.image}
+                    alt={`${featured.name} — ${featured.tagline} homepage`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 56vw"
+                    className="object-cover object-left-top transition-transform duration-[900ms] ease-out group-hover:scale-[1.025]"
+                  />
+                </div>
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07060b]/45 via-transparent to-transparent"
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <div className="mt-5 grid gap-5 md:grid-cols-2" data-reveal-stagger>
+          {projects.map((project) => (
+            <a
+              key={project.name}
+              href={project.href}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="glass card-hover group flex h-full flex-col overflow-hidden rounded-[28px]"
+            >
+              <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06]">
+                <Image
+                  src={project.image}
+                  alt={`${project.name} — ${project.tagline} homepage`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover object-top transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07060b]/55 via-transparent to-transparent"
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-x-4 top-4 flex items-center justify-between">
+                  <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1 text-[9px] uppercase tracking-[0.2em] text-white/70 backdrop-blur-md">
+                    {project.index}
+                  </span>
+                  <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-black/35 px-3 py-1 text-[9px] uppercase tracking-[0.2em] text-white/70 backdrop-blur-md">
+                    <span className="h-1 w-1 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+                    Live
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-1 flex-col p-6 sm:p-7">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="font-display text-2xl font-medium tracking-tight text-white">
+                      {project.name}
+                    </h3>
+                    <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/35">
+                      {project.tagline}
+                    </p>
+                  </div>
+                  <Arrow />
+                </div>
+
+                <p className="mt-4 max-w-md text-sm leading-6 text-white/45">
+                  {project.description}
+                </p>
+
+                <div className="mt-auto flex items-center justify-between gap-4 pt-6">
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-white/40"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 transition-colors group-hover:text-white/60">
+                    Visit ↗
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </section>

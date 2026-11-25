@@ -109,14 +109,17 @@ export default function Hero() {
               expressive interfaces and experiences that stay with you.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <a href="#work" className="hero-cta btn btn-primary">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <a href="#work" className="hero-cta btn btn-primary w-full justify-center sm:w-auto">
                 Explore the work
                 <span aria-hidden="true" className="text-base leading-none">
                   ↗
                 </span>
               </a>
-              <a href="mailto:mhadi.globel@gmail.com" className="hero-cta btn btn-ghost">
+              <a
+                href="mailto:mhadi.globel@gmail.com"
+                className="hero-cta btn btn-ghost w-full justify-center sm:w-auto"
+              >
                 Start a conversation
                 <span aria-hidden="true" className="text-base leading-none">
                   ↗
