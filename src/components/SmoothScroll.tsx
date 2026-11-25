@@ -138,7 +138,7 @@ export default function SmoothScroll() {
         );
       }
 
-      gsap.utils.toArray<HTMLElement>("[data-project]").forEach((card) => {
+      gsap.utils.toArray<HTMLElement>("[data-project]").forEach((card, index) => {
         const media = card.querySelector<HTMLElement>("[data-project-media]");
         const image = card.querySelector<HTMLElement>("[data-project-image]");
 
@@ -160,16 +160,17 @@ export default function SmoothScroll() {
         }
 
         if (image) {
+          const direction = index % 2 === 0 ? -1 : 1;
           gsap.fromTo(
             image,
-            { scale: 1.025 },
+            { scale: 0.92, rotateY: direction * 14, rotateX: 5, transformPerspective: 1000 },
             {
-              scale: 1,
-              ease: "none",
+              scale: 1, rotateY: 0, rotateX: 0,
+              ease: "power2.out",
               scrollTrigger: {
                 trigger: card,
-                start: "top 95%",
-                end: "top 45%",
+                start: "top bottom",
+                end: "center 58%",
                 scrub: true,
               },
             }
