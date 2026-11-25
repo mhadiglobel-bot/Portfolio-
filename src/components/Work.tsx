@@ -67,6 +67,7 @@ export default function Work() {
 
       setCurrent((previous) => previous === active ? previous : active);
       stage.style.setProperty("--longitude", (position * 58) + "deg");
+      stage.style.setProperty("--reel-progress", String((position / Math.max(1, slides.length - 1)) * 100) + "%");
 
       slides.forEach((slide, index) => {
         const outgoing = index === step;
@@ -90,6 +91,7 @@ export default function Work() {
         slide.style.setProperty("--image-y", (coverY * imageProgress) + "px");
         slide.style.setProperty("--image-scale", String(1 + (coverScale - 1) * imageProgress));
         slide.style.setProperty("--image-blur", (imageProgress * 8) + "px");
+        slide.style.setProperty("--chrome-opacity", String(Math.max(0, 1 - imageProgress * 3)));
         slide.style.setProperty("--image-radius", (0.45 * (1 - imageProgress)) + "rem");
         slide.style.setProperty("--image-turn", (-shift * 5 * (1 - imageProgress)) + "deg");
         slide.style.setProperty("--copy-blur", (Math.abs(shift) * 5) + "px");
@@ -159,6 +161,7 @@ export default function Work() {
           <header className="reel-head">
             <h2 id="work-heading"><RollingText>Selected</RollingText> <em><RollingText>work.</RollingText></em></h2>
             <span className="folio-label">Portfolio / 2026</span>
+            <span className="reel-progress" aria-hidden="true"><i /></span>
           </header>
           <div className="reel-screen">
             <div className="reel-globe" aria-hidden="true"><i /><i /><i /><i /><i /></div>
@@ -173,7 +176,31 @@ export default function Work() {
                   </a>
                 </div>
                 <figure className="reel-image">
-                  <Image src={project.image} alt={project.name + " homepage"} width={1440} height={900} sizes="(max-width: 700px) 92vw, 60vw" />
+                  <div className="reel-media-surface"
+                    onPointerMove={(event) => {
+                      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      const x = (event.clientX - rect.left) / rect.width - .5;
+                      const y = (event.clientY - rect.top) / rect.height - .5;
+                      event.currentTarget.style.setProperty("--media-rotate-x", String(-y * 5) + "deg");
+                      event.currentTarget.style.setProperty("--media-rotate-y", String(x * 5) + "deg");
+                      event.currentTarget.style.setProperty("--media-light-x", String((x + .5) * 100) + "%");
+                      event.currentTarget.style.setProperty("--media-light-y", String((y + .5) * 100) + "%");
+                    }}
+                    onPointerLeave={(event) => {
+                      event.currentTarget.style.setProperty("--media-rotate-x", "0deg");
+                      event.currentTarget.style.setProperty("--media-rotate-y", "0deg");
+                    }}>
+                    <Image src={project.image} alt={project.name + " homepage"} width={1440} height={900} sizes="(max-width: 700px) 92vw, 60vw" />
+                    <div className="reel-media-chrome" aria-hidden="true">
+                      <span className="reel-media-id">PROJECT / {project.index}</span>
+                      <span className="reel-media-arrow">↗</span>
+                    </div>
+                    <figcaption className="reel-media-foot">
+                      <span><i aria-hidden="true" /> {project.category}</span>
+                      <span>EXPLORE THE PROJECT</span>
+                    </figcaption>
+                  </div>
                 </figure>
               </article>
             ))}

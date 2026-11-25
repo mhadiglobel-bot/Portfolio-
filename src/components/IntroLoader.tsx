@@ -50,18 +50,74 @@ export default function IntroLoader() {
       exitingRef.current = true;
       timelineRef.current?.kill();
 
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const glyphs = Array.from(root.querySelectorAll<HTMLElement>(".intro-glyph"));
+      const fragments = Array.from(root.querySelectorAll<HTMLElement>(".intro-fragment"));
+      const faces = Array.from(root.querySelectorAll<HTMLElement>(".intro-glyph-face"));
       const exit = gsap.timeline({ onComplete: complete });
       timelineRef.current = exit;
-      exit.to(root.querySelectorAll(".intro-glyph"), {
-        xPercent: (i) => (i - 5.5) * 17,
-        yPercent: (i) => 75 + (i % 4) * 34,
-        rotation: (i) => (i - 5.5) * 3,
-        filter: "blur(7px)", opacity: 0,
-        stagger: { each: .025, from: "center" }, duration: .72, ease: "power2.in",
-      }, 0)
-        .to([kickerRef.current, arrowRef.current], { opacity: 0, duration: .24 }, 0)
-        .fromTo(root, { "--wipe": "-35%" }, { "--wipe": "110%", duration: .92, ease: "power2.inOut" }, .23);
 
+      exit.to([kickerRef.current, arrowRef.current], {
+        autoAlpha: 0, y: 12, duration: 0.2,
+      }, 0);
+
+      if (reduced) {
+        exit.to(root, { opacity: 0, duration: 0.22 }, 0.08);
+        return;
+      }
+
+      // Keep the original font and its fitted geometry; only the visible
+      // letter face disappears. Jagged clipped replicas then split into shards.
+      gsap.set(faces, { autoAlpha: 0 });
+      gsap.set(fragments, {
+        autoAlpha: 1, x: 0, y: 0, z: 0, rotation: 0, rotationX: 0, rotationY: 0,
+        transformPerspective: 1000, transformOrigin: "50% 50%",
+      });
+
+      const sw = window.innerWidth;
+      const sh = window.innerHeight;
+      // The intro's fitted title uses a responsive scale transform.
+      // Convert desired viewport distances into the glyph's local coordinates.
+      const sample = glyphs[0];
+      const sampleRect = sample?.getBoundingClientRect();
+      const scaleX = Math.max(.01, (sampleRect?.width ?? 1) / Math.max(1, sample?.offsetWidth ?? 1));
+      const scaleY = Math.max(.01, (sampleRect?.height ?? 1) / Math.max(1, sample?.offsetHeight ?? 1));
+      fragments.forEach((fragment, index) => {
+        const glyphIndex = Math.floor(index / 4);
+        const pieceIndex = index % 4;
+        const spread = (glyphIndex - (glyphs.length - 1) / 2) / Math.max(1, glyphs.length / 2);
+        const horizontal = spread * sw * 0.6 + (pieceIndex - 1.5) * sw * 0.19;
+        const sideways = Math.sin(index * 2.39996) * sw * 0.1;
+        const fling = [-0.7, -0.18, 0.38, 0.76][pieceIndex];
+        const firstY = sh * (fling * 0.35 + Math.sin(index * 1.7) * 0.1);
+        const rotation = ((index * 47) % 260 - 130) * (pieceIndex % 2 ? -1 : 1);
+
+        exit.to(fragment, {
+          x: (horizontal + sideways) / scaleX,
+          y: firstY / scaleY,
+          z: (80 + pieceIndex * 70) / scaleX,
+          rotation,
+          rotationX: (pieceIndex % 2 ? -1 : 1) * (22 + index % 34),
+          rotationY: (pieceIndex % 3 - 1) * 38,
+          duration: 0.41 + (index % 3) * 0.07,
+          ease: "power3.out",
+        }, index * 0.009);
+
+        exit.to(fragment, {
+          x: (horizontal + sideways) * 1.18 / scaleX,
+          y: sh * (0.9 + (index % 5) * 0.13) / scaleY,
+          z: -180 / scaleX,
+          rotation: rotation * 1.55,
+          rotationX: (pieceIndex % 2 ? -1 : 1) * 220,
+          autoAlpha: 0,
+          filter: "blur(5px)",
+          duration: 0.73 + (index % 4) * 0.07,
+          ease: "power2.in",
+        }, 0.34 + index * 0.009);
+      });
+
+      // Home is revealed only after the letters have broken apart.
+      exit.to(root, { autoAlpha: 0, duration: 0.45, ease: "power2.inOut" }, 0.73);
     };
 
     enterRef.current = enter;
@@ -156,7 +212,10 @@ export default function IntroLoader() {
               {Array.from(word, (letter, index) => (
                 <span className="intro-glyph" key={index}
                   style={{ "--index": index + wordIndex * 8, "--ink": (index + wordIndex * 8) / 11 * 100 + "%" } as CSSProperties}>
-                  {letter}
+                  <span className="intro-glyph-face">{letter}</span>
+                  {Array.from({ length: 4 }, (_, piece) => (
+                    <span className={"intro-fragment intro-fragment--" + piece} key={piece} aria-hidden="true">{letter}</span>
+                  ))}
                 </span>
               ))}
             </span>
