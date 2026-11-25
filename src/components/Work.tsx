@@ -157,7 +157,7 @@ export default function Work() {
       <div className="reel-stage">
         <div className="container-x reel-inner">
           <header className="reel-head">
-            <h2 id="work-heading">Selected <em>work.</em></h2>
+            <h2 id="work-heading"><RollingText>Selected</RollingText> <em><RollingText>work.</RollingText></em></h2>
             <span className="folio-label">Portfolio / 2026</span>
           </header>
           <div className="reel-screen">

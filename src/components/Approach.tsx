@@ -29,8 +29,8 @@ export default function Approach() {
         <div className="lg:sticky lg:top-28 lg:self-start" data-reveal>
           <SectionLabel index="05">The way I think</SectionLabel>
           <h2 className="display-lg font-display mt-8 max-w-md text-white">
-            Good work lives in the{" "}
-            <span className="serif-i gradient-text">details.</span>
+            <RollingText>Good work lives in the</RollingText>{" "}
+            <span className="serif-i gradient-text"><RollingText>details.</RollingText></span>
           </h2>
           <p className="mt-6 max-w-sm text-sm leading-7 text-white/45">
             Not more effects. Better decisions. Every part should have a reason to be

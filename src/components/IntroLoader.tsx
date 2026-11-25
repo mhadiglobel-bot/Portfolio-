@@ -155,7 +155,7 @@ export default function IntroLoader() {
             <span className="intro-word" key={word} aria-hidden="true">
               {Array.from(word, (letter, index) => (
                 <span className="intro-glyph" key={index}
-                  style={{ "--ink": (index + wordIndex * 8) / 11 * 100 + "%" } as CSSProperties}>
+                  style={{ "--index": index + wordIndex * 8, "--ink": (index + wordIndex * 8) / 11 * 100 + "%" } as CSSProperties}>
                   {letter}
                 </span>
               ))}

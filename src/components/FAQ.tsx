@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RollingText from "./RollingText";
 import SectionLabel from "./SectionLabel";
 
 const faqs = [
@@ -31,7 +32,7 @@ export default function FAQ() {
         <div className="mt-8 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start" data-reveal>
           <div>
             <h2 className="display-lg font-display max-w-md text-white">
-              Before we <span className="serif-i gradient-text">start.</span>
+              <RollingText>Before we</RollingText> <span className="serif-i gradient-text"><RollingText>start.</RollingText></span>
             </h2>
           </div>
 
