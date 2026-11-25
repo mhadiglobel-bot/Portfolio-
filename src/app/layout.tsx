@@ -62,7 +62,7 @@ const personSchema = {
   sameAs: ["https://github.com/mhadiglobel-bot"],
 };
 
-const introBootScript = `(function(){try{var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('mh:intro');if(reduce||seen==='played'){document.documentElement.setAttribute('data-intro','skip');}else{document.documentElement.setAttribute('data-intro','active');window.__mhIntro=true;}}catch(error){document.documentElement.setAttribute('data-intro','skip');}})();`;
+const introBootScript = `(function(){try{var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduce){document.documentElement.setAttribute('data-intro','skip');}else{document.documentElement.setAttribute('data-intro','active');window.__mhIntro=true;}}catch(error){document.documentElement.setAttribute('data-intro','skip');}})();`;
 
 /* deploy trigger */
 export default function RootLayout({

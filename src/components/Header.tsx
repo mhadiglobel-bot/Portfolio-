@@ -32,13 +32,13 @@ export default function Header() {
       <div className="container-x">
         <div
           className={clsx(
-            "mt-3 flex items-center justify-between rounded-full px-3 py-2.5 transition-all duration-500 sm:px-4",
+            "site-header-shell mt-3 flex items-center justify-between rounded-full px-3 py-2.5 transition-all duration-500 sm:px-4",
             scrolled ? "glass-strong" : "border border-transparent"
           )}
         >
           <a href="#top" className="flex items-center gap-3" aria-label="Muhammad Hadi — back to top">
             <span className="grid h-9 w-9 place-items-center rounded-xl border border-white/15 bg-gradient-to-br from-pink/20 to-purple/20 text-[13px] font-bold tracking-tight text-white shadow-[0_0_30px_-6px_rgba(255,61,154,0.7)]">
-              mh
+              MH
             </span>
             <span className="hidden text-sm font-semibold tracking-tight text-white/90 sm:block">
               Muhammad Hadi
