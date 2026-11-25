@@ -87,7 +87,7 @@ export default function Hero() {
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-pink shadow-[0_0_12px_rgba(255,61,154,1)]" />
               <span className="whitespace-nowrap">Independent developer</span>
               <span className="hidden text-white/20 sm:inline">/</span>
-              <span className="hidden whitespace-nowrap sm:inline">Digital maker</span>
+              <span className="hidden whitespace-nowrap sm:inline">Product engineer</span>
             </div>
 
             <h1 className="display-xl font-display mt-6 text-balance text-white">

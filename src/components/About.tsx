@@ -1,7 +1,7 @@
 import Image from "next/image";
 import SectionLabel from "./SectionLabel";
 
-const traits = ["Design × Engineering", "Frontend systems", "Motion & interaction"];
+const traits = ["Product engineering", "Frontend systems", "Motion & interaction"];
 
 export default function About() {
   return (
@@ -30,7 +30,7 @@ export default function About() {
                       Muhammad Hadi
                     </div>
                     <div className="font-display mt-1 text-sm font-medium text-white">
-                      Digital maker
+                      Developer &amp; digital maker
                     </div>
                   </div>
                   <span className="glass-strong rounded-full px-3 py-1 text-[9px] uppercase tracking-[0.22em] text-white/50">
@@ -51,14 +51,15 @@ export default function About() {
 
             <div className="mt-7 max-w-xl space-y-4 text-sm leading-7 text-white/50">
               <p>
-                Hello, I&apos;m Muhammad Hadi. I enjoy making things for the internet
-                that feel considered, useful, and a little unexpected.
+                Hello, I&apos;m Muhammad Hadi, a developer who enjoys making things for
+                the internet that feel considered, useful, and a little unexpected.
               </p>
               <p>
                 I&apos;m drawn to the intersection of design and engineering: where an
                 idea becomes an interface, where a small interaction makes a product
                 click, and where the details add up to something people genuinely enjoy
-                using.
+                using. My work spans live products in AI, travel, commerce and local
+                discovery.
               </p>
             </div>
 

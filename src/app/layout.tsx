@@ -28,11 +28,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://muhammadhadi.vercel.app"),
   title: "Muhammad Hadi — Digital Experiences & Product Engineering",
   description:
-    "Independent developer and digital maker crafting thoughtful products, expressive interfaces and experiences that feel alive.",
+    "Independent developer and product engineer crafting live products, expressive interfaces and experiences that feel alive.",
   openGraph: {
     title: "Muhammad Hadi — Digital Experiences & Product Engineering",
     description:
-      "Independent developer and digital maker crafting thoughtful products, expressive interfaces and experiences that feel alive.",
+      "Independent developer and product engineer crafting live products, expressive interfaces and experiences that feel alive.",
     type: "website",
     images: ["/hadi-portrait.webp"],
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Muhammad Hadi — Digital Experiences & Product Engineering",
     description:
-      "Independent developer and digital maker crafting thoughtful products, expressive interfaces and experiences that feel alive.",
+      "Independent developer and product engineer crafting live products, expressive interfaces and experiences that feel alive.",
     images: ["/hadi-portrait.webp"],
   },
 };
@@ -56,7 +56,7 @@ const personSchema = {
   "@type": "Person",
   name: "Muhammad Hadi",
   url: "https://muhammadhadi.vercel.app",
-  jobTitle: "Independent Developer & Digital Maker",
+  jobTitle: "Independent Developer & Product Engineer",
   email: "mailto:mhadi.globel@gmail.com",
   sameAs: ["https://github.com/mhadiglobel-bot"],
 };
