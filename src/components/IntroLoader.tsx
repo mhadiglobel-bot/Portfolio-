@@ -128,8 +128,28 @@ export default function IntroLoader() {
 
     const safety = window.setTimeout(finish, 6000);
 
+    const accelerate = () => {
+      const tl = timelineRef.current;
+      if (tl && !finishedRef.current) {
+        tl.timeScale(3);
+      }
+    };
+    const onWheel = () => accelerate();
+    const onPointer = () => accelerate();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
+        accelerate();
+      }
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("keydown", onKey);
+
     return () => {
       window.clearTimeout(safety);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("keydown", onKey);
       tl.kill();
       timelineRef.current = null;
     };
@@ -231,6 +251,15 @@ export default function IntroLoader() {
               </span>
             ))}
           </h1>
+
+          <div
+            data-intro-meta
+            data-intro-arrow
+            className="intro-meta mt-6 flex flex-col items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-white/40"
+          >
+            <span>Scroll to enter</span>
+            <span className="intro-arrow text-lg leading-none text-pink">↓</span>
+          </div>
 
           <div
             data-intro-meta

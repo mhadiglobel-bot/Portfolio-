@@ -342,7 +342,9 @@
     animation: pulse-dot 1.2s ease-in-out infinite;
   }
 
-  /* ---------- hero stage ---------- */
+  .intro-arrow {
+    animation: intro-arrow 1.6s ease-in-out infinite;
+  }
   .hero-stage {
     transform: perspective(1400px) rotateX(var(--stage-rx, 0deg))
       rotateY(var(--stage-ry, 0deg));
@@ -571,6 +573,18 @@
   50%,
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes intro-arrow {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
   }
 }
 

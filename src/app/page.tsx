@@ -2,6 +2,7 @@ import About from "@/components/About";
 import Approach from "@/components/Approach";
 import Capabilities from "@/components/Capabilities";
 import Contact from "@/components/Contact";
+import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
@@ -16,11 +17,12 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <Marquee />
+        <About />
         <Statement />
         <Work />
         <Capabilities />
         <Approach />
-        <About />
+        <FAQ />
         <Contact />
       </main>
       <Footer />
