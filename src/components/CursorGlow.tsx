@@ -1,348 +1,152 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 
-const TRAIL_SIZE = 12;
+// The flow texture carries velocity in RG, ink in B and pigment in A.
+// All targets use filterable RGBA8, including on integrated GPUs.
+const common = `
+precision highp float;
+varying vec2 uv;
+uniform sampler2D flow, pressure;
+uniform vec2 cell, aspect, fromPoint, toPoint, impulse;
+uniform float dt, strength;
+const float zero = 128./255.;
+vec2 velocity(vec2 p){return (texture2D(flow,p).rg-zero)*18.;}
+float pr(vec2 p){return (texture2D(pressure,p).r-zero)*18.;}
+float divergence(vec2 p){
+ return .5*(velocity(p+vec2(cell.x,0)).x-velocity(p-vec2(cell.x,0)).x
+           +velocity(p+vec2(0,cell.y)).y-velocity(p-vec2(0,cell.y)).y);
+}
+`;
+const solve = `void main(){
+ vec2 x=vec2(cell.x,0),y=vec2(0,cell.y);
+ float p=(pr(uv-x)+pr(uv+x)+pr(uv-y)+pr(uv+y)-divergence(uv))*.25;
+ gl_FragColor=vec4(zero+p/18.,0,0,1);
+}`;
+const transport = `void main(){
+ vec2 x=vec2(cell.x,0), y=vec2(0,cell.y);
+ vec2 back=uv-velocity(uv)*cell*dt;
+ vec4 sampleInk=texture2D(flow,back);
+ vec2 v=(sampleInk.rg-zero)*18.;
+ v-=.5*vec2(pr(back+x)-pr(back-x),pr(back+y)-pr(back-y));
+ vec2 path=(toPoint-fromPoint)*aspect, q=(uv-fromPoint)*aspect;
+ float along=clamp(dot(q,path)/max(.000001,dot(path,path)),0.,1.);
+ vec2 r=q-path*along;
+ float radius=.070+.045*strength;
+ float brush=exp(-dot(r,r)/(radius*radius));
+ vec2 axis=normalize(impulse+vec2(.00001));
+ vec2 side=vec2(-axis.y,axis.x);
+ float flank=dot(r,side)/radius;
+ // Opposite rotations on the two sides roll a swept stroke back into itself.
+ vec2 swirl=vec2(-r.y,r.x)/radius*flank;
+ v=v*pow(.982,dt)+brush*strength*(impulse*.68+swirl*2.4);
+ float injected=brush*strength*.48;
+ float ink=sampleInk.b*pow(.979,dt);
+ float pigment=mix(sampleInk.a,smoothstep(.30,.72,toPoint.x),injected/max(.001,ink+injected));
+ gl_FragColor=vec4(clamp(v/18.+zero,0.,1.),min(1.,ink+injected*(1.-ink)),pigment);
+}`;
+const display = `void main(){
+ float d=texture2D(flow,uv).b;
+ vec2 e=cell*2.;
+ vec2 slope=vec2(texture2D(flow,uv+vec2(e.x,0)).b-texture2D(flow,uv-vec2(e.x,0)).b,
+                 texture2D(flow,uv+vec2(0,e.y)).b-texture2D(flow,uv-vec2(0,e.y)).b);
+ vec3 normal=normalize(vec3(-slope*8.,.43));
+ float light=max(0.,dot(normal,normalize(vec3(-.55,.58,.32))));
+ float rim=smoothstep(.015,.22,length(slope));
+ float hot=smoothstep(.48,.95,d);
+ float energy=clamp(d*(.13+.64*light)+rim*light*.5+hot*.4,0.,.94);
+ vec3 color=mix(vec3(1.,.025,.37),vec3(.60,.055,1.),texture2D(flow,uv).a);
+ gl_FragColor=vec4(color,energy*smoothstep(.025,.10,d));
+}`;
 
-const fragment = [
-  "precision highp float;",
-  "uniform vec2 uResolution;",
-  "uniform vec2 uDirection;",
-  "uniform float uTime;",
-  "uniform float uActive;",
-  "uniform vec4 uTrail[12];",
-  "",
-  "mat2 rot(float a) {",
-  "  float c=cos(a), s=sin(a);",
-  "  return mat2(c,-s,s,c);",
-  "}",
-  "float smin(float a, float b, float k) {",
-  "  float h=max(k-abs(a-b),0.0)/k;",
-  "  return min(a,b)-h*h*k*0.25;",
-  "}",
-  "float smax(float a,float b,float k){return -smin(-a,-b,k);}",
-  "float ellipsoid(vec3 p,vec3 r) {",
-  "  float k0=length(p/r);",
-  "  float k1=length(p/(r*r));",
-  "  return k0*(k0-1.0)/max(k1,0.0001);",
-  "}",
-  "float field(vec3 p) {",
-  "  float t=uTime*0.76;",
-  "  vec2 mouse=(uTrail[0].xy-0.5)*vec2(uResolution.x/uResolution.y,1.0)*3.15;",
-  "  float d=length(p.xy-mouse);",
-  "  float impact=uActive*exp(-d*d*0.86);",
-  "  float wave=sin(d*8.0-uTime*7.0)*exp(-d*1.4)*uActive;",
-  "  p.xy-=uDirection*(impact*0.72+wave*0.12);",
-  "  p.z-=impact*0.72;",
-  "  p.xy=rot(0.34*sin(t*0.55)+0.13*t)*p.xy;",
-  "  p.xz=rot(0.27*cos(t*0.39)+0.17*t)*p.xz;",
-  "  p.yz=rot(0.24*sin(t*0.43)-0.10*t)*p.yz;",
-  "  vec3 q=p;",
-  "  q.x+=0.18*sin(q.y*2.15+t*1.25)+0.10*cos(q.z*2.4-t*.8);",
-  "  q.y+=0.17*cos(q.x*2.1-t*1.3);",
-  "  q.z+=0.13*sin(q.x*2.75+q.y*1.8+t*1.65);",
-  "  float a=ellipsoid(q-vec3(-.91+0.60*sin(t*.78), .41+.45*cos(t*.57),.16),",
-  "    vec3(1.50+.12*sin(t*.56),1.18,1.12));",
-  "  float b=ellipsoid(q-vec3(.96+.56*cos(t*.62),-.25+.55*sin(t*.92),.13),",
-  "    vec3(1.23,1.44+.21*sin(t*.53),1.08));",
-  "  float c=ellipsoid(q-vec3(-.23+.33*sin(t*.41),-1.08+.49*cos(t*.72),-.19),",
-  "    vec3(1.54, .76+.21*sin(t*.80),1.12));",
-  "  float body=smin(smin(a,b,.52),c,.54);",
-  "  vec3 cut=vec3(.19+.68*sin(t*.68), -.25+.57*cos(t*.53), .84+.15*sin(t*.64));",
-  "  float cavity=ellipsoid(q-cut,vec3(.86+.1*sin(t*.87),.74,.78));",
-  "  body=smax(body,-cavity,.25);",
-  "  float second=ellipsoid(q-vec3(-1.55*cos(t*.45),.38*sin(t*.61),.79),vec3(.36,.53,.50));",
-  "  body=smax(body,-second,.11);",
-  "  body+=.033*sin(q.x*4.6+q.z*3.0+t*1.6)*sin(q.y*4.3-t*1.1);",
-  "  return body;",
-  "}",
-  "vec3 normalAt(vec3 p) {",
-  "  float h=.008;",
-  "  vec2 e=vec2(1.,-1.)*h;",
-  "  return normalize(",
-  "    e.xyy*field(p+e.xyy)+e.yyx*field(p+e.yyx)+",
-  "    e.yxy*field(p+e.yxy)+e.xxx*field(p+e.xxx)",
-  "  );",
-  "}",
-  "void main(){",
-  "  vec2 uv=(gl_FragCoord.xy-.5*uResolution)/uResolution.y;",
-  "  vec3 ro=vec3(0.,0.,4.75);",
-  "  vec3 rd=normalize(vec3(uv*1.38,-2.1));",
-  "  float d=0., z=0.;",
-  "  bool hit=false;",
-  "  for(int i=0;i<46;i++){",
-  "    d=field(ro+rd*z);",
-  "    if(d<.012){hit=true;break;}",
-  "    z+=max(.024,d*.84);",
-  "    if(z>8.0)break;",
-  "  }",
-  "  if(!hit){gl_FragColor=vec4(0.);return;}",
-  "  vec3 p=ro+rd*z;",
-  "  vec3 n=normalAt(p);",
-  "  vec3 view=-rd;",
-  "  float t=uTime*.76;",
-  "  vec3 lightA=vec3(-1.12*cos(t*.89)+.42*sin(t*.31),",
-  "                   .96*sin(t*.72)+.2*cos(t*.35),2.08);",
-  "  vec3 lightB=vec3(1.26*sin(t*.47+.7),",
-  "                   -.76*cos(t*.55),1.42);",
-  "  vec3 L=lightA-p;",
-  "  vec3 L2=lightB-p;",
-  "  float attenuation=exp(-dot(L.xy,L.xy)*.64);",
-  "  float attenuation2=exp(-dot(L2.xy,L2.xy)*.46);",
-  "  vec3 Ln=normalize(L);",
-  "  vec3 Ln2=normalize(L2);",
-  "  float diffuse=pow(max(dot(n,Ln),0.),1.9)*attenuation;",
-  "  float secondary=pow(max(dot(n,Ln2),0.),2.3)*attenuation2;",
-  "  float spec=pow(max(dot(n,normalize(Ln+view)),0.),14.)*attenuation;",
-  "  float spec2=pow(max(dot(n,normalize(Ln2+view)),0.),19.)*attenuation2;",
-  "  float rim=pow(1.-max(dot(n,view),0.),3.6);",
-  "  vec2 mouse=(uTrail[0].xy-0.5)*vec2(uResolution.x/uResolution.y,1.0)*3.15;",
-  "  vec3 mouseLight=normalize(vec3(mouse-p.xy,1.35));",
-  "  float touch=pow(max(dot(n,normalize(mouseLight+view)),0.),11.)",
-  "        *exp(-dot(p.xy-mouse,p.xy-mouse)*.88)*uActive;",
-  "",
-  "  vec3 rose=vec3(1.,.022,.37);",
-  "  vec3 pink=vec3(1.,.10,.66);",
-  "  vec3 violet=vec3(.42,.025,1.);",
-  "  vec3 base=vec3(.010,.002,.018);",
-  "  float shadows=smoothstep(-.32,.55,dot(n,normalize(vec3(-.35,.5,.78))));",
-  "  vec3 color=base+rose*(.013+.044*shadows);",
-  "  color+=rose*(2.05*pow(diffuse,1.55)+.82*spec);",
-  "  color+=violet*(.20*pow(secondary,1.50)+.34*spec2+.031*rim);",
-  "  color+=pink*(.20*pow(diffuse,2.)+.15*spec);",
-  "  color+=mix(rose,violet,.35+.3*sin(t*.7))*(.55*touch);",
-  "  color*=mix(.10,1.0,shadows);",
-  "  float lens=1.0-smoothstep(.52,1.65,length(uv));",
-  "  color*=lens;",
-  "  gl_FragColor=vec4(min(color,vec3(1.)),.96);",
-  "}"
-].join("\n");
-
-type TrailPoint = { x: number; y: number; time: number };
-
-export default function CursorGlow() {
-  const ref = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = ref.current;
-    const field = canvas?.parentElement;
-    if (!canvas || !field) return;
-
-    const enabled = window.matchMedia("(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)");
-    const history: TrailPoint[] = [];
-    const trailData = new Float32Array(TRAIL_SIZE * 4);
-    let lastInput: TrailPoint | null = null;
-    let lastMove = 0;
-    let tick = 0;
-    let frame = 0;
-    let lit: HTMLElement | null = null;
-    let gl: WebGLRenderingContext | null = null;
-    let program: WebGLProgram | null = null;
-    let buffer: WebGLBuffer | null = null;
-    let vertex: WebGLShader | null = null;
-    let pixel: WebGLShader | null = null;
-
-    const fallback = (event: PointerEvent) => {
-      if (field.dataset.rendered || window.matchMedia("(prefers-reduced-motion:reduce)").matches) return;
-      field.style.setProperty("--light-x", String(event.clientX / window.innerWidth * 100) + "%");
-      field.style.setProperty("--light-y", String(event.clientY / window.innerHeight * 100) + "%");
-    };
-
-    if (!enabled.matches) {
-      window.addEventListener("pointermove", fallback, { passive: true });
-      return () => window.removeEventListener("pointermove", fallback);
+export default function CursorGlow(){
+ const ref=useRef<HTMLCanvasElement>(null);
+ useEffect(()=>{
+  const canvas=ref.current!;
+  const field=canvas.parentElement!;
+  const media=matchMedia("(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)");
+  const gl=media.matches ? canvas.getContext("webgl",{alpha:true,premultipliedAlpha:false,depth:false,antialias:false}):null;
+  if(!gl)return;
+  const resources:(()=>void)[]=[];
+  const dispose=()=>resources.reverse().forEach(release=>release());
+  function shader(type:number,source:string){
+   const obj=gl!.createShader(type)!;resources.push(()=>gl!.deleteShader(obj));
+   gl!.shaderSource(obj,source);gl!.compileShader(obj);
+   if(!gl!.getShaderParameter(obj,gl!.COMPILE_STATUS))throw Error("Shader unavailable");
+   return obj;
+  }
+  function program(body:string,vertex:WebGLShader){
+   const p=gl!.createProgram()!;resources.push(()=>gl!.deleteProgram(p));
+   gl!.attachShader(p,vertex);gl!.attachShader(p,shader(gl!.FRAGMENT_SHADER,common+body));gl!.bindAttribLocation(p,0,"pos");gl!.linkProgram(p);
+   if(!gl!.getProgramParameter(p,gl!.LINK_STATUS))throw Error("Program unavailable");
+   const keys=["flow","pressure","cell","aspect","fromPoint","toPoint","impulse","strength","dt"] as const;
+   const u=Object.fromEntries(keys.map(k=>[k,gl!.getUniformLocation(p,k)]));
+   gl!.useProgram(p);gl!.uniform1i(u.flow,0);gl!.uniform1i(u.pressure,1);
+   return {p,u};
+  }
+  function target(){
+   const tex=gl!.createTexture()!,fb=gl!.createFramebuffer()!;
+   resources.push(()=>{gl!.deleteTexture(tex);gl!.deleteFramebuffer(fb);});
+   gl!.bindTexture(gl!.TEXTURE_2D,tex);
+   for(const key of [gl!.TEXTURE_MIN_FILTER,gl!.TEXTURE_MAG_FILTER])gl!.texParameteri(gl!.TEXTURE_2D,key,gl!.LINEAR);
+   for(const key of [gl!.TEXTURE_WRAP_S,gl!.TEXTURE_WRAP_T])gl!.texParameteri(gl!.TEXTURE_2D,key,gl!.CLAMP_TO_EDGE);
+   return {tex,fb};
+  }
+  try {
+   const vert=shader(gl.VERTEX_SHADER,"attribute vec2 pos;varying vec2 uv;void main(){uv=pos*.5+.5;gl_Position=vec4(pos,0,1);}");
+   const pressurePass=program(solve,vert),flowPass=program(transport,vert),displayPass=program(display,vert);
+   const mesh=gl.createBuffer();resources.push(()=>gl.deleteBuffer(mesh));gl.bindBuffer(gl.ARRAY_BUFFER,mesh);
+   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+   const fluid=[target(),target()],pressure=[target(),target()];
+   let w=0,h=0,fi=0,pi=0,frame=0,lastFrame=0,lastMove=0;
+   let x=.5,y=.5,oldX=x,oldY=y,lit:HTMLElement|null=null;
+   function resize(){
+    const scale=Math.min(1,300/innerHeight,560/innerWidth);
+    w=Math.max(8,Math.round(innerWidth*scale));h=Math.max(8,Math.round(innerHeight*scale));
+    canvas.width=Math.min(innerWidth,1280);canvas.height=Math.max(1,Math.round(canvas.width*innerHeight/innerWidth));
+    for(const t of [...fluid,...pressure]){
+     gl!.bindTexture(gl!.TEXTURE_2D,t.tex);gl!.texImage2D(gl!.TEXTURE_2D,0,gl!.RGBA,w,h,0,gl!.RGBA,gl!.UNSIGNED_BYTE,null);
+     gl!.bindFramebuffer(gl!.FRAMEBUFFER,t.fb);gl!.framebufferTexture2D(gl!.FRAMEBUFFER,gl!.COLOR_ATTACHMENT0,gl!.TEXTURE_2D,t.tex,0);
+     gl!.clearColor(128/255,128/255,0,0);gl!.clear(gl!.COLOR_BUFFER_BIT);
     }
-
-    gl = canvas.getContext("webgl", {
-      alpha: true,
-      premultipliedAlpha: false,
-      antialias: false,
-      depth: false,
-      preserveDrawingBuffer: false,
-    });
-    if (!gl) {
-      window.addEventListener("pointermove", fallback, { passive: true });
-      return () => window.removeEventListener("pointermove", fallback);
-    }
-
-    const compile = (type: number, source: string) => {
-      const shader = gl!.createShader(type);
-      if (!shader) return null;
-      gl!.shaderSource(shader, source);
-      gl!.compileShader(shader);
-      if (!gl!.getShaderParameter(shader, gl!.COMPILE_STATUS)) {
-        gl!.deleteShader(shader);
-        return null;
-      }
-      return shader;
-    };
-
-    vertex = compile(gl.VERTEX_SHADER, "attribute vec2 pos;void main(){gl_Position=vec4(pos,0.0,1.0);}");
-    pixel = compile(gl.FRAGMENT_SHADER, fragment);
-    if (!vertex || !pixel) {
-      if (vertex) gl.deleteShader(vertex);
-      if (pixel) gl.deleteShader(pixel);
-      window.addEventListener("pointermove", fallback, { passive: true });
-      return () => window.removeEventListener("pointermove", fallback);
-    }
-
-    program = gl.createProgram();
-    if (!program) return;
-    gl.attachShader(program, vertex);
-    gl.attachShader(program, pixel);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      gl.deleteProgram(program);
-      window.addEventListener("pointermove", fallback, { passive: true });
-      return () => window.removeEventListener("pointermove", fallback);
-    }
-
-    gl.useProgram(program);
-    const loc = (name: string) => gl!.getUniformLocation(program!, name);
-    const u = {
-      resolution: loc("uResolution"),
-      direction: loc("uDirection"),
-      time: loc("uTime"),
-      active: loc("uActive"),
-      trail: loc("uTrail[0]"),
-    };
-
-    buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const position = gl.getAttribLocation(program, "pos");
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-    gl.clearColor(0, 0, 0, 0);
-    gl.disable(gl.DEPTH_TEST);
-    gl.disable(gl.CULL_FACE);
-
-    const direction = { x: 0.02, y: 0.01 };
-
-    const resize = () => {
-      const scale = Math.min(0.43, 820 / Math.max(window.innerWidth, window.innerHeight));
-      canvas.width = Math.max(1, Math.round(window.innerWidth * scale));
-      canvas.height = Math.max(1, Math.round(window.innerHeight * scale));
-      gl!.viewport(0, 0, canvas.width, canvas.height);
-      gl!.uniform2f(u.resolution, canvas.width, canvas.height);
-    };
-
-    const draw = (time: number) => {
-      frame = 0;
-      if (!enabled.matches || document.hidden) return;
-
-      // Reference animation morphs even while the cursor is stationary.
-      frame = requestAnimationFrame(draw);
-      if (time - tick < 42) return;
-      tick = time;
-
-      for (let i = 0; i < TRAIL_SIZE; i++) {
-        const point = history[i];
-        if (!point) {
-          trailData[i * 4] = -2;
-          trailData[i * 4 + 1] = -2;
-          trailData[i * 4 + 2] = 1;
-          trailData[i * 4 + 3] = 0;
-          continue;
-        }
-        const age = Math.min(Math.max((time - point.time) / 1180, 0), 1);
-        trailData[i * 4] = point.x;
-        trailData[i * 4 + 1] = point.y;
-        trailData[i * 4 + 2] = age;
-        trailData[i * 4 + 3] = 1 - age;
-      }
-
-      gl!.uniform2f(u.direction, direction.x, direction.y);
-      gl!.uniform1f(u.time, time / 1000);
-      gl!.uniform1f(u.active, Math.max(0, 1 - (time - lastMove) / 1650));
-      gl!.uniform4fv(u.trail, trailData);
-      gl!.clear(gl!.COLOR_BUFFER_BIT);
-      gl!.drawArrays(gl!.TRIANGLES, 0, 3);
-    };
-
-    const move = (event: PointerEvent) => {
-      const now = performance.now();
-      const next = {
-        x: event.clientX / window.innerWidth,
-        y: 1 - event.clientY / window.innerHeight,
-        time: now,
-      };
-
-      if (lastInput) {
-        const dx = (next.x - lastInput.x) * (window.innerWidth / window.innerHeight);
-        const dy = next.y - lastInput.y;
-        const distance = Math.hypot(dx, dy);
-        if (distance > 0.001) {
-          direction.x = next.x - lastInput.x;
-          direction.y = next.y - lastInput.y;
-          const length = Math.hypot(direction.x, direction.y) || 1;
-          direction.x /= length;
-          direction.y /= length;
-          const steps = Math.max(1, Math.ceil(distance / 0.022));
-          for (let i = 1; i <= steps; i++) {
-            const progress = i / steps;
-            history.unshift({
-              x: lastInput.x + (next.x - lastInput.x) * progress,
-              y: lastInput.y + (next.y - lastInput.y) * progress,
-              time: now - (steps - i) * 5,
-            });
-          }
-        }
-      } else {
-        history.unshift(next);
-      }
-
-      lastInput = next;
-      lastMove = now;
-      if (history.length > TRAIL_SIZE) history.length = TRAIL_SIZE;
-
-      if (event.target instanceof Element) {
-        const card = event.target.closest<HTMLElement>(".card-hover,.reel-image");
-        if (lit !== card) {
-          lit?.removeAttribute("data-lit");
-          card?.setAttribute("data-lit", "");
-          lit = card;
-        }
-        if (card) {
-          const rect = card.getBoundingClientRect();
-          card.style.setProperty("--sheen-x", event.clientX - rect.x + "px");
-          card.style.setProperty("--sheen-y", event.clientY - rect.y + "px");
-        }
-      }
-
-      if (!frame) frame = requestAnimationFrame(draw);
-    };
-
-    resize();
-    frame = requestAnimationFrame(draw);
-    field.dataset.rendered = "fluid";
-    const visibility = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(frame);
-        frame = 0;
-      } else if (!frame && enabled.matches) {
-        frame = requestAnimationFrame(draw);
-      }
-    };
-    document.addEventListener("visibilitychange", visibility);
-    window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", move, { passive: true });
-    window.addEventListener("pointermove", fallback, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(frame);
-      document.removeEventListener("visibilitychange", visibility);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointermove", fallback);
-      lit?.removeAttribute("data-lit");
-      delete field.dataset.rendered;
-      if (buffer) gl!.deleteBuffer(buffer);
-      if (vertex) gl!.deleteShader(vertex);
-      if (pixel) gl!.deleteShader(pixel);
-      if (program) gl!.deleteProgram(program);
-    };
-  }, []);
-
-  return <div className="liquid-field" aria-hidden="true"><canvas ref={ref} /></div>;
+    gl!.bindFramebuffer(gl!.FRAMEBUFFER,null);gl!.clearColor(0,0,0,0);gl!.clear(gl!.COLOR_BUFFER_BIT);
+   }
+   function pass(s:typeof flowPass,fb:WebGLFramebuffer|null){
+    gl!.useProgram(s.p);gl!.bindFramebuffer(gl!.FRAMEBUFFER,fb);
+    gl!.activeTexture(gl!.TEXTURE0);gl!.bindTexture(gl!.TEXTURE_2D,fluid[fi].tex);
+    gl!.activeTexture(gl!.TEXTURE1);gl!.bindTexture(gl!.TEXTURE_2D,pressure[pi].tex);
+    gl!.uniform2f(s.u.cell,1/w,1/h);
+   }
+   function draw(t:number){
+    frame=0;
+    if(document.hidden||!media.matches||t-lastMove>3900){resize();return;}
+    frame=requestAnimationFrame(draw);
+    if(t-lastFrame<16)return;
+    const dt=Math.min(2,(t-lastFrame)/16.67);lastFrame=t;
+    gl!.viewport(0,0,w,h);
+    for(let n=0;n<6;n++){pass(pressurePass,pressure[1-pi].fb);gl!.drawArrays(gl!.TRIANGLES,0,3);pi=1-pi;}
+    pass(flowPass,fluid[1-fi].fb);
+    const nx=oldX+(x-oldX)*(1-Math.exp(-.66*dt)),ny=oldY+(y-oldY)*(1-Math.exp(-.66*dt));
+    const dx=(nx-oldX)*w,dy=(ny-oldY)*h,dist=Math.hypot(dx,dy);
+    const scale=Math.min(1,6/Math.max(.01,dist));
+    gl!.uniform2f(flowPass.u.aspect,w/h,1);gl!.uniform2f(flowPass.u.fromPoint,oldX,oldY);gl!.uniform2f(flowPass.u.toPoint,nx,ny);
+    gl!.uniform2f(flowPass.u.impulse,dx*scale,dy*scale);gl!.uniform1f(flowPass.u.strength,Math.min(1,dist*.38));gl!.uniform1f(flowPass.u.dt,dt);
+    gl!.drawArrays(gl!.TRIANGLES,0,3);fi=1-fi;oldX=nx;oldY=ny;
+    pass(displayPass,null);gl!.viewport(0,0,canvas.width,canvas.height);gl!.drawArrays(gl!.TRIANGLES,0,3);
+   }
+   function move(e:PointerEvent){
+    if(!media.matches||e.pointerType==="touch")return;
+    const now=performance.now();x=e.clientX/innerWidth;y=1-e.clientY/innerHeight;
+    if(now-lastMove>500){oldX=x;oldY=y;}
+    lastMove=now;
+    const card=e.target instanceof Element?e.target.closest<HTMLElement>(".card-hover,.reel-image"):null;
+    if(card!==lit){lit?.removeAttribute("data-lit");card?.setAttribute("data-lit","");lit=card;}
+    if(card){const rect=card.getBoundingClientRect();card.style.setProperty("--sheen-x",e.clientX-rect.x+"px");card.style.setProperty("--sheen-y",e.clientY-rect.y+"px");}
+    if(!frame)frame=requestAnimationFrame(draw);
+   }
+   resize();field.dataset.rendered="ink-flow";
+   window.addEventListener("pointermove",move,{passive:true});window.addEventListener("resize",resize);
+   return ()=>{cancelAnimationFrame(frame);window.removeEventListener("pointermove",move);window.removeEventListener("resize",resize);lit?.removeAttribute("data-lit");delete field.dataset.rendered;dispose();};
+  }catch{dispose();}
+ },[]);
+ return <div className="liquid-field" aria-hidden="true"><canvas ref={ref}/></div>;
 }
