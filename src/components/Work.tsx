@@ -8,6 +8,7 @@ import { projects } from "@/lib/projects";
 export default function Work() {
   const section = useRef<HTMLElement>(null);
   const [current, setCurrent] = useState(0);
+  const hoverTimer = useRef(0);
   const jump = useRef<(index: number) => void>(() => {});
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function Work() {
     };
 
     jump.current = (index) => {
-      presented = index;
+
       const top = start + travel * index / (slides.length - 1);
       window.scrollTo({ top, behavior: "instant" });
     };
@@ -97,6 +98,7 @@ export default function Work() {
     window.addEventListener("portfolio:intro-done", measure);
 
     return () => {
+      clearTimeout(hoverTimer.current);
       cancelAnimationFrame(frame);
       size.disconnect();
       motion.removeEventListener("change", configure);
@@ -116,14 +118,18 @@ export default function Work() {
       <div className="reel-stage">
         <div className="container-x reel-inner">
           <header className="reel-head">
-            <h2 id="work-heading"><RollingText>Selected</RollingText> <em><RollingText>work.</RollingText></em></h2>
+            <h2 id="work-heading"><RollingText>Selected</RollingText> <em><RollingText>projects.</RollingText></em></h2>
             <span className="folio-label">Portfolio / 2026</span>
             <span className="reel-progress" aria-hidden="true"><i /></span>
           </header>
           <div className="reel-screen">
             <div className="orbit-stage">
               <div className="orbit-ring" aria-hidden="true" /><strong aria-hidden="true">Work</strong>
-              {projects.map((project,index) => <button key={project.index} className="orbit-project" aria-label={"Select "+project.name} onClick={()=>jump.current(index)}>
+              {projects.map((project,index) => <button key={project.index} className="orbit-project" aria-label={"Select "+project.name} onPointerMove={event=>{
+                  if(event.pointerType !== "mouse" || !(event.movementX || event.movementY)) return;
+                  clearTimeout(hoverTimer.current);
+                  if(current !== index) hoverTimer.current = window.setTimeout(()=>jump.current(index),210);
+                }} onPointerLeave={()=>clearTimeout(hoverTimer.current)} onClick={()=>jump.current(index)}>
                 <Image src={project.image} width={600} height={375} sizes="(max-width:700px) 45vw, 24vw" alt="" />
               </button>)}
             </div>

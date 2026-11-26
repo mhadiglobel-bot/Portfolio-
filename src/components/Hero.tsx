@@ -19,6 +19,7 @@ export default function Hero() {
     const draw = () => {
       frame = 0;
       const progress = Math.max(0, Math.min(1, -root.getBoundingClientRect().top / Math.max(1, root.offsetHeight - stage.offsetHeight)));
+      root.toggleAttribute("data-scrolling",progress>.008);
       const centerX = stage.clientWidth / 2 - plate.offsetLeft - plate.offsetWidth / 2;
       const centerY = stage.clientHeight / 2 - plate.offsetTop - plate.offsetHeight / 2;
       const zoom = Math.max(innerWidth, stage.clientHeight) / (plate.offsetWidth * 0.76);
@@ -78,7 +79,7 @@ export default function Hero() {
         <div className="emblem-plate" aria-hidden="true">
           <div className="emblem-plate-core">
             <div className="emblem-halo" />
-            <pre className="emblem-code"><code>{'git switch main\nconst mark = "MH";\nrender(mark);'}</code></pre>
+            <div className="build-dialog"><span>studio.ts</span><code>const mark = "MH";</code><code>render(mark);</code></div>
             <Image src="/mh-emblem.webp" alt="" width={1254} height={1254} sizes="(max-width: 700px) 48vw, 32vw" loading="eager" />
           </div>
         </div>

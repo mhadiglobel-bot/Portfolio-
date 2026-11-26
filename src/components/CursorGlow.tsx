@@ -63,7 +63,7 @@ export default function CursorGlow(){
  useEffect(()=>{
   const canvas=ref.current!;
   const field=canvas.parentElement!;
-  const media=matchMedia("(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)");
+  const media=matchMedia("(prefers-reduced-motion:no-preference)");
   const gl=media.matches ? canvas.getContext("webgl",{alpha:true,premultipliedAlpha:false,depth:false,antialias:false}):null;
   if(!gl)return;
   const resources:(()=>void)[]=[];
@@ -133,19 +133,26 @@ export default function CursorGlow(){
     gl!.drawArrays(gl!.TRIANGLES,0,3);fi=1-fi;oldX=nx;oldY=ny;
     pass(displayPass,null);gl!.viewport(0,0,canvas.width,canvas.height);gl!.drawArrays(gl!.TRIANGLES,0,3);
    }
-   function move(e:PointerEvent){
-    if(!media.matches||e.pointerType==="touch")return;
-    const now=performance.now();x=e.clientX/innerWidth;y=1-e.clientY/innerHeight;
+   function track(clientX:number,clientY:number){
+    if(!media.matches)return;
+    const now=performance.now();x=clientX/innerWidth;y=1-clientY/innerHeight;
     if(now-lastMove>500){oldX=x;oldY=y;}
     lastMove=now;
+    if(!frame)frame=requestAnimationFrame(draw);
+   }
+   function touch(e:TouchEvent){const t=e.touches[0];if(t)track(t.clientX,t.clientY);}
+   function move(e:PointerEvent){
+    if(e.pointerType==="touch")return;
+    track(e.clientX,e.clientY);
     const card=e.target instanceof Element?e.target.closest<HTMLElement>(".card-hover,.reel-image"):null;
     if(card!==lit){lit?.removeAttribute("data-lit");card?.setAttribute("data-lit","");lit=card;}
     if(card){const rect=card.getBoundingClientRect();card.style.setProperty("--sheen-x",e.clientX-rect.x+"px");card.style.setProperty("--sheen-y",e.clientY-rect.y+"px");}
     if(!frame)frame=requestAnimationFrame(draw);
    }
+   window.addEventListener("touchstart",touch,{passive:true});window.addEventListener("touchmove",touch,{passive:true});
    resize();field.dataset.rendered="ink-flow";
    window.addEventListener("pointermove",move,{passive:true});window.addEventListener("resize",resize);
-   return ()=>{cancelAnimationFrame(frame);window.removeEventListener("pointermove",move);window.removeEventListener("resize",resize);lit?.removeAttribute("data-lit");delete field.dataset.rendered;dispose();};
+   return ()=>{window.removeEventListener("touchstart",touch);window.removeEventListener("touchmove",touch);cancelAnimationFrame(frame);window.removeEventListener("pointermove",move);window.removeEventListener("resize",resize);lit?.removeAttribute("data-lit");delete field.dataset.rendered;dispose();};
   }catch{dispose();}
  },[]);
  return <div className="liquid-field" aria-hidden="true"><canvas ref={ref}/></div>;

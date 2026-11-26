@@ -40,7 +40,7 @@ export default function SmoothScroll() {
     function roll(group: Element | null) {
       if (!group || matchMedia("(prefers-reduced-motion:reduce)").matches) return;
       const letters = Array.from(group.querySelectorAll<HTMLElement>(".roll-letter"));
-      const beat = Math.min(58, 940 / Math.max(1,letters.length));
+      const beat = 110;
       letters.forEach((letter,index) => {
         letter.getAnimations().forEach(a=>a.cancel());
         letter.animate([{transform:"rotate(0deg)"},{transform:"rotate(360deg)"}],{

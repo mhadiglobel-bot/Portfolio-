@@ -1267,3 +1267,33 @@ html[data-intro="active"] .liquid-field {
 .mail-line:is(:hover,:focus-visible) .mail-plane {opacity:1;transform:translate(0,0);}
 @media(prefers-reduced-motion:no-preference){.mail-symbol svg>*{transition:transform .4s,opacity .3s;}}
 .contact-github {display:inline-block;margin-top:1.5rem;font-size:.9rem;color:#dbbfd8;}
+.portrait-scene {background:linear-gradient(180deg,transparent,#241021 17%,#21102a 78%,transparent);}
+.portrait-light {background:linear-gradient(105deg,#f35f9a,#b783f7);mask-image:linear-gradient(0deg,transparent,#000 14% 85%,transparent),linear-gradient(90deg,transparent,#000 17% 84%,transparent);mask-composite:intersect;}
+.portrait-light img {object-fit:contain;object-position:center;}
+@media(min-width:701px){
+ .portrait-light {inset:0 5% 0 41%;}
+ .signature-stage.container-x {width:min(92%,105rem);max-width:none;grid-template-columns:1.12fr .88fr;column-gap:4%;}
+ .signature h1 {font-size:clamp(5rem,9.8vw,13rem);}
+ .emblem-plate {width:min(100%,61svh);justify-self:end;}
+}
+@media(max-width:700px){.portrait-light{mask-image:linear-gradient(0deg,transparent,#000 15% 88%,transparent);}}
+.orbit-ring {border-color:#cd78bc9e;box-shadow:0 0 10px #e65aba46,inset 0 0 10px #be5bf63a,0 0 30px #c255ba27;}
+.orbit-project {border-radius:clamp(.6rem,1vw,1rem);transition:box-shadow .25s,filter .25s;}
+.orbit-project:is(:hover,:focus-visible){filter:brightness(1.18);box-shadow:0 0 0 2px #ffbbe3,0 0 24px #e961c27d;}
+.orbit-project img,.reel-image img {object-fit:contain;background:#120f16;}
+.build-dialog {display:none;position:absolute;z-index:4;min-width:65%;padding:1em 1.2em;border:1px solid #be86b7a8;border-radius:.7em;background:#160e20ee;box-shadow:0 .8em 3em #0008;font:500 clamp(.65rem,1.4vw,1.25rem)/1.6 monospace;color:#ffd2ed;}
+.build-dialog span {display:block;font-size:.7em;color:#ce9fda;border-bottom:1px solid #84507855;margin-bottom:.45em;}
+.build-dialog code {display:block;width:max-content;white-space:nowrap;overflow:hidden;}
+@media(prefers-reduced-motion:no-preference){
+ .build-dialog {display:block;animation:terminal-cycle 8s infinite;}
+ .build-dialog code {animation:type-first 8s steps(18,end) infinite;}
+ .build-dialog code:last-child {animation-name:type-next;}
+ .emblem-halo {animation:rim-turn 4s linear infinite;}
+ .emblem-plate-core img {animation:reveal-mark 8s infinite;}
+ @keyframes terminal-cycle {0%,44%,100%{opacity:0}6%,38%{opacity:1}}
+ @keyframes type-first {0%,5%{clip-path:inset(0 100% 0 0)}23%,100%{clip-path:inset(0)}}
+ @keyframes type-next {0%,23%{clip-path:inset(0 100% 0 0)}37%,100%{clip-path:inset(0)}}
+ @keyframes reveal-mark {0%,38%{opacity:.12;filter:blur(4px)}46%,95%{opacity:1;filter:none}100%{opacity:.12}}
+ .signature[data-scrolling] .build-dialog {visibility:hidden;}
+ .signature[data-scrolling] .emblem-plate-core img {animation:none;opacity:1;}
+}
