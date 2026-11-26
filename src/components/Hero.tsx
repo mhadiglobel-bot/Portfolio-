@@ -25,7 +25,8 @@ export default function Hero() {
       const scrollTilt = -16 * Math.sin(Math.PI * progress);
       plate.style.transform = "translate(" + centerX * progress + "px," + centerY * progress + "px) scale(" + (1 + zoom * progress * progress) + ") rotateY(" + scrollTilt + "deg)";
       plate.style.opacity = String(Math.min(1, (1 - progress) / 0.25));
-      root.style.setProperty("--type-opacity", String(Math.max(0, 1 - progress * 2.8)));
+      root.style.setProperty("--type-opacity", String(Math.min(1,(1-progress)/.48)));
+      root.style.setProperty("--bio-light",String(.70+.30*Math.min(1,progress*4)));
     };
 
     const queue = () => {
@@ -71,12 +72,13 @@ export default function Hero() {
             <br />
             <em><RollingText animateOnLoad delayOffset={8} staggerMs={48}>Hadi.</RollingText></em>
           </h1>
-          <p className="signature-bio">I build web products, shape how they move, and help people find them through search.</p>
+          <p className="signature-bio">I turn ideas into working web products. I write the interface, tune the motion and take the build from a GitHub commit to production.</p>
           <a className="folio-link" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
         </div>
         <div className="emblem-plate" aria-hidden="true">
           <div className="emblem-plate-core">
             <div className="emblem-halo" />
+            <pre className="emblem-code"><code>{'git switch main\nconst mark = "MH";\nrender(mark);'}</code></pre>
             <Image src="/mh-emblem.webp" alt="" width={1254} height={1254} sizes="(max-width: 700px) 48vw, 32vw" loading="eager" />
           </div>
         </div>
