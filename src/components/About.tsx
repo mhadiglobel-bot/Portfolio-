@@ -6,8 +6,8 @@ export default function About() {
     <div className="container-x portrait-copy">
       <p className="folio-label">About Muhammad Hadi</p>
       <h2 id="portrait-heading"><RollingText>From a first idea</RollingText><br/><em><RollingText>to a live product.</RollingText></em></h2>
-      <p>I use AI-assisted coding to explore an idea, then build the interface, work through the code and take it live.</p>
-      <p>My day-to-day tools are GitHub, the command line and technical SEO. I care about how a site feels, how people find it and how it holds up after launch.</p>
+      <p>I’m Muhammad Hadi, an independent web developer. My work ranges from Audixo, where people record and edit audio in their browser, to Rank Ur Business, where they search for a business by name, category or location.</p>
+      <p>I use AI-assisted coding to try out an idea, then work through the details myself. I build the interface, test it on a phone and use GitHub and the command line to ship it. Technical SEO is part of that work too. A page should be easy to find as well as easy to use.</p>
       <a className="folio-link" href="https://github.com/mhadiglobel-bot">Find me on GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </section>;
