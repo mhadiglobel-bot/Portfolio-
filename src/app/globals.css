@@ -1297,3 +1297,27 @@ html[data-intro="active"] .liquid-field {
  .signature[data-scrolling] .build-dialog {visibility:hidden;}
  .signature[data-scrolling] .emblem-plate-core img {animation:none;opacity:1;}
 }
+
+.portrait-scene .portrait-light {
+  background:transparent;
+  mask-image:linear-gradient(to top,transparent,#000 14%,#000 98%,transparent);
+  mask-composite:add;
+}
+.portrait-light img {
+  mix-blend-mode:normal;
+  filter:brightness(.84) drop-shadow(-5px 0 13px #dc327b49) drop-shadow(6px 0 17px #8747ee52);
+}
+.portrait-scene .portrait-light::after {background:none;}
+@supports (animation-timeline:view()) {
+  @media(prefers-reduced-motion:no-preference) {
+    main :is(h1,h2,h3,p,summary,.mail-line,.folio-link,.contact-github) {
+      animation: viewport-text linear both;
+      animation-timeline:view(block);
+      animation-range:entry 0% exit 100%;
+    }
+    @keyframes viewport-text {
+      0%,100% {filter:opacity(.38);}
+      22%,78% {filter:opacity(1);}
+    }
+  }
+}

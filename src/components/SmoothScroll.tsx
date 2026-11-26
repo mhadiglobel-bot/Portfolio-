@@ -113,28 +113,6 @@ export default function SmoothScroll() {
         });
       });
 
-      const statementWords = gsap.utils.toArray<HTMLElement>("[data-statement-word]");
-      if (statementWords.length) {
-        gsap.fromTo(
-          statementWords,
-          { opacity: 0.14 },
-          {
-            opacity: (_index, target) =>
-              target instanceof HTMLElement && target.hasAttribute("data-statement-accent")
-                ? 0.55
-                : 1,
-            stagger: 0.06,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#statement",
-              start: "top 78%",
-              end: "bottom 55%",
-              scrub: 0.7,
-            },
-          }
-        );
-      }
-
       gsap.utils.toArray<HTMLElement>("[data-media-parallax]").forEach((el) => {
         gsap.fromTo(
           el,
@@ -192,13 +170,19 @@ export default function SmoothScroll() {
     const onClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;
       const anchor = target?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
-      if (!anchor) return;
+      if (!anchor || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const id = anchor.getAttribute("href");
       if (!id || id === "#") return;
       const el = document.querySelector(id);
       if (!el) return;
       event.preventDefault();
-      lenis.scrollTo(el as HTMLElement, { offset: -88 });
+      const distance = Math.abs(el.getBoundingClientRect().top);
+      lenis.scrollTo(id === "#top" ? 0 : el as HTMLElement, {
+        offset: id === "#top" ? 0 : -72,
+        duration: Math.min(2.1, .75 + distance / Math.max(innerHeight, 1) * .16),
+        easing: t => t*t*(3-2*t),
+        lerp: 0,
+      });
     };
     document.addEventListener("click", onClick);
 
