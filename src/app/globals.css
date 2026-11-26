@@ -1305,7 +1305,7 @@ html[data-intro="active"] .liquid-field {
 }
 .portrait-light img {
   mix-blend-mode:normal;
-  filter:brightness(.84) drop-shadow(-5px 0 13px #dc327b49) drop-shadow(6px 0 17px #8747ee52);
+  filter:brightness(.79) saturate(.88) drop-shadow(-5px 0 12px #ff388b68) drop-shadow(6px 0 16px #a753ff72);
 }
 .portrait-scene .portrait-light::after {background:none;}
 @supports (animation-timeline:view()) {
@@ -1321,3 +1321,5 @@ html[data-intro="active"] .liquid-field {
     }
   }
 }
+
+.portrait-copy > p:not(.folio-label) { font-size:clamp(1rem,1.16vw,1.22rem); line-height:1.65; }
