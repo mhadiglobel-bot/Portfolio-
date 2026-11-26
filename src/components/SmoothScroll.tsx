@@ -37,7 +37,25 @@ export default function SmoothScroll() {
       lenis.stop();
     }
 
+    function roll(group: Element | null) {
+      if (!group || matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+      const letters = Array.from(group.querySelectorAll<HTMLElement>(".roll-letter"));
+      const beat = Math.min(58, 940 / Math.max(1,letters.length));
+      letters.forEach((letter,index) => {
+        letter.getAnimations().forEach(a=>a.cancel());
+        letter.animate([{transform:"rotate(0deg)"},{transform:"rotate(360deg)"}],{
+          duration:beat,delay:index*beat,easing:"ease-in-out"
+        });
+      });
+    }
+    const onHeading = (e: PointerEvent | FocusEvent) => {
+      const group = e.target instanceof Element ? e.target.closest("h1,h2,h3,.mail-line") : null;
+      if (group && !(e.relatedTarget instanceof Node && group.contains(e.relatedTarget))) roll(group);
+    };
+    document.addEventListener("pointerover",onHeading);
+    document.addEventListener("focusin",onHeading);
     const handleIntroDone = () => {
+      roll(document.querySelector(".signature h1"));
       lenis.start();
       requestAnimationFrame(() => ScrollTrigger.refresh());
     };
@@ -191,6 +209,8 @@ export default function SmoothScroll() {
       window.removeEventListener("portfolio:intro-done", handleIntroDone);
       ctx.revert();
       lenis.off("scroll", onScroll);
+      document.removeEventListener("pointerover",onHeading);
+      document.removeEventListener("focusin",onHeading);
       lenis.destroy();
       gsap.ticker.remove(raf);
     };

@@ -25,27 +25,7 @@ export default function Work() {
 
     let presented: number | undefined;
     let previousFrame = 0;
-    const measureImages = () => {
-      const stageRect = stage.getBoundingClientRect();
-      slides.forEach((slide) => {
-        const image = slide.querySelector<HTMLElement>(".reel-image");
-        if (!image) return;
-        const previous = image.style.transform;
-        image.style.transform = "none";
-        const rect = image.getBoundingClientRect();
-        image.style.transform = previous;
-        if (!rect.width || !rect.height) return;
-
-        const x = stageRect.left + stageRect.width / 2 - (rect.left + rect.width / 2);
-        const y = stageRect.top + stageRect.height / 2 - (rect.top + rect.height / 2);
-        const cover = Math.max(stageRect.width / rect.width, stageRect.height / rect.height) * 1.08;
-
-        slide.style.setProperty("--cover-x", x + "px");
-        slide.style.setProperty("--cover-y", y + "px");
-        slide.style.setProperty("--cover-scale", String(cover));
-      });
-    };
-
+    const planets = Array.from(root.querySelectorAll<HTMLElement>(".orbit-project"));
     const render = (time: number) => {
       frame = 0;
       if (!motion.matches) return;
@@ -60,42 +40,19 @@ export default function Work() {
       if (Math.abs(delta) < .002) presented = target;
       else frame = requestAnimationFrame(render);
       const position = presented;
-      const step = Math.min(slides.length - 1, Math.floor(position));
-      const incoming = Math.max(0, (position - step - 0.42) / 0.58);
-      const blend = incoming * incoming * (3 - 2 * incoming);
-      const active = Math.min(slides.length - 1, step + Number(blend > 0.5));
-
-      setCurrent((previous) => previous === active ? previous : active);
-      stage.style.setProperty("--longitude", (position * 58) + "deg");
-      stage.style.setProperty("--reel-progress", String((position / Math.max(1, slides.length - 1)) * 100) + "%");
-
-      slides.forEach((slide, index) => {
-        const outgoing = index === step;
-        const next = index === step + 1;
-        const opacity = outgoing ? 1 - blend : next ? blend : 0;
-        const imageProgress = outgoing ? Math.min(1, blend * 2) : next ? Math.min(1, (1 - blend) * 2) : 0;
-
-        slide.inert = index !== active;
-        slide.style.visibility = opacity > 0.001 ? "visible" : "hidden";
-        slide.style.opacity = String(opacity);
-
-        if (opacity <= 0.001) return;
-
-        const coverX = Number.parseFloat(slide.style.getPropertyValue("--cover-x")) || 0;
-        const coverY = Number.parseFloat(slide.style.getPropertyValue("--cover-y")) || 0;
-        const coverScale = Number.parseFloat(slide.style.getPropertyValue("--cover-scale")) || 1;
-        const shift = next ? blend - 1 : blend;
-
-        slide.style.setProperty("--rise", (-shift * 46) + "px");
-        slide.style.setProperty("--image-x", (coverX * imageProgress) + "px");
-        slide.style.setProperty("--image-y", (coverY * imageProgress) + "px");
-        slide.style.setProperty("--image-scale", String(1 + (coverScale - 1) * imageProgress));
-        slide.style.setProperty("--image-blur", (imageProgress * 8) + "px");
-        slide.style.setProperty("--chrome-opacity", String(Math.max(0, 1 - imageProgress * 3)));
-        slide.style.setProperty("--image-radius", (0.45 * (1 - imageProgress)) + "rem");
-        slide.style.setProperty("--image-turn", (-shift * 5 * (1 - imageProgress)) + "deg");
-        slide.style.setProperty("--copy-blur", (Math.abs(shift) * 5) + "px");
+      const active = Math.round(position);
+      setCurrent(previous => previous === active ? previous : active);
+      stage.style.setProperty("--reel-progress", (position / (slides.length - 1) * 100) + "%");
+      planets.forEach((planet,index) => {
+        const angle = (index-position)*2*Math.PI/slides.length;
+        const depth = (1+Math.cos(angle))/2;
+        planet.style.left = (50 + 35*Math.sin(angle))+"%";
+        planet.style.top = (46 + 32*Math.cos(angle))+"%";
+        planet.style.transform = "translate(-50%,-50%) scale("+(.42+.58*depth)+") rotateY("+(-24*Math.sin(angle))+"deg)";
+        planet.style.opacity = String(.44+.56*depth);
+        planet.style.zIndex = String(1+Math.round(depth*10));
       });
+      slides.forEach((slide,index) => { slide.inert = index !== active; slide.style.display = index === active ? "grid" : "none"; });
     };
 
     const schedule = () => {
@@ -105,7 +62,7 @@ export default function Work() {
     const measure = () => {
       start = root.getBoundingClientRect().top + scrollY;
       travel = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      if (motion.matches) measureImages();
+
       schedule();
     };
 
@@ -164,7 +121,12 @@ export default function Work() {
             <span className="reel-progress" aria-hidden="true"><i /></span>
           </header>
           <div className="reel-screen">
-            <div className="reel-globe" aria-hidden="true"><i /><i /><i /><i /><i /></div>
+            <div className="orbit-stage">
+              <div className="orbit-ring" aria-hidden="true" /><strong aria-hidden="true">Work</strong>
+              {projects.map((project,index) => <button key={project.index} className="orbit-project" aria-label={"Select "+project.name} onClick={()=>jump.current(index)}>
+                <Image src={project.image} width={600} height={375} sizes="(max-width:700px) 45vw, 24vw" alt="" />
+              </button>)}
+            </div>
             {projects.map((project) => (
               <article className="reel-slide" key={project.index}>
                 <div className="reel-copy">

@@ -25,13 +25,14 @@ export default function IntroLoader() {
       if (!title) return;
       const portrait = matchMedia("(max-width: 800px) and (orientation: portrait)").matches;
       const area = root.getBoundingClientRect();
-      root.style.setProperty("--name-width", String((portrait ? area.height * .80 : area.width * .946) / title.offsetWidth));
-      root.style.setProperty("--name-height", String((portrait ? area.width * .60 : Math.min(area.height * .47, area.width * .24)) / title.offsetHeight));
+      root.style.setProperty("--name-width", String((portrait ? area.height * .80 : area.width * .96) / title.offsetWidth));
+      root.style.setProperty("--name-height", String((portrait ? area.width * .60 : Math.min(area.height * .52, area.width * .265)) / title.offsetHeight));
     };
     const observer = new ResizeObserver(fit);
     observer.observe(root);
     if (titleRef.current) observer.observe(titleRef.current);
     fit();
+    root.dataset.fitted = "true";
     exitingRef.current = false;
     window.scrollTo(0, 0);
     arrowRef.current?.focus({ preventScroll: true });
@@ -95,7 +96,7 @@ export default function IntroLoader() {
         exit.to(fragment, {
           x: (horizontal + sideways) / scaleX,
           y: firstY / scaleY,
-          z: (80 + pieceIndex * 70) / scaleX,
+          z: 0,
           rotation,
           rotationX: (pieceIndex % 2 ? -1 : 1) * (22 + index % 34),
           rotationY: (pieceIndex % 3 - 1) * 38,
@@ -106,11 +107,10 @@ export default function IntroLoader() {
         exit.to(fragment, {
           x: (horizontal + sideways) * 1.18 / scaleX,
           y: sh * (0.9 + (index % 5) * 0.13) / scaleY,
-          z: -180 / scaleX,
+          z: 0,
           rotation: rotation * 1.55,
           rotationX: (pieceIndex % 2 ? -1 : 1) * 220,
           autoAlpha: 0,
-          filter: "blur(5px)",
           duration: 0.73 + (index % 4) * 0.07,
           ease: "power2.in",
         }, 0.34 + index * 0.009);
@@ -132,8 +132,8 @@ export default function IntroLoader() {
       )
       .fromTo(
         titleRef.current,
-        { autoAlpha: 0, y: 54, scale: 0.965 },
-        { autoAlpha: 1, y: 0, scale: 1, duration: 1.05, ease: "expo.out" },
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: .8, ease: "expo.out" },
         "-=0.18"
       )
       .fromTo(

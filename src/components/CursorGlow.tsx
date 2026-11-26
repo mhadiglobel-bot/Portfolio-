@@ -46,7 +46,7 @@ const transport = `void main(){
 }`;
 const display = `void main(){
  float d=texture2D(flow,uv).b;
- vec2 e=cell*2.;
+ vec2 e=cell*2.8;
  vec2 slope=vec2(texture2D(flow,uv+vec2(e.x,0)).b-texture2D(flow,uv-vec2(e.x,0)).b,
                  texture2D(flow,uv+vec2(0,e.y)).b-texture2D(flow,uv-vec2(0,e.y)).b);
  vec3 normal=normalize(vec3(-slope*8.,.43));
@@ -100,9 +100,9 @@ export default function CursorGlow(){
    let w=0,h=0,fi=0,pi=0,frame=0,lastFrame=0,lastMove=0;
    let x=.5,y=.5,oldX=x,oldY=y,lit:HTMLElement|null=null;
    function resize(){
-    const scale=Math.min(1,300/innerHeight,560/innerWidth);
+    const scale=Math.min(1,420/innerHeight,800/innerWidth);
     w=Math.max(8,Math.round(innerWidth*scale));h=Math.max(8,Math.round(innerHeight*scale));
-    canvas.width=Math.min(innerWidth,1280);canvas.height=Math.max(1,Math.round(canvas.width*innerHeight/innerWidth));
+    canvas.width=Math.round(Math.min(innerWidth*Math.min(devicePixelRatio,2),2048));canvas.height=Math.max(1,Math.round(canvas.width*innerHeight/innerWidth));
     for(const t of [...fluid,...pressure]){
      gl!.bindTexture(gl!.TEXTURE_2D,t.tex);gl!.texImage2D(gl!.TEXTURE_2D,0,gl!.RGBA,w,h,0,gl!.RGBA,gl!.UNSIGNED_BYTE,null);
      gl!.bindFramebuffer(gl!.FRAMEBUFFER,t.fb);gl!.framebufferTexture2D(gl!.FRAMEBUFFER,gl!.COLOR_ATTACHMENT0,gl!.TEXTURE_2D,t.tex,0);
