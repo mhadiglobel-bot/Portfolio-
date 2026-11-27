@@ -54,8 +54,13 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
   useFrame(({ clock }, delta) => {
     if (!group.current) return;
     const target = position * 0.11 + (reduced ? 0 : clock.elapsedTime * 0.018);
+    if (reduced) {
+      group.current.rotation.y = target;
+      group.current.rotation.x = -0.08;
+      return;
+    }
     group.current.rotation.y += (target - group.current.rotation.y) * Math.min(1, delta * 4);
-    group.current.rotation.x = -0.08 + Math.sin(clock.elapsedTime * 0.13) * (reduced ? 0 : 0.012);
+    group.current.rotation.x = -0.08 + Math.sin(clock.elapsedTime * 0.13) * 0.012;
   });
   return (
     <group ref={group}>
@@ -121,7 +126,7 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   </Float>;
 }
 
-function Scene({ position, projects, reduced }: Props) {
+function Scene({ position, projects, reduced = false }: Props) {
   const orbit = useRef<THREE.Group>(null);
   const { size } = useThree();
   const step = (Math.PI*2)/projects.length;
@@ -129,6 +134,10 @@ function Scene({ position, projects, reduced }: Props) {
   useFrame((_,delta) => {
     if (!orbit.current) return;
     const target = -position*step;
+    if (reduced) {
+      orbit.current.rotation.y = target;
+      return;
+    }
     orbit.current.rotation.y += (target-orbit.current.rotation.y)*Math.min(1,delta*5.5);
   });
   return <>

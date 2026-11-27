@@ -139,7 +139,7 @@ function CentralCore({ reduced }: { reduced: boolean }) {
   </group>;
 }
 
-function SkillScene({ active, reduced }: Props) {
+function SkillScene({ active, reduced = false }: Props) {
   const {size}=useThree();
   const sceneScale=size.width<560?0.66:size.width<850?0.78:size.width<1150?0.9:1;
   const paths=useMemo(()=>stations.map((station)=>{
