@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import RollingText from "./RollingText";
-import SectionLabel from "./SectionLabel";
 
 const faqs = [
   {
@@ -26,7 +25,6 @@ export default function FAQ() {
     <section id="faq" className="relative py-24 md:py-32">
       <div className="container-x">
         <div data-reveal>
-          <SectionLabel index="06">Questions</SectionLabel>
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start" data-reveal>

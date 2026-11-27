@@ -1,13 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import SkillsStage from "./SkillsStage";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import styles from "./PortfolioSections.module.css";
 
-const SkillsStage = dynamic(() => import("./SkillsStage"), {
-  ssr: false,
-  loading: () => <div className={styles.skillsPlaceholder} aria-hidden="true" />,
-});
+
 
 const disciplines = [
   {
@@ -29,9 +26,9 @@ const disciplines = [
     accent: "#f05acb",
   },
   {
-    title: "Backend & Databases",
+    title: "Backend & SQL",
     short: "APIs, authentication, data models and reliable application logic.",
-    detail: "Designing database structures, managing records, integrating APIs and building the backend systems that keep products connected.",
+    detail: "I design SQL schemas, write queries and build authenticated APIs for web applications.",
     accent: "#ad7bff",
   },
   {
@@ -40,6 +37,8 @@ const disciplines = [
     detail: "Improving crawlability, metadata, structured data, loading performance and technical foundations for search visibility.",
     accent: "#ff80cf",
   },
+  {title:"GitHub & Deployment",short:"Version control and releases.",detail:"I manage branches, review changes and deploy tested builds from GitHub.",accent:"#dc87fb"},
+  {title:"Hosting & Maintenance",short:"Domains, reliability and debugging.",detail:"I configure hosting and DNS, investigate application errors and maintain sites after launch.",accent:"#ff82c8"},
 ];
 
 export default function Capabilities() {
@@ -77,14 +76,12 @@ export default function Capabilities() {
     <section id="expertise" ref={section} className={styles.skillJourney}><div className={`container-x ${styles.skills}`}>
       <header className={styles.skillsHeader}>
         <div>
-          <span className={styles.eyebrow}>04 / CORE CAPABILITIES</span>
           <h2>Skills &amp; <em>expertise.</em></h2>
         </div>
-        <p>The practical disciplines I bring together to plan, design and build digital products.</p>
       </header>
 
       <div className={styles.skillVisual}>
-        <SkillsStage active={active} reduced={reduced} />
+        <SkillsStage active={active} title={disciplines[active].title} />
         <div className={styles.skillLabels} aria-label="Explore skills">
           {disciplines.map((skill, index) => (
             <button key={skill.title} type="button" className={styles.skillLabel}
@@ -92,9 +89,7 @@ export default function Capabilities() {
               aria-pressed={active === index}
               onPointerEnter={(event) => { if (event.pointerType === "mouse") setActive(index); }}
               onFocus={() => setActive(index)} onClick={() => setActive(index)}>
-              <small>{String(index + 1).padStart(2, "0")}</small>
               <strong>{skill.title}</strong>
-              <span>{skill.short}</span>
             </button>
           ))}
         </div>

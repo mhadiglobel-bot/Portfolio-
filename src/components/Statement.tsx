@@ -1,5 +1,4 @@
 import RollingText from "./RollingText";
-import SectionLabel from "./SectionLabel";
 
 const lead = "The best digital experiences don't just work beautifully.";
 const accent = "They make you feel something.";
@@ -13,7 +12,6 @@ export default function Statement() {
       />
       <div className="container-x relative">
         <div data-reveal>
-          <SectionLabel index="03">The point of the work</SectionLabel>
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.45fr_1fr] lg:items-end">

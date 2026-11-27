@@ -1,14 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import OrbitalStage from "./OrbitalStage";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { projects } from "@/lib/projects";
 import styles from "./PortfolioSections.module.css";
 
-const OrbitalStage = dynamic(() => import("./OrbitalStage"), {
-  ssr: false,
-  loading: () => <div className={styles.scenePlaceholder} aria-hidden="true"><span>Preparing the orbital field</span></div>,
-});
+
 
 export default function Work() {
   const root = useRef<HTMLElement>(null);
@@ -89,15 +86,12 @@ export default function Work() {
         <div className={`container-x ${styles.show}`}>
           <header className={styles.header}>
             <div>
-              <span className={styles.eyebrow}>03 / PROJECTS</span>
               <h2>Selected <em>projects.</em></h2>
             </div>
-            <span className={styles.scrollHint}>SCROLL TO EXPLORE <i aria-hidden="true">↓</i></span>
           </header>
 
           <div className={styles.orbitLayout}>
             <aside className={styles.projectInfo} key={project.href} aria-live="polite">
-              <span className={styles.projectMeta}>{project.index} / {String(projects.length).padStart(2,"0")} <b>·</b> {project.category}</span>
               <h3>{project.name}</h3>
               <p>{project.description}</p>
               <div className={styles.projectTags} aria-label="Project disciplines">

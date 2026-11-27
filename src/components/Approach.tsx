@@ -1,5 +1,4 @@
 import RollingText from "./RollingText";
-import SectionLabel from "./SectionLabel";
 
 const steps = [
   {
@@ -27,7 +26,6 @@ export default function Approach() {
     <section id="approach" className="relative py-24 md:py-32">
       <div className="container-x grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="lg:sticky lg:top-28 lg:self-start" data-reveal>
-          <SectionLabel index="05">The way I think</SectionLabel>
           <h2 className="display-lg font-display mt-8 max-w-md text-white">
             <RollingText>Good work lives in the</RollingText>{" "}
             <span className="serif-i gradient-text"><RollingText>details.</RollingText></span>
