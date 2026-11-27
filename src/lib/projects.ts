@@ -58,4 +58,9 @@ export const projects: Project[] = [
     name: "Genzio AI",
     category: "AI / Product engineering",
     description:
-      "A cold-outreach automation platform that turns inboxes, leads and follow-up sequences
+      "A cold-outreach automation platform that turns inboxes, leads and follow-up sequences into one visual workflow, built to feel fast, clear and effortless.",
+    href: "https://genzioai.vercel.app",
+    image: "/projects/genzioai.jpg",
+    accent: "#c084fc",
+  },
+];
