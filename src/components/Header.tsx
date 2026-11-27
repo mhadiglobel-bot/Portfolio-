@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 const links = [
   { href: "#work", label: "Work" },
+  { href: "#skills", label: "Skills" },
   { href: "#approach", label: "Approach" },
   { href: "#about", label: "About" },
 ];

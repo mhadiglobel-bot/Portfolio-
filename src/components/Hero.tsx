@@ -1,33 +1,62 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import RollingText from "./RollingText";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import RollingText from "./RollingText";
 
 export default function Hero() {
   const scene = useRef<HTMLElement>(null);
+  const [revealStarted, setRevealStarted] = useState(false);
 
   useEffect(() => {
     const root = scene.current;
     if (!root) return;
+
     const stage = root.querySelector<HTMLElement>(".signature-stage");
     const plate = root.querySelector<HTMLElement>(".emblem-plate");
     const core = root.querySelector<HTMLElement>(".emblem-plate-core");
     if (!stage || !plate || !core) return;
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
+
     const draw = () => {
       frame = 0;
-      const progress = Math.max(0, Math.min(1, -root.getBoundingClientRect().top / Math.max(1, root.offsetHeight - stage.offsetHeight)));
-      root.toggleAttribute("data-scrolling",progress>.008);
+      if (reducedMotion.matches) {
+        const targetSize = Math.max(window.innerWidth, stage.clientHeight);
+        const startScale = Math.min(1, plate.offsetWidth / Math.max(1, targetSize));
+        core.style.setProperty("--emblem-scale", String(startScale));
+        core.style.transform = "";
+        plate.style.transform = "";
+        plate.style.opacity = "1";
+        root.style.setProperty("--type-opacity", "1");
+        root.style.setProperty("--bio-light", "1");
+        root.removeAttribute("data-scrolling");
+        return;
+      }
+
+      const progress = Math.max(
+        0,
+        Math.min(1, -root.getBoundingClientRect().top / Math.max(1, root.offsetHeight - stage.offsetHeight))
+      );
+      root.toggleAttribute("data-scrolling", progress > 0.008);
+
       const centerX = stage.clientWidth / 2 - plate.offsetLeft - plate.offsetWidth / 2;
       const centerY = stage.clientHeight / 2 - plate.offsetTop - plate.offsetHeight / 2;
-      const zoom = Math.max(innerWidth, stage.clientHeight) / (plate.offsetWidth * 0.76);
-      const scrollTilt = -16 * Math.sin(Math.PI * progress);
-      plate.style.transform = "translate(" + centerX * progress + "px," + centerY * progress + "px) scale(" + (1 + zoom * progress * progress) + ") rotateY(" + scrollTilt + "deg)";
-      plate.style.opacity = String(Math.min(1, (1 - progress) / 0.25));
-      root.style.setProperty("--type-opacity", String(Math.min(1,(1-progress)/.48)));
-      root.style.setProperty("--bio-light",String(.70+.30*Math.min(1,progress*4)));
+      const targetSize = Math.max(window.innerWidth, stage.clientHeight);
+      const startScale = Math.min(1, plate.offsetWidth / Math.max(1, targetSize));
+      const scale = startScale + (1 - startScale) * Math.pow(progress, 0.82);
+      const scrollTilt = -12 * Math.sin(Math.PI * progress);
+
+      // The SVG is laid out at the final viewport size from frame one, then
+      // scaled down to the hero mark. It only scales up to its native size,
+      // so the full-screen scroll reveal never enlarges a small raster layer.
+      core.style.setProperty("--emblem-scale", String(scale));
+      plate.style.transform =
+        "translate(" + centerX * progress + "px," + centerY * progress + "px) rotateY(" + scrollTilt + "deg)";
+      plate.style.opacity = String(Math.min(1, (1 - progress) / 0.02));
+      root.style.setProperty("--type-opacity", String(Math.min(1, (1 - progress) / 0.48)));
+      root.style.setProperty("--bio-light", String(0.7 + 0.3 * Math.min(1, progress * 4)));
     };
 
     const queue = () => {
@@ -36,16 +65,18 @@ export default function Hero() {
 
     const finePointer = window.matchMedia("(hover:hover) and (pointer:fine)");
     const onPointerMove = (event: PointerEvent) => {
+      if (root.hasAttribute("data-scrolling")) return;
       const rect = plate.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
-      core.style.transform = "perspective(1100px) rotateX(" + (-y * 12) + "deg) rotateY(" + (x * 16) + "deg) translateZ(24px)";
+      const x = (event.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+      const y = (event.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+      core.style.transform =
+        "perspective(1100px) rotateX(" + (-y * 8) + "deg) rotateY(" + (x * 10) + "deg) translateZ(14px)";
     };
     const onPointerLeave = () => {
       core.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
     };
 
-    if (finePointer.matches) {
+    if (finePointer.matches && !reducedMotion.matches) {
       plate.addEventListener("pointermove", onPointerMove, { passive: true });
       plate.addEventListener("pointerleave", onPointerLeave);
     }
@@ -53,18 +84,30 @@ export default function Hero() {
     draw();
     window.addEventListener("scroll", queue, { passive: true });
     window.addEventListener("resize", queue);
+    reducedMotion.addEventListener("change", queue);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", queue);
       window.removeEventListener("resize", queue);
+      reducedMotion.removeEventListener("change", queue);
       plate.removeEventListener("pointermove", onPointerMove);
       plate.removeEventListener("pointerleave", onPointerLeave);
     };
   }, []);
 
+  useEffect(() => {
+    const startReveal = () => setRevealStarted(true);
+    if (document.documentElement.dataset.intro === "done") {
+      startReveal();
+      return;
+    }
+    window.addEventListener("portfolio:intro-done", startReveal, { once: true });
+    return () => window.removeEventListener("portfolio:intro-done", startReveal);
+  }, []);
+
   return (
-    <section ref={scene} id="top" className="signature">
+    <section ref={scene} id="top" className={"signature" + (revealStarted ? " is-revealing" : "")}>
       <div className="signature-stage container-x">
         <div className="signature-type">
           <p className="folio-label">Independent developer &amp; product engineer</p>
@@ -73,14 +116,29 @@ export default function Hero() {
             <br />
             <em><RollingText animateOnLoad delayOffset={8} staggerMs={48}>Hadi.</RollingText></em>
           </h1>
-          <p className="signature-bio">I turn ideas into working web products. I write the interface, tune the motion and take the build from a GitHub commit to production.</p>
+          <p className="signature-bio">I build websites and digital products, from the interface and database to deployment and SEO.</p>
           <a className="folio-link" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
         </div>
         <div className="emblem-plate" aria-hidden="true">
+          <div className="emblem-halo" />
           <div className="emblem-plate-core">
-            <div className="emblem-halo" />
-            <div className="build-dialog"><span>studio.ts</span><code>const mark = "MH";</code><code>render(mark);</code></div>
-            <Image src="/mh-emblem.webp" alt="" width={1254} height={1254} sizes="(max-width: 700px) 48vw, 32vw" loading="eager" />
+            <Image
+              src="/mh-emblem.svg"
+              alt=""
+              width={1000}
+              height={1000}
+              sizes="(max-width: 700px) 80vw, 48vw"
+              priority
+              unoptimized
+            />
+          </div>
+          <div className="emblem-terminal">
+            <div className="emblem-terminal-bar"><span /><span /><span /><b>identity.tsx</b></div>
+            <div className="emblem-terminal-code">
+              <p className="terminal-line terminal-line-one"><i>const</i> name = <b>&quot;Muhammad Hadi&quot;</b>;</p>
+              <p className="terminal-line terminal-line-two"><i>render</i>(&lt;MH /&gt;);</p>
+              <p className="terminal-line terminal-line-three"><i>deploy</i>(&quot;production&quot;);</p>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8192" height="8192" viewBox="0 0 1000 1000" fill="none" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+  <defs>
+    <radialGradient id="disc" cx="50%" cy="42%" r="62%">
+      <stop offset="0" stop-color="#15101d"/><stop offset=".58" stop-color="#07060c"/><stop offset="1" stop-color="#020207"/>
+    </radialGradient>
+    <linearGradient id="neon" x1="120" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff35a8"/><stop offset=".43" stop-color="#ed42d9"/><stop offset=".72" stop-color="#b84bff"/><stop offset="1" stop-color="#7541ff"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="130" y1="400" x2="890" y2="580" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff43b6"/><stop offset=".48" stop-color="#d84bff"/><stop offset="1" stop-color="#834bff"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="500" y1="105" x2="500" y2="410" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff" stop-opacity=".34"/><stop offset=".38" stop-color="#c8b8e8" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="name" x1="260" y1="0" x2="760" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff9edb"/><stop offset=".5" stop-color="#f3a4ed"/><stop offset="1" stop-color="#bd8cff"/>
+    </linearGradient>
+    <filter id="outerGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="19" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 .4 0 0 0 0 .05 0 0 0 1 0 .7 0 0 0 .9 0" result="tint"/>
+      <feMerge><feMergeNode in="tint"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tubeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softName" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="500" cy="500" r="443" fill="url(#disc)"/>
+  <circle cx="500" cy="500" r="445" stroke="url(#rim)" stroke-width="25" opacity=".42" filter="url(#outerGlow)"/>
+  <circle cx="500" cy="500" r="445" stroke="url(#neon)" stroke-width="9"/>
+  <circle cx="500" cy="500" r="426" stroke="#d6a5ff" stroke-opacity=".52" stroke-width="2"/>
+  <circle cx="500" cy="500" r="414" stroke="#fff" stroke-opacity=".09" stroke-width="1.5"/>
+  <path d="M163 347C220 191 354 105 500 105s280 86 337 242c-95-78-207-116-337-116s-242 38-337 116Z" fill="url(#glass)" opacity=".7"/>
+  <path d="M170 340C238 190 357 122 500 122s262 68 330 218" stroke="#fff" stroke-opacity=".23" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="url(#neon)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" filter="url(#tubeGlow)">
+    <path d="M245 648V350c0-34 25-49 52-25l151 137c29 26 55 26 84 0l151-137c27-24 52-9 52 25v298"/>
+    <path d="M716 345v303M716 493h140M856 345v303"/>
+  </g>
+  <g stroke="#fff0ff" stroke-opacity=".72" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M245 648V350c0-34 25-49 52-25l151 137c29 26 55 26 84 0l151-137c27-24 52-9 52 25v298"/>
+    <path d="M716 345v303M716 493h140M856 345v303"/>
+  </g>
+  <text x="500" y="778" text-anchor="middle" textLength="682" lengthAdjust="spacingAndGlyphs" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700" letter-spacing="7" fill="url(#name)">MUHAMMAD HADI</text>
+  <path d="M236 818Q500 862 764 818" stroke="url(#rim)" stroke-opacity=".34" stroke-width="2"/>
+</svg>
