@@ -19,15 +19,15 @@ const stations = [
 function Platform({ color, active }: { color: string; active: boolean }) {
   return (
     <group>
-      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.28, 0.68, 1.0]}>
+      <mesh position={[0, -1.22, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.28, 0.52, 1.0]}>
         <icosahedronGeometry args={[0.94, 0]} />
         <meshStandardMaterial color="#100b17" roughness={0.94} metalness={0.12} flatShading emissive={color} emissiveIntensity={active ? 0.07 : 0.025} />
       </mesh>
-      <mesh position={[-0.48, -0.96, 0.16]} scale={[0.42, 0.28, 0.38]} rotation={[0.1, 0.3, 0.2]}>
+      <mesh position={[-0.48, -1.24, 0.16]} scale={[0.42, 0.28, 0.38]} rotation={[0.1, 0.3, 0.2]}>
         <icosahedronGeometry args={[0.6, 0]} />
         <meshStandardMaterial color="#15101d" roughness={1} flatShading />
       </mesh>
-      <mesh position={[0.46, -0.94, -0.18]} scale={[0.36, 0.24, 0.32]} rotation={[0.2, -0.2, -0.1]}>
+      <mesh position={[0.46, -1.26, -0.18]} scale={[0.36, 0.24, 0.32]} rotation={[0.2, -0.2, -0.1]}>
         <dodecahedronGeometry args={[0.58, 0]} />
         <meshStandardMaterial color="#0d0915" roughness={1} flatShading />
       </mesh>
