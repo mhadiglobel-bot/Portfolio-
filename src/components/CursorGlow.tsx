@@ -54,7 +54,7 @@ const display = `void main(){
  float rim=smoothstep(.015,.22,length(slope));
  float hot=smoothstep(.48,.95,d);
  float energy=clamp(d*(.13+.64*light)+rim*light*.5+hot*.4,0.,.94);
- vec3 color=mix(vec3(1.,.025,.37),vec3(.60,.055,1.),texture2D(flow,uv).a);
+ vec3 color=mix(vec3(1.,.01,.55),vec3(.48,.035,1.),texture2D(flow,uv).a);
  gl_FragColor=vec4(color,energy*smoothstep(.025,.10,d));
 }`;
 

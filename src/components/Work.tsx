@@ -1,62 +1,129 @@
 "use client";
 
-import Image from "next/image";
-import {useEffect, useRef, useState, type CSSProperties} from "react";
-import {projects} from "@/lib/projects";
-import s from "./PortfolioSections.module.css";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { projects } from "@/lib/projects";
+import styles from "./PortfolioSections.module.css";
+
+const OrbitalStage = dynamic(() => import("./OrbitalStage"), {
+  ssr: false,
+  loading: () => <div className={styles.scenePlaceholder} aria-hidden="true"><span>Preparing the orbital field</span></div>,
+});
 
 export default function Work() {
   const root = useRef<HTMLElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(0);
   const [reduced, setReduced] = useState(false);
   const last = projects.length - 1;
+
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce), (max-height: 540px)");
-    let frame = 0, previous = 0, displayed = 0;
-    function draw(time: number) {
-      frame = 0;
-      if (!root.current || media.matches) return;
-      const rect = root.current.getBoundingClientRect();
-      const travel = Math.max(1, rect.height - root.current.firstElementChild!.clientHeight);
-      const target = Math.min(last, Math.max(0, -rect.top / travel * last));
-      const delta = target - displayed;
-      displayed = Math.abs(delta) < .002 ? target : displayed + delta * (1 - Math.exp(-Math.min(64,time-previous)/115));
-      previous = time;
-      setPosition(displayed);
-      if (displayed !== target) frame = requestAnimationFrame(draw);
-    }
-    function queue() { if (!frame) frame = requestAnimationFrame(draw); }
-    function configure() { setReduced(media.matches); queue(); }
-    configure();
-    media.addEventListener("change",configure);
-    window.addEventListener("scroll",queue,{passive:true});
-    window.addEventListener("resize",queue);
-    return () => { cancelAnimationFrame(frame); media.removeEventListener("change",configure); window.removeEventListener("scroll",queue); window.removeEventListener("resize",queue); };
-  },[last]);
+    let frame = 0;
+    let previous = 0;
+    let displayed = 0;
+    let published = -1;
 
-  function choose(i:number) {
-    if (!root.current || reduced || last <= 0) {setPosition(i);return;}
+    const draw = (time: number) => {
+      frame = 0;
+      const section = root.current;
+      const sticky = pin.current;
+      if (!section || !sticky) return;
+
+      const rect = section.getBoundingClientRect();
+      const travel = Math.max(1, section.offsetHeight - sticky.offsetHeight);
+      const target = media.matches ? 0 : Math.min(last, Math.max(0, (-rect.top / travel) * last));
+      const delta = target - displayed;
+      displayed = media.matches || Math.abs(delta) < 0.001
+        ? target
+        : displayed + delta * (1 - Math.exp(-Math.min(64, time - previous) / 105));
+      previous = time;
+
+      const pinned = !media.matches && rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+      section.toggleAttribute("data-pinned", pinned);
+
+      if (Math.abs(displayed - published) > 0.002 || published < 0) {
+        published = displayed;
+        setPosition(displayed);
+      }
+      if (!media.matches && Math.abs(displayed - target) > 0.001) frame = requestAnimationFrame(draw);
+    };
+
+    const queue = () => { if (!frame) frame = requestAnimationFrame(draw); };
+    const configure = () => { setReduced(media.matches); queue(); };
+    configure();
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    media.addEventListener("change", configure);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+      media.removeEventListener("change", configure);
+      root.current?.removeAttribute("data-pinned");
+    };
+  }, [last]);
+
+  function choose(index: number) {
+    if (!root.current || !pin.current || reduced || last <= 0) {
+      setPosition(index);
+      return;
+    }
     const rect = root.current.getBoundingClientRect();
-    window.scrollTo({top:scrollY + rect.top + i / last * (rect.height-root.current.firstElementChild!.clientHeight),behavior:"smooth"});
+    const travel = Math.max(1, root.current.offsetHeight - pin.current.offsetHeight);
+    window.scrollTo({
+      top: window.scrollY + rect.top + (index / last) * travel,
+      behavior: "smooth",
+    });
   }
-  const active = Math.round(position);
+
+  const active = Math.max(0, Math.min(last, Math.round(position)));
   const project = projects[active];
   if (!project) return null;
-  return <section id="work" ref={root} className={s.runway} style={{"--travel":Math.min(700,last*65)+"svh"} as CSSProperties}>
-    <div className={s.pin}><div className={`container-x ${s.show}`}>
-      <header className={s.header}><h2>Selected <em>projects.</em></h2><span>{project.index} / {String(projects.length).padStart(2,"0")}</span></header>
-      <div className={s.theatre}>
-        <div className={s.track} aria-hidden="true"/>
-        {projects.slice(Math.max(0,active-2),active+3).map(item=>{
-          const i=projects.indexOf(item), d=i-position, distance=Math.abs(d);
-          const style={transform:`translate(-50%,-50%) translateX(${d*79}%) translateZ(${-190*distance}px) rotateY(${-d*27}deg)`,opacity:Math.max(0,1-distance*.42),zIndex:10-Math.round(distance*2)} as CSSProperties;
-          return <button key={item.href} className={s.screen} style={style} onClick={()=>choose(i)} aria-label={"Show "+item.name} aria-pressed={i===active}>
-            <Image fill sizes="(max-width:700px) 70vw, 42vw" src={item.image} alt={item.name+" homepage"}/>
-          </button>;
-        })}
+
+  return (
+    <section id="work" ref={root} className={styles.runway}
+      style={{ "--travel": `${last * 90}svh` } as CSSProperties}
+      data-reduced={reduced ? "true" : undefined}>
+      <div ref={pin} className={styles.pin}>
+        <div className={`container-x ${styles.show}`}>
+          <header className={styles.header}>
+            <div>
+              <span className={styles.eyebrow}>03 / PROJECTS</span>
+              <h2>Selected <em>projects.</em></h2>
+            </div>
+            <span className={styles.scrollHint}>SCROLL TO EXPLORE <i aria-hidden="true">↓</i></span>
+          </header>
+
+          <div className={styles.orbitLayout}>
+            <aside className={styles.projectInfo} key={project.href} aria-live="polite">
+              <span className={styles.projectMeta}>{project.index} / 05 <b>·</b> {project.category}</span>
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
+              <div className={styles.projectTags} aria-label="Project disciplines">
+                {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+              </div>
+              <a className={styles.visitLink} href={project.href} target="_blank" rel="noreferrer">
+                Visit live project <span aria-hidden="true">↗</span>
+              </a>
+            </aside>
+
+            <div className={styles.sceneWrap}>
+              <OrbitalStage position={position} projects={projects} reduced={reduced} />
+              <span className={styles.sceneNote} aria-hidden="true">LIVE PROJECT ORBIT <i>●</i></span>
+            </div>
+          </div>
+
+          <nav className={styles.index} aria-label="Select a project">
+            {projects.map((item, index) => (
+              <button key={item.href} type="button" aria-label={`Show ${item.name}`}
+                aria-current={index === active ? "step" : undefined} onClick={() => choose(index)}>
+                <span>{item.index}</span><i aria-hidden="true" />
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
-      <div className={s.caption} key={project.href}><div><span>{project.category}</span><h3>{project.name}</h3></div><div><p>{project.description}</p><a className="folio-link" href={project.href} target="_blank" rel="noreferrer">View project ↗</a></div></div>
-      <nav className={s.index} aria-label="Project chapters">{projects.map((item,i)=><button key={item.href} aria-current={i===active?"step":undefined} onClick={()=>choose(i)}>{item.index} · {item.name}</button>)}</nav>
-    </div></div>
-  </section>;
+    </section>
+  );
 }

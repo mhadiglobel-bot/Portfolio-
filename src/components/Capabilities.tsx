@@ -1,40 +1,98 @@
 "use client";
 
-import {useState, type CSSProperties} from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState, type CSSProperties } from "react";
 import styles from "./PortfolioSections.module.css";
 
+const SkillsStage = dynamic(() => import("./SkillsStage"), {
+  ssr: false,
+  loading: () => <div className={styles.skillsPlaceholder} aria-hidden="true" />,
+});
+
 const disciplines = [
-  ["Web development", "I build responsive websites with layouts that work across small screens, wide monitors and keyboard navigation."],
-  ["UI & UX design", "I map user journeys, shape the visual hierarchy and prototype interactions before moving into code."],
-  ["Backend programming", "I write the APIs, authentication checks and application logic behind forms, dashboards and product workflows."],
-  ["Database management", "I structure records, write queries and plan schema changes as a product grows."],
-  ["AI integration & chatbots", "I connect models to websites and tune chatbot prompts and conversation flows around real customer questions."],
-  ["AI-assisted development", "I prototype with coding assistants, review their output and test edge cases before release."],
-  ["Version control & deployment", "I manage Git branches, review changes on GitHub and use preview builds to check releases before publishing."],
-  ["Hosting & maintenance", "I configure domains and hosting, investigate errors through logs and keep live sites running after launch."],
-  ["Technical SEO", "I improve crawlability, indexing, metadata and page performance, then monitor how pages appear in search."],
+  {
+    title: "Web Development",
+    short: "Responsive websites, full-stack applications and production-ready interfaces.",
+    detail: "Building responsive web products from the interface through to the application logic, with modern React and Next.js workflows.",
+    accent: "#ff58c8",
+  },
+  {
+    title: "UI/UX Design",
+    short: "Clear visual systems, considered layouts and purposeful interaction.",
+    detail: "Shaping user journeys, interface hierarchy, interaction patterns and motion so complex products feel simple to use.",
+    accent: "#c58aff",
+  },
+  {
+    title: "AI Integration",
+    short: "Practical AI features, LLM APIs and workflow automation.",
+    detail: "Connecting ChatGPT and other AI services to real products, including assistants, structured outputs and automated workflows.",
+    accent: "#f05acb",
+  },
+  {
+    title: "Backend & Databases",
+    short: "APIs, authentication, data models and reliable application logic.",
+    detail: "Designing database structures, managing records, integrating APIs and building the backend systems that keep products connected.",
+    accent: "#ad7bff",
+  },
+  {
+    title: "Technical SEO & Performance",
+    short: "Discoverability, indexing, Core Web Vitals and speed.",
+    detail: "Improving crawlability, metadata, structured data, loading performance and technical foundations for search visibility.",
+    accent: "#ff80cf",
+  },
 ];
 
-const symbols = ["</>", "Aa", "{ }", "SQL", "AI", ">_", "git", "DNS", "SEO"];
-const colors = ["#f499cb","#c6a2ff","#b9b0ff","#ff97ca","#d392ff","#f59fcc","#b0a7ff","#dc97ef","#fdb2c9"];
-
 export default function Capabilities() {
-  const [active, select] = useState(0);
-  const [title, description] = disciplines[active];
-  return <section id="expertise" className={`container-x ${styles.skills}`}>
-    <header className={styles.header}><h2>Technical <em>expertise.</em></h2></header>
-    <div className={styles.lab}>
-      <div className={styles.instrument} style={{"--light":colors[active]} as CSSProperties}>
-        <div className={styles.object} aria-hidden="true" key={active}>
-          {[0,1,2,3].map(i=><i key={i} style={{"--layer":i,"--angle":(active*15)+"deg"} as CSSProperties}/>)}
-          <b>{symbols[active]}</b>
+  const [active, setActive] = useState(0);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return (
+    <section id="expertise" className={`container-x ${styles.skills}`}>
+      <header className={styles.skillsHeader}>
+        <div>
+          <span className={styles.eyebrow}>04 / CORE CAPABILITIES</span>
+          <h2>Skills &amp; <em>expertise.</em></h2>
         </div>
-        <div className={styles.readout} aria-live="polite"><h3>{title}</h3><p>{description}</p></div>
+        <p>The practical disciplines I bring together to plan, design and build digital products.</p>
+      </header>
+
+      <div className={styles.skillVisual}>
+        <SkillsStage active={active} reduced={reduced} />
+        <div className={styles.skillLabels} aria-label="Explore skills">
+          {disciplines.map((skill, index) => (
+            <button key={skill.title} type="button" className={styles.skillLabel}
+              style={{ "--skill-accent": skill.accent } as CSSProperties}
+              aria-pressed={active === index}
+              onPointerEnter={(event) => { if (event.pointerType === "mouse") setActive(index); }}
+              onFocus={() => setActive(index)} onClick={() => setActive(index)}>
+              <small>{String(index + 1).padStart(2, "0")}</small>
+              <strong>{skill.title}</strong>
+              <span>{skill.short}</span>
+            </button>
+          ))}
+        </div>
       </div>
-      <div className={styles.keys} aria-label="Explore expertise">{disciplines.map(([name],i)=>
-        <button key={name} aria-pressed={i===active} onPointerEnter={e=>{if(e.pointerType==="mouse")select(i)}} onFocus={()=>select(i)} onClick={()=>select(i)}>
-          <small>{String(i+1).padStart(2,"0")}</small>{name}<span aria-hidden="true">↗</span>
-        </button>)}</div>
-    </div>
-  </section>;
+
+      <div className={styles.skillReadout} aria-live="polite" key={disciplines[active].title}>
+        <span>{String(active + 1).padStart(2, "0")} / 05</span>
+        <div>
+          <h3>{disciplines[active].title}</h3>
+          <p>{disciplines[active].detail}</p>
+        </div>
+      </div>
+
+      <div className={styles.workflow}>
+        <span>BUILD WORKFLOW</span>
+        <p>GitHub &amp; version control <i>·</i> Vercel deployments <i>·</i> Hosting &amp; maintenance <i>·</i> Continuous improvements</p>
+      </div>
+    </section>
+  );
 }
