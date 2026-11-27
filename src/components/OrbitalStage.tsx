@@ -142,25 +142,25 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   const angle = relative * (Math.PI * 2 / count);
   const distance = Math.abs(relative);
   const scale = 1.12 - Math.min(2, distance) * 0.26;
-  const x = Math.sin(angle) * 3.05;
-  const y = Math.sin(angle * 2) * 1.08;
-  const z = 2.0 + Math.cos(angle) * 0.32;
+  const x = Math.sin(angle) * 2.75;
+  const y = Math.sin(angle * 2) * 1.0;
+  const z = 1.95 + Math.cos(angle) * 0.32;
   const yaw = -Math.atan2(x, z) * 0.12;
 
   return (
     <Float speed={reduced ? 0 : 0.72 + index * 0.06} floatIntensity={reduced ? 0 : 0.05} rotationIntensity={reduced ? 0 : 0.02}>
       <group position={[x, y, z]} rotation={[0, yaw, 0]} scale={scale}>
         <mesh position={[0, 0, -0.025]}>
-          <RoundedBox args={[2.08, 1.34, 0.12]} radius={0.1} smoothness={6}>
+          <RoundedBox args={[2.18, 1.4, 0.12]} radius={0.1} smoothness={6}>
             <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.16} />
             <Edges scale={1.012} threshold={12} color={project.accent} />
           </RoundedBox>
         </mesh>
         <mesh position={[0, 0, 0.075]}>
-          <planeGeometry args={[1.98, 1.25]} />
+          <planeGeometry args={[2.08, 1.31]} />
           <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
-        <mesh position={[0.87, 0.57, 0.086]}>
+        <mesh position={[0.92, 0.6, 0.086]}>
           <sphereGeometry args={[0.025, 12, 12]} />
           <meshBasicMaterial color={project.accent} />
         </mesh>
@@ -175,7 +175,7 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
 
 function Scene({ position, projects, reduced = false }: Props) {
   const { size } = useThree();
-  const sceneScale = size.width < 520 ? 0.66 : size.width < 760 ? 0.86 : size.width < 900 ? 0.98 : 1.08;
+  const sceneScale = size.width < 520 ? 0.66 : size.width < 760 ? 0.86 : size.width < 900 ? 1.08 : 1.28;
 
   return (
     <group scale={sceneScale}>
@@ -206,7 +206,7 @@ export default function OrbitalStage({ position, projects, reduced = false }: Pr
   },[]);
   return <div ref={host} className={styles.sceneCanvas} aria-label="Interactive three-dimensional project globe">
     <Canvas dpr={[1,1.5]} frameloop={visible&&!reduced?"always":"demand"}
-      camera={{position:[0,0,8.7],fov:36,near:0.1,far:60}}
+      camera={{position:[0,0,8.4],fov:36,near:0.1,far:60}}
       gl={{alpha:true,antialias:true,powerPreference:"high-performance"}}
       onCreated={({gl})=>{gl.outputColorSpace=THREE.SRGBColorSpace;gl.setClearColor(0x000000,0);}}>
       <Suspense fallback={null}><Scene position={position} projects={projects} reduced={reduced} /></Suspense>

@@ -19,9 +19,17 @@ const stations = [
 function Platform({ color, active }: { color: string; active: boolean }) {
   return (
     <group>
-      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.08, 0.3, 0.82]}>
+      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.12, 0.44, 0.9]}>
         <dodecahedronGeometry args={[0.82, 1]} />
-        <meshStandardMaterial color="#100b17" roughness={0.94} metalness={0.12} flatShading emissive={color} emissiveIntensity={active ? 0.055 : 0.018} />
+        <meshStandardMaterial color="#100b17" roughness={0.94} metalness={0.12} flatShading emissive={color} emissiveIntensity={active ? 0.07 : 0.025} />
+      </mesh>
+      <mesh position={[-0.48, -0.96, 0.16]} scale={[0.42, 0.28, 0.38]} rotation={[0.1, 0.3, 0.2]}>
+        <icosahedronGeometry args={[0.6, 0]} />
+        <meshStandardMaterial color="#15101d" roughness={1} flatShading />
+      </mesh>
+      <mesh position={[0.46, -0.94, -0.18]} scale={[0.36, 0.24, 0.32]} rotation={[0.2, -0.2, -0.1]}>
+        <dodecahedronGeometry args={[0.58, 0]} />
+        <meshStandardMaterial color="#0d0915" roughness={1} flatShading />
       </mesh>
       <mesh position={[-0.34, -0.93, 0.22]} scale={[0.5, 0.19, 0.42]}>
         <icosahedronGeometry args={[0.55, 0]} />
@@ -54,9 +62,9 @@ function WebObject({ color }: { color: string }) {
         <meshPhysicalMaterial color="#351440" metalness={0.2} roughness={0.12} transparent opacity={0.34} clearcoat={1} clearcoatRoughness={0.08} emissive={color} emissiveIntensity={0.22} />
         <Edges scale={1.012} color={color} />
       </RoundedBox>
-      <Html transform position={[0, 0, 0.45]} distanceFactor={6.6} occlude={false}>
-        <div style={{ color: "#fff0ff", font: "700 36px/1 ui-monospace,monospace", textShadow: "0 0 12px #ff4fc8,0 0 26px #b45aff", whiteSpace: "nowrap" }}>&lt;/&gt;</div>
-      </Html>
+      <Line points={[[-0.2, 0.15, 0.46], [-0.34, 0, 0.46], [-0.2, -0.15, 0.46]]} color="#fff0ff" lineWidth={2.6} />
+      <Line points={[[0.2, 0.15, 0.46], [0.34, 0, 0.46], [0.2, -0.15, 0.46]]} color="#fff0ff" lineWidth={2.6} />
+      <Line points={[[0.08, 0.2, 0.46], [-0.08, -0.2, 0.46]]} color="#fff0ff" lineWidth={2.6} />
       <mesh position={[0, -0.52, 0]}>
         <boxGeometry args={[0.54, 0.018, 0.54]} />
         <meshBasicMaterial color={color} transparent opacity={0.72} />
@@ -292,7 +300,7 @@ function CentralCore({ reduced }: { reduced: boolean }) {
 
 function SkillScene({ active, reduced = false }: Props) {
   const { size } = useThree();
-  const sceneScale = size.width < 520 ? 0.64 : size.width < 680 ? 0.8 : size.width < 900 ? 0.94 : 1.06;
+  const sceneScale = size.width < 520 ? 0.72 : size.width < 680 ? 0.94 : size.width < 900 ? 1.18 : 1.42;
   const paths = useMemo(
     () => stations.map((station) => {
       const [x, , z] = station.position;
@@ -307,17 +315,11 @@ function SkillScene({ active, reduced = false }: Props) {
   );
 
   return (
-    <group position={[0, 0.42, 0]} scale={sceneScale}>
+    <group position={[0, 0.58, 0]} scale={sceneScale}>
       <ambientLight intensity={0.8} />
       <pointLight position={[0, 4.2, 5]} color="#ff65d1" intensity={22} distance={13} decay={2} />
       <pointLight position={[-4, 2.5, -2]} color="#9d62ff" intensity={17} distance={11} decay={2} />
       <pointLight position={[4, 1, 1]} color="#e24bc5" intensity={11} distance={10} decay={2} />
-
-      <FloatingTerrain />
-      <mesh position={[0, -0.58, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[1.08, 0.76, 1]}>
-        <torusGeometry args={[2.72, 0.012, 6, 160]} />
-        <meshBasicMaterial color="#f05acb" transparent opacity={0.72} />
-      </mesh>
 
       {paths.map((curve, index) => (
         <group key={index}>
@@ -358,7 +360,7 @@ export default function SkillsStage({ active, reduced = false }: Props) {
       <Canvas
         dpr={[1, 1.4]}
         frameloop={visible && !reduced ? "always" : "demand"}
-        camera={{ position: [0, 4.35, 9.2], fov: 36, near: 0.1, far: 60 }}
+        camera={{ position: [0, 3.6, 7.7], fov: 36, near: 0.1, far: 60 }}
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => { gl.outputColorSpace = THREE.SRGBColorSpace; gl.setClearColor(0x000000, 0); }}
       >
