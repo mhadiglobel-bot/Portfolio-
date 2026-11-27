@@ -1,0 +1,28 @@
+.section {padding-block:clamp(4rem,8vw,8rem);scroll-margin-top:4rem}
+.heading {display:flex;align-items:end;justify-content:space-between;gap:1.5rem;border-bottom:1px solid #584250;padding-bottom:1.4rem;margin-bottom:2rem}
+.heading h2,.detail h3 {font:500 clamp(3rem,6vw,6rem)/1 var(--font-space),sans-serif;letter-spacing:-.065em}
+.heading em {font-family:var(--font-instrument),serif;color:#efadd3}
+.picker,.meta,.controls span {font:500 .74rem/1.5 monospace;letter-spacing:.07em}
+.picker {display:grid;gap:.35rem;color:#cfbdce}
+.picker select {background:#211a24;color:#fff;border:1px solid #705667;border-radius:.4rem;padding:.6rem;font:1rem/1.4 sans-serif;max-width:100%}
+.spread {display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,5rem);align-items:center}
+.stage {margin:0;padding:clamp(.75rem,2.4vw,2rem);border-radius:1rem;border:1px solid #ffffff20;background:radial-gradient(ellipse at 12% 5%,color-mix(in srgb,var(--ink) 20%,transparent),transparent 72%),#151119;perspective:1100px}
+.frame {position:relative;aspect-ratio:1.35;animation:arrive .65s cubic-bezier(.2,.75,.25,1) both}
+.frame img {object-fit:contain;filter:drop-shadow(0 8px 10px #0005)}
+.detail article,.detail li {animation:lift .45s ease-out both}
+.detail h3 {font-size:clamp(2.1rem,4vw,4.5rem);margin:.8rem 0}
+.detail article>p:not(.meta),.disciplines dd {color:#d4c6d4;line-height:1.65;max-width:55ch}
+.meta {color:#edbedb;text-transform:uppercase}
+.detail ul {display:flex;flex-wrap:wrap;gap:.65rem;margin:1.2rem 0}
+.detail li {list-style:none;font-size:.83rem;border-bottom:1px solid color-mix(in srgb,var(--ink) 60%,transparent);padding-bottom:.25rem}
+.controls {display:flex;gap:1rem;align-items:center;margin-top:2rem}
+.controls button {width:2.9rem;height:2.9rem;border:1px solid #806575;border-radius:50%;cursor:pointer}
+.controls button:hover,.controls button:focus-visible {background:#463042}
+.disciplines {display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(2rem,8vw,7rem)}
+.disciplines div {padding:1.5rem 0;border-bottom:1px solid #584250}
+.disciplines dt {font:500 clamp(1.3rem,2.3vw,2rem)/1.15 var(--font-space),sans-serif;letter-spacing:-.04em}
+.disciplines dd {margin:.65rem 0 0}
+@keyframes arrive {from {opacity:.25;transform:translateY(14px) rotateX(4deg) scale(.985)}to {opacity:1;transform:none}}
+@keyframes lift {from {opacity:.15;transform:translateY(6px)}to {opacity:1;transform:none}}
+@media(max-width:760px){.heading{align-items:start;flex-direction:column}.spread,.disciplines{grid-template-columns:1fr}.controls{margin-top:1rem}}
+@media(prefers-reduced-motion:reduce){.frame,.detail article,.detail li{animation:none}}
