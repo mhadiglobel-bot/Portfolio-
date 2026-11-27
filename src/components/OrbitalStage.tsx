@@ -11,7 +11,7 @@ export default function OrbitalStage({position,projects}:{position:number; proje
       const a=d*2*Math.PI/Math.min(count,5);
       const depth=(1+Math.cos(a))/2;
       return <a key={p.href} href={p.href} target="_blank" rel="noreferrer" aria-label={"Visit "+p.name} className={s.window}
-        style={{left:(50+36*Math.sin(a))+"%",top:(34+28*depth+14*Math.sin(2*a))+"%",zIndex:2+Math.round(depth*8),transform:`translate(-50%,-50%) perspective(700px) rotateY(${-24*Math.sin(a)}deg) scale(${.48+.52*depth})`}}>
+        style={{left:(50+36*Math.sin(a))+"%",top:(32+33*depth-13*Math.sin(a))+"%",zIndex:Math.cos(a)<0 ? 1 : 6+Math.round(depth*4),transform:`translate(-50%,-50%) perspective(700px) rotateY(${-24*Math.sin(a)}deg) scale(${.48+.52*depth})`}}>
         <img src={p.image} alt={p.name+" homepage"}/>
       </a>;
     })}
