@@ -26,7 +26,7 @@
 .scrollHint { display:inline-flex; align-items:center; gap:.8rem; padding-bottom:.4rem; color:#a995ad; }
 .scrollHint i { color:#ff7bd1; font-style:normal; font-size:1rem; }
 .orbitLayout {
-  display:grid; grid-template-columns:minmax(170px,.16fr) minmax(0,.84fr);
+  display:grid; grid-template-columns:minmax(210px,.2fr) minmax(0,.8fr);
   align-items:center; gap:clamp(.9rem,2vw,2.2rem); min-height:0;
 }
 .projectInfo {

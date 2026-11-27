@@ -142,8 +142,8 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   const angle = relative * (Math.PI * 2 / count);
   const distance = Math.abs(relative);
   const scale = 1.12 - Math.min(2, distance) * 0.26;
-  const x = Math.sin(angle) * 2.5;
-  const y = Math.sin(angle * 2) * 1.0;
+  const x = Math.sin(angle) * 2.0;
+  const y = Math.sin(angle * 2) * 0.78;
   const z = 1.95 + Math.cos(angle) * 0.32;
   const yaw = -Math.atan2(x, z) * 0.12;
 
@@ -178,7 +178,7 @@ function Scene({ position, projects, reduced = false }: Props) {
   const sceneScale = size.width < 520 ? 0.66 : size.width < 760 ? 0.86 : size.width < 900 ? 1.08 : 1.28;
 
   return (
-    <group scale={sceneScale}>
+    <group position={[0, 0.16, 0]} scale={sceneScale}>
       <ambientLight intensity={0.78} />
       <pointLight position={[0, 1.8, 4.6]} color="#ff62ce" intensity={20} distance={11} decay={2} />
       <pointLight position={[-4, 2.5, -2]} color="#9b5bff" intensity={17} distance={10} decay={2} />

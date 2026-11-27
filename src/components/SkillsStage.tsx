@@ -49,7 +49,7 @@ function Platform({ color, active }: { color: string; active: boolean }) {
       </mesh>
       <mesh position={[0, -0.545, 0]}>
         <cylinderGeometry args={[0.57, 0.6, 0.055, 64]} />
-        <meshPhysicalMaterial color="#3a1b45" metalness={0.58} roughness={0.2} clearcoat={1} emissive={color} emissiveIntensity={0.1} />
+        <meshPhysicalMaterial color="#54245f" metalness={0.52} roughness={0.2} clearcoat={1} emissive={color} emissiveIntensity={0.22} />
       </mesh>
     </group>
   );
@@ -306,8 +306,8 @@ function SkillScene({ active, reduced = false }: Props) {
       const [x, , z] = station.position;
       return new THREE.CatmullRomCurve3([
         new THREE.Vector3(0, -0.28, 0.05),
-        new THREE.Vector3(x * 0.42, -0.35, z * 0.42),
-        new THREE.Vector3(x * 0.8, -0.44, z * 0.8),
+        new THREE.Vector3(x * 0.38, -0.16, z * 0.34),
+        new THREE.Vector3(x * 0.76, -0.12, z * 0.72),
         new THREE.Vector3(x, -0.48, z),
       ]);
     }),
