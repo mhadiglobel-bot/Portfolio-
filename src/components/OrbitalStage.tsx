@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { Edges, Float, RoundedBox, Sparkles, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import type { Project } from "@/lib/projects";
