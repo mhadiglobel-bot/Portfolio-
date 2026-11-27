@@ -19,8 +19,8 @@ const stations = [
 function Platform({ color, active }: { color: string; active: boolean }) {
   return (
     <group>
-      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.12, 0.52, 0.9]}>
-        <icosahedronGeometry args={[0.88, 0]} />
+      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.28, 0.68, 1.0]}>
+        <icosahedronGeometry args={[0.94, 0]} />
         <meshStandardMaterial color="#100b17" roughness={0.94} metalness={0.12} flatShading emissive={color} emissiveIntensity={active ? 0.07 : 0.025} />
       </mesh>
       <mesh position={[-0.48, -0.96, 0.16]} scale={[0.42, 0.28, 0.38]} rotation={[0.1, 0.3, 0.2]}>
@@ -44,12 +44,16 @@ function Platform({ color, active }: { color: string; active: boolean }) {
         <meshPhysicalMaterial color="#21112c" metalness={0.72} roughness={0.22} clearcoat={1} emissive={color} emissiveIntensity={active ? 0.32 : 0.12} />
       </mesh>
       <mesh position={[0, -0.55, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.61, 0.022, 8, 80]} />
+        <torusGeometry args={[0.63, 0.016, 8, 80]} />
         <meshBasicMaterial color={color} transparent opacity={active ? 0.98 : 0.62} />
       </mesh>
-      <mesh position={[0, -0.545, 0]}>
-        <cylinderGeometry args={[0.57, 0.6, 0.055, 64]} />
-        <meshPhysicalMaterial color="#54245f" metalness={0.52} roughness={0.2} clearcoat={1} emissive={color} emissiveIntensity={0.22} />
+      <mesh position={[0, -0.53, 0]}>
+        <cylinderGeometry args={[0.6, 0.62, 0.075, 64]} />
+        <meshStandardMaterial color="#51265d" metalness={0.42} roughness={0.2} emissive={color} emissiveIntensity={0.24} />
+      </mesh>
+      <mesh position={[0, -0.49, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.44, 0.009, 6, 64]} />
+        <meshBasicMaterial color="#fff0ff" transparent opacity={0.42} />
       </mesh>
     </group>
   );
@@ -107,7 +111,7 @@ function UiObject({ color }: { color: string }) {
         </mesh>
       </group>
       <Html transform position={[0.42, -0.17, 0.2]} distanceFactor={6.4} occlude={false}>
-        <div style={{ color: "#fff3ff", font: "700 34px/1 Arial,sans-serif", textShadow: "0 0 12px #ff5bc8" }}>↖</div>
+        <div style={{ color: "#fff3ff", font: "700 40px/1 Arial,sans-serif", textShadow: "0 0 12px #ff5bc8" }}>↖</div>
       </Html>
     </group>
   );
@@ -278,15 +282,15 @@ function CentralCore({ reduced }: { reduced: boolean }) {
     if (!ref.current) return;
     if (!reduced) {
       ref.current.rotation.y += delta * 0.14;
-      ref.current.position.y = 0.42 + Math.sin(clock.elapsedTime * 0.65) * 0.055;
+      ref.current.position.y = 0.16 + Math.sin(clock.elapsedTime * 0.65) * 0.055;
     } else {
       ref.current.rotation.y = 0;
-      ref.current.position.y = 0.42;
+      ref.current.position.y = 0.16;
     }
   });
 
   return (
-    <group ref={ref} position={[0, 0.42, 0.05]}>
+    <group ref={ref} position={[0, 0.16, 0.72]}>
       <RoundedBox args={[0.7, 0.7, 0.7]} radius={0.1} smoothness={6}>
         <meshPhysicalMaterial color="#321044" metalness={0.28} roughness={0.13} transparent opacity={0.46} clearcoat={1} emissive="#a22cff" emissiveIntensity={0.42} />
         <Edges scale={1.015} color="#e0a0ff" />
