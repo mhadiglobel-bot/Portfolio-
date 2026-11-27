@@ -114,14 +114,14 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   const orbitRadius = 2.64 + (index % 2) * 0.14;
   const orbitY = Math.sin(relative*1.6 + index*0.55) * (0.32 + Math.abs(tilt)) + Math.sin(angle*0.8) * tilt;
   return <Float speed={reduced?0:0.7+index*0.08} floatIntensity={reduced?0:0.045} rotationIntensity={reduced?0:0.018}>
-    <group position={[Math.sin(angle)*orbitRadius,orbitY,Math.cos(angle)*(orbitRadius-0.08)]} rotation={[0,angle-relative*0.45,0]} scale={scale}>
+    <group position={[Math.sin(angle)*orbitRadius,orbitY,Math.cos(angle)*(orbitRadius-0.08)]} rotation={[0,angle-relative*0.72,0]} scale={scale}>
       <mesh position={[0,0,-0.025]}>
         <RoundedBox args={[2.08,1.34,0.12]} radius={0.1} smoothness={5}>
           <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.12} />
           <Edges scale={1.012} threshold={12} color={project.accent} />
         </RoundedBox>
       </mesh>
-      <mesh position={[0,0,0.075]}><planeGeometry args={[1.98,1.25]} /><meshBasicMaterial map={texture} toneMapped={false} /></mesh>
+      <mesh position={[0,0,0.075]}><planeGeometry args={[1.98,1.25]} /><meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} /></mesh>
       <mesh position={[0.87,0.57,0.086]}><sphereGeometry args={[0.025,12,12]} /><meshBasicMaterial color={project.accent} /></mesh>
       <mesh position={[0,-0.68,0.06]}><boxGeometry args={[0.76,0.012,0.016]} /><meshBasicMaterial color={project.accent} transparent opacity={0.76} /></mesh>
     </group>
