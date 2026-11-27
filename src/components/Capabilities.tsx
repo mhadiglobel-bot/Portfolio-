@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import styles from "./PortfolioSections.module.css";
 
 const SkillsStage = dynamic(() => import("./SkillsStage"), {
@@ -43,6 +43,7 @@ const disciplines = [
 ];
 
 export default function Capabilities() {
+  const section = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
 
@@ -54,8 +55,26 @@ export default function Capabilities() {
     return () => media.removeEventListener("change", update);
   }, []);
 
+  useEffect(() => {
+    const node = section.current;
+    if (!node || reduced) return;
+    let last = -1;
+    function update() {
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const travel = rect.height - (node.firstElementChild?.clientHeight || innerHeight);
+      if (travel <= 1 || rect.bottom < 0 || rect.top > innerHeight) return;
+      const index = Math.round(Math.min(1, Math.max(0,-rect.top/travel))*(disciplines.length-1));
+      if (index !== last) { last = index; setActive(index); }
+    }
+    update();
+    window.addEventListener("scroll",update,{passive:true});
+    window.addEventListener("resize",update);
+    return () => {window.removeEventListener("scroll",update);window.removeEventListener("resize",update);};
+  },[reduced]);
+
   return (
-    <section id="expertise" className={`container-x ${styles.skills}`}>
+    <section id="expertise" ref={section} className={styles.skillJourney}><div className={`container-x ${styles.skills}`}>
       <header className={styles.skillsHeader}>
         <div>
           <span className={styles.eyebrow}>04 / CORE CAPABILITIES</span>
@@ -81,6 +100,7 @@ export default function Capabilities() {
         </div>
       </div>
 
-    </section>
+      <div key={active} className={styles.chapter}><h3>{disciplines[active].title}</h3><p>{disciplines[active].detail}</p></div>
+      </div></section>
   );
 }

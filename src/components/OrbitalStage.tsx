@@ -142,22 +142,22 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   const angle = relative * (Math.PI * 2 / count);
   const distance = Math.abs(relative);
   const scale = 1.12 - Math.min(2, distance) * 0.26;
-  const x = Math.sin(angle) * 2.0;
-  const y = Math.sin(angle * 2) * 0.78;
-  const z = 1.95 + Math.cos(angle) * 0.32;
-  const yaw = -Math.atan2(x, z) * 0.12;
+  const x = Math.sin(angle) * 2.65;
+  const y = -0.82 * Math.cos(angle) + 0.32 * Math.sin(angle);
+  const z = 1.2 + Math.cos(angle) * 0.84;
+  const yaw = -Math.sin(angle) * 0.31;
 
   return (
     <Float speed={reduced ? 0 : 0.72 + index * 0.06} floatIntensity={reduced ? 0 : 0.05} rotationIntensity={reduced ? 0 : 0.02}>
       <group position={[x, y, z]} rotation={[0, yaw, 0]} scale={scale}>
         <mesh position={[0, 0, -0.025]}>
-          <RoundedBox args={[2.18, 1.4, 0.12]} radius={0.1} smoothness={6}>
-            <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.16} />
+          <RoundedBox args={[2.25, 1.48, 0.14]} radius={0.1} smoothness={6}>
+            <meshPhysicalMaterial transparent opacity={0.82} color="#542053" metalness={0.4} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.48} />
             <Edges scale={1.012} threshold={12} color={project.accent} />
           </RoundedBox>
         </mesh>
         <mesh position={[0, 0, 0.075]}>
-          <planeGeometry args={[2.08, 1.31]} />
+          <planeGeometry args={[Math.min(2.08,1.31*texture.image.width/texture.image.height), Math.min(1.31,2.08*texture.image.height/texture.image.width)]} />
           <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[0.92, 0.6, 0.086]}>
@@ -175,7 +175,7 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
 
 function Scene({ position, projects, reduced = false }: Props) {
   const { size } = useThree();
-  const sceneScale = size.width < 520 ? 0.66 : size.width < 760 ? 0.86 : size.width < 900 ? 1.08 : 1.28;
+  const sceneScale = Math.min(1.18, 0.66 * size.width / Math.max(1,size.height));
 
   return (
     <group position={[0, 0.16, 0]} scale={sceneScale}>

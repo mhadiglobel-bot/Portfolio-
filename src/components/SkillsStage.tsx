@@ -238,10 +238,10 @@ function Station({ index, active, reduced }: { index: number; active: boolean; r
 
   useFrame(({ clock }, delta) => {
     if (!ref.current) return;
-    const target = active ? 1.07 : 1;
+    const target = active ? 1.36 : 0.85;
     const next = ref.current.scale.x + (target - ref.current.scale.x) * Math.min(1, delta * 4.5);
     ref.current.scale.setScalar(next);
-    ref.current.position.y = reduced ? station.position[1] : station.position[1] + Math.sin(clock.elapsedTime * 0.8 + index * 1.2) * 0.035;
+    ref.current.position.y = reduced ? station.position[1] : station.position[1] + (active ? 0.15 : 0) + Math.sin(clock.elapsedTime * 0.8 + index * 1.2) * 0.035;
     ref.current.rotation.y = reduced ? 0 : Math.sin(clock.elapsedTime * 0.25 + index) * 0.035;
   });
 
