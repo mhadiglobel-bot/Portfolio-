@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Instrument_Serif, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import "./portfolio-refinements.css";
+import "./portfolio-3d.css";
 import CursorGlow from "@/components/CursorGlow";
 import IntroLoader from "@/components/IntroLoader";
 import SmoothScroll from "@/components/SmoothScroll";
