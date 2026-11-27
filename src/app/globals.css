@@ -1323,3 +1323,20 @@ html[data-intro="active"] .liquid-field {
 }
 
 .portrait-copy > p:not(.folio-label) { font-size:clamp(1rem,1.16vw,1.22rem); line-height:1.65; }
+@media(min-width:900px){
+ .signature-stage.container-x {max-width:117rem;width:95%;grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr);gap:6%;}
+}
+.orbit-ring {background:radial-gradient(ellipse at center,transparent 54%,#da56b10d 80%,#ea6fc415);box-shadow:inset 0 0 12px #d07aff45,0 0 16px #fd59bb4a;}
+.orbit-ring i {position:absolute;inset:0;border-radius:inherit;background:conic-gradient(from var(--orbit-light),transparent 0deg 210deg,#ffb8e8 250deg,#c596ff 278deg,transparent 310deg);mask:radial-gradient(ellipse closest-side,transparent calc(100% - 2px),black calc(100% - 1px));}
+@property --orbit-light {syntax:"<angle>";inherits:false;initial-value:0deg;}
+@media(prefers-reduced-motion:no-preference){.orbit-ring i {animation:orbit-sweep 7s linear infinite;}@keyframes orbit-sweep{to{--orbit-light:360deg;}}}
+.expertise {display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:7%;align-items:start;padding-block:clamp(5rem,10vw,10rem);}
+.expertise h2 {font:500 clamp(3rem,6.4vw,7rem)/.94 var(--font-space),sans-serif;letter-spacing:-.075em;}
+.expertise h2 em {font-family:var(--font-instrument),serif;color:#f2a9d7;}
+.expertise dl {border-top:1px solid #c58ab45c;}
+.expertise dl>div {padding:1.25rem 0;border-bottom:1px solid #ba89b347;}
+.expertise dt {font:500 clamp(1.2rem,1.6vw,1.7rem)/1.2 var(--font-space),sans-serif;letter-spacing:-.035em;}
+.expertise dd {margin:.5rem 0 0;color:#d4bfd3;line-height:1.6;max-width:56ch;}
+.letterpress .mail-line {border-top:0;border-bottom:1px solid #b879b4;background:linear-gradient(0deg,#e487d909,transparent 80%);padding-block:.65em;}
+.mail-symbol {border:1px solid #b47eae77;border-radius:50%;width:1.48em;padding:.2em;box-shadow:inset 0 0 12px #d67edb18;}
+@media(max-width:700px){.expertise{grid-template-columns:1fr;gap:2rem;}.expertise h2 br{display:none}.expertise h2 em{margin-left:.2em;}}

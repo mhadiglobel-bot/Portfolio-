@@ -124,7 +124,7 @@ export default function Work() {
           </header>
           <div className="reel-screen">
             <div className="orbit-stage">
-              <div className="orbit-ring" aria-hidden="true" /><strong aria-hidden="true">Work</strong>
+              <div className="orbit-ring" aria-hidden="true"><i /></div><strong aria-hidden="true">Work</strong>
               {projects.map((project,index) => <button key={project.index} className="orbit-project" aria-label={"Select "+project.name} onPointerMove={event=>{
                   if(event.pointerType !== "mouse" || !(event.movementX || event.movementY)) return;
                   clearTimeout(hoverTimer.current);

@@ -67,20 +67,20 @@ export default function Hero() {
     <section ref={scene} id="top" className="signature">
       <div className="signature-stage container-x">
         <div className="signature-type">
-          <p className="folio-label">Independent developer &amp; product engineer</p>
+          <p className="folio-label">Hello, I’m</p>
           <h1>
             <RollingText animateOnLoad staggerMs={48}>Muhammad</RollingText>
             <br />
             <em><RollingText animateOnLoad delayOffset={8} staggerMs={48}>Hadi.</RollingText></em>
           </h1>
-          <p className="signature-bio">I turn ideas into working web products. I write the interface, tune the motion and take the build from a GitHub commit to production.</p>
+          <p className="signature-bio">I’m an independent developer and product engineer. I write the interface, tune the motion and take the build from a GitHub commit to production.</p>
           <a className="folio-link" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
         </div>
         <div className="emblem-plate" aria-hidden="true">
           <div className="emblem-plate-core">
             <div className="emblem-halo" />
             <div className="build-dialog"><span>studio.ts</span><code>const mark = "MH";</code><code>render(mark);</code></div>
-            <Image src="/mh-emblem.webp" alt="" width={1254} height={1254} sizes="(max-width: 700px) 48vw, 32vw" loading="eager" />
+            <Image unoptimized src="/mh-emblem-vector.svg" alt="" width={1254} height={1254} loading="eager" />
           </div>
         </div>
       </div>
