@@ -9,18 +9,18 @@ import styles from "./PortfolioSections.module.css";
 type Props = { active: number; reduced?: boolean };
 
 const stations = [
-  { position: [-2.62, 0, 0.38] as [number, number, number], color: "#ff5bc8" },
-  { position: [0, 0, -1.62] as [number, number, number], color: "#bd7bff" },
-  { position: [2.62, 0, 0.38] as [number, number, number], color: "#ed5ed5" },
-  { position: [-1.58, 0, 1.72] as [number, number, number], color: "#a879ff" },
-  { position: [1.58, 0, 1.72] as [number, number, number], color: "#ff85d3" },
+  { position: [-2.12, 0, 0.38] as [number, number, number], color: "#ff5bc8" },
+  { position: [-0.42, 0, -1.62] as [number, number, number], color: "#bd7bff" },
+  { position: [2.12, 0, 0.38] as [number, number, number], color: "#ed5ed5" },
+  { position: [-1.42, 0, 1.72] as [number, number, number], color: "#a879ff" },
+  { position: [1.42, 0, 1.72] as [number, number, number], color: "#ff85d3" },
 ];
 
 function Platform({ color, active }: { color: string; active: boolean }) {
   return (
     <group>
-      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.12, 0.44, 0.9]}>
-        <dodecahedronGeometry args={[0.82, 1]} />
+      <mesh position={[0, -0.91, 0]} rotation={[0.04, 0.16, -0.06]} scale={[1.12, 0.52, 0.9]}>
+        <icosahedronGeometry args={[0.88, 0]} />
         <meshStandardMaterial color="#100b17" roughness={0.94} metalness={0.12} flatShading emissive={color} emissiveIntensity={active ? 0.07 : 0.025} />
       </mesh>
       <mesh position={[-0.48, -0.96, 0.16]} scale={[0.42, 0.28, 0.38]} rotation={[0.1, 0.3, 0.2]}>
@@ -40,16 +40,16 @@ function Platform({ color, active }: { color: string; active: boolean }) {
         <meshStandardMaterial color="#15101d" roughness={0.96} flatShading />
       </mesh>
       <mesh position={[0, -0.66, 0]}>
-        <cylinderGeometry args={[0.64, 0.72, 0.18, 64]} />
-        <meshPhysicalMaterial color="#170d20" metalness={0.78} roughness={0.2} clearcoat={1} emissive={color} emissiveIntensity={active ? 0.3 : 0.1} />
+        <cylinderGeometry args={[0.64, 0.72, 0.2, 64]} />
+        <meshPhysicalMaterial color="#21112c" metalness={0.72} roughness={0.22} clearcoat={1} emissive={color} emissiveIntensity={active ? 0.32 : 0.12} />
       </mesh>
       <mesh position={[0, -0.55, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.61, 0.022, 8, 80]} />
         <meshBasicMaterial color={color} transparent opacity={active ? 0.98 : 0.62} />
       </mesh>
-      <mesh position={[0, -0.56, 0]}>
-        <cylinderGeometry args={[0.55, 0.6, 0.045, 64]} />
-        <meshStandardMaterial color="#28132f" metalness={0.72} roughness={0.24} />
+      <mesh position={[0, -0.545, 0]}>
+        <cylinderGeometry args={[0.57, 0.6, 0.055, 64]} />
+        <meshPhysicalMaterial color="#3a1b45" metalness={0.58} roughness={0.2} clearcoat={1} emissive={color} emissiveIntensity={0.1} />
       </mesh>
     </group>
   );
@@ -59,7 +59,7 @@ function WebObject({ color }: { color: string }) {
   return (
     <group position={[0, 0.37, 0]}>
       <RoundedBox args={[0.88, 0.88, 0.88]} radius={0.1} smoothness={6}>
-        <meshPhysicalMaterial color="#351440" metalness={0.2} roughness={0.12} transparent opacity={0.34} clearcoat={1} clearcoatRoughness={0.08} emissive={color} emissiveIntensity={0.22} />
+        <meshPhysicalMaterial color="#9b5bc0" metalness={0.12} roughness={0.1} transparent opacity={0.2} clearcoat={1} clearcoatRoughness={0.06} emissive={color} emissiveIntensity={0.28} />
         <Edges scale={1.012} color={color} />
       </RoundedBox>
       <Line points={[[-0.2, 0.15, 0.46], [-0.34, 0, 0.46], [-0.2, -0.15, 0.46]]} color="#fff0ff" lineWidth={2.6} />
@@ -300,7 +300,7 @@ function CentralCore({ reduced }: { reduced: boolean }) {
 
 function SkillScene({ active, reduced = false }: Props) {
   const { size } = useThree();
-  const sceneScale = size.width < 520 ? 0.72 : size.width < 680 ? 0.94 : size.width < 900 ? 1.18 : 1.42;
+  const sceneScale = size.width < 520 ? 0.68 : size.width < 680 ? 0.88 : size.width < 900 ? 1.08 : 1.25;
   const paths = useMemo(
     () => stations.map((station) => {
       const [x, , z] = station.position;
@@ -315,7 +315,7 @@ function SkillScene({ active, reduced = false }: Props) {
   );
 
   return (
-    <group position={[0, 0.58, 0]} scale={sceneScale}>
+    <group position={[0, 0.5, 0]} scale={sceneScale}>
       <ambientLight intensity={0.8} />
       <pointLight position={[0, 4.2, 5]} color="#ff65d1" intensity={22} distance={13} decay={2} />
       <pointLight position={[-4, 2.5, -2]} color="#9d62ff" intensity={17} distance={11} decay={2} />
@@ -360,7 +360,7 @@ export default function SkillsStage({ active, reduced = false }: Props) {
       <Canvas
         dpr={[1, 1.4]}
         frameloop={visible && !reduced ? "always" : "demand"}
-        camera={{ position: [0, 3.6, 7.7], fov: 36, near: 0.1, far: 60 }}
+        camera={{ position: [0, 3.7, 7.8], fov: 36, near: 0.1, far: 60 }}
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => { gl.outputColorSpace = THREE.SRGBColorSpace; gl.setClearColor(0x000000, 0); }}
       >

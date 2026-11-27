@@ -142,7 +142,7 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   const angle = relative * (Math.PI * 2 / count);
   const distance = Math.abs(relative);
   const scale = 1.12 - Math.min(2, distance) * 0.26;
-  const x = Math.sin(angle) * 2.75;
+  const x = Math.sin(angle) * 2.5;
   const y = Math.sin(angle * 2) * 1.0;
   const z = 1.95 + Math.cos(angle) * 0.32;
   const yaw = -Math.atan2(x, z) * 0.12;
