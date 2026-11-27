@@ -1,3 +1,6 @@
+"use client";
+
+import {useState, type CSSProperties} from "react";
 import styles from "./PortfolioSections.module.css";
 
 const disciplines = [
@@ -12,11 +15,26 @@ const disciplines = [
   ["Technical SEO", "I improve crawlability, indexing, metadata and page performance, then monitor how pages appear in search."],
 ];
 
+const symbols = ["</>", "Aa", "{ }", "SQL", "AI", ">_", "git", "DNS", "SEO"];
+const colors = ["#f499cb","#c6a2ff","#b9b0ff","#ff97ca","#d392ff","#f59fcc","#b0a7ff","#dc97ef","#fdb2c9"];
+
 export default function Capabilities() {
-  return <section id="expertise" className={`container-x ${styles.section}`} aria-labelledby="expertise-heading">
-    <header className={styles.heading}><h2 id="expertise-heading">Technical <em>expertise.</em></h2></header>
-    <dl className={styles.disciplines}>{disciplines.map(([title,description]) =>
-      <div key={title}><dt>{title}</dt><dd>{description}</dd></div>
-    )}</dl>
+  const [active, select] = useState(0);
+  const [title, description] = disciplines[active];
+  return <section id="expertise" className={`container-x ${styles.skills}`}>
+    <header className={styles.header}><h2>Technical <em>expertise.</em></h2></header>
+    <div className={styles.lab}>
+      <div className={styles.instrument} style={{"--light":colors[active]} as CSSProperties}>
+        <div className={styles.object} aria-hidden="true" key={active}>
+          {[0,1,2,3].map(i=><i key={i} style={{"--layer":i,"--angle":(active*15)+"deg"} as CSSProperties}/>)}
+          <b>{symbols[active]}</b>
+        </div>
+        <div className={styles.readout} aria-live="polite"><h3>{title}</h3><p>{description}</p></div>
+      </div>
+      <div className={styles.keys} aria-label="Explore expertise">{disciplines.map(([name],i)=>
+        <button key={name} aria-pressed={i===active} onPointerEnter={e=>{if(e.pointerType==="mouse")select(i)}} onFocus={()=>select(i)} onClick={()=>select(i)}>
+          <small>{String(i+1).padStart(2,"0")}</small>{name}<span aria-hidden="true">↗</span>
+        </button>)}</div>
+    </div>
   </section>;
 }
