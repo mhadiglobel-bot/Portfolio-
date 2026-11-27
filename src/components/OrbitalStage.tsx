@@ -32,13 +32,17 @@ function pointInPolygon(lon: number, lat: number, polygon: number[][]) {
 
 function createLandGeometry() {
   const positions: number[] = [];
-  const radius = 1.64;
-  for (let lat = -78; lat <= 82; lat += 4.8) {
-    for (let lon = -180; lon <= 180; lon += 4.8) {
+  const radius = 1.645;
+  for (let lat = -78; lat <= 82; lat += 2.7) {
+    for (let lon = -180; lon <= 180; lon += 2.7) {
       if (!landPolygons.some((polygon) => pointInPolygon(lon, lat, polygon))) continue;
       const phi = THREE.MathUtils.degToRad(lat);
       const theta = THREE.MathUtils.degToRad(lon);
-      positions.push(radius * Math.cos(phi) * Math.sin(theta), radius * Math.sin(phi), radius * Math.cos(phi) * Math.cos(theta));
+      positions.push(
+        radius * Math.cos(phi) * Math.sin(theta),
+        radius * Math.sin(phi),
+        radius * Math.cos(phi) * Math.cos(theta),
+      );
     }
   }
   const geometry = new THREE.BufferGeometry();
@@ -50,9 +54,10 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
   const group = useRef<THREE.Group>(null);
   const land = useMemo(createLandGeometry, []);
   useEffect(() => () => land.dispose(), [land]);
+
   useFrame(({ clock }, delta) => {
     if (!group.current) return;
-    const target = position * 0.24 + (reduced ? 0 : clock.elapsedTime * 0.018);
+    const target = position * 0.22 + (reduced ? 0 : clock.elapsedTime * 0.018);
     if (reduced) {
       group.current.rotation.y = target;
       group.current.rotation.x = -0.08;
@@ -61,21 +66,48 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
     group.current.rotation.y += (target - group.current.rotation.y) * Math.min(1, delta * 4);
     group.current.rotation.x = -0.08 + Math.sin(clock.elapsedTime * 0.13) * 0.012;
   });
+
   return (
     <group ref={group}>
-      <mesh><sphereGeometry args={[1.62,64,64]} /><meshPhysicalMaterial color="#0a0712" metalness={0.5} roughness={0.42} clearcoat={0.9} transparent opacity={0.48} depthWrite={false} /></mesh>
-      <points geometry={land}><pointsMaterial color="#ee72f5" size={0.028} sizeAttenuation transparent opacity={0.88} depthWrite={false} /></points>
-      {[-66,-44,-22,0,22,44,66].map((latitude) => {
+      <mesh renderOrder={0}>
+        <sphereGeometry args={[1.62, 72, 72]} />
+        <meshPhysicalMaterial
+          color="#0b0714"
+          metalness={0.32}
+          roughness={0.58}
+          clearcoat={0.9}
+          emissive="#241039"
+          emissiveIntensity={0.28}
+        />
+      </mesh>
+
+      <mesh scale={1.045} renderOrder={1}>
+        <sphereGeometry args={[1.62, 48, 48]} />
+        <meshBasicMaterial color="#a83dff" transparent opacity={0.075} side={THREE.BackSide} depthWrite={false} />
+      </mesh>
+
+      <points geometry={land} renderOrder={2}>
+        <pointsMaterial color="#b64cff" size={0.042} sizeAttenuation transparent opacity={0.17} depthWrite={false} />
+      </points>
+      <points geometry={land} renderOrder={3}>
+        <pointsMaterial color="#f36be8" size={0.019} sizeAttenuation transparent opacity={0.98} depthWrite={false} />
+      </points>
+
+      {[-66, -44, -22, 0, 22, 44, 66].map((latitude) => {
         const radians = THREE.MathUtils.degToRad(latitude);
-        return <mesh key={latitude} position={[0,Math.sin(radians)*1.625,0]} rotation={[Math.PI/2,0,0]}>
-          <torusGeometry args={[Math.cos(radians)*1.625,0.0028,4,112]} />
-          <meshBasicMaterial color="#a76bff" transparent opacity={0.32} depthWrite={false} />
-        </mesh>;
+        return (
+          <mesh key={latitude} position={[0, Math.sin(radians) * 1.63, 0]} rotation={[Math.PI / 2, 0, 0]} renderOrder={1}>
+            <torusGeometry args={[Math.cos(radians) * 1.63, 0.0026, 4, 128]} />
+            <meshBasicMaterial color="#a76bff" transparent opacity={0.2} depthWrite={false} />
+          </mesh>
+        );
       })}
-      {Array.from({length:12},(_,index)=><mesh key={index} rotation={[0,(index*Math.PI)/12,0]}>
-        <torusGeometry args={[1.625,0.0025,4,112]} /><meshBasicMaterial color="#d36aff" transparent opacity={0.3} depthWrite={false} />
-      </mesh>)}
-      <mesh scale={1.635}><sphereGeometry args={[1,48,48]} /><meshBasicMaterial color="#8c42c8" transparent opacity={0.035} side={THREE.BackSide} depthWrite={false} /></mesh>
+      {Array.from({ length: 12 }, (_, index) => (
+        <mesh key={index} rotation={[0, (index * Math.PI) / 12, 0]} renderOrder={1}>
+          <torusGeometry args={[1.63, 0.0024, 4, 128]} />
+          <meshBasicMaterial color="#d36aff" transparent opacity={0.19} depthWrite={false} />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -107,54 +139,59 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   }, [texture]);
 
   const relative = ((index - position + count / 2) % count + count) % count - count / 2;
-  const arc = relative * 0.44;
+  const angle = relative * (Math.PI * 2 / count);
   const distance = Math.abs(relative);
-  const scale = 1.18 - Math.min(2.5, distance) * 0.16;
-  const tilt = ((index % 3) - 1) * 0.22;
-  const radius = 2.64 + (index % 2) * 0.14;
-  const x = Math.sin(arc) * radius;
-  const z = Math.cos(arc) * (radius - 0.08);
-  const y = Math.sin(arc * 1.5 + index * 0.58) * (0.3 + Math.abs(tilt)) + tilt * 0.4;
+  const scale = 1.12 - Math.min(2, distance) * 0.26;
+  const x = Math.sin(angle) * 3.05;
+  const y = Math.sin(angle * 2) * 1.08;
+  const z = 2.0 + Math.cos(angle) * 0.32;
+  const yaw = -Math.atan2(x, z) * 0.12;
 
-  return <Float speed={reduced ? 0 : 0.7 + index * 0.08} floatIntensity={reduced ? 0 : 0.045} rotationIntensity={reduced ? 0 : 0.018}>
-    <group position={[x, y, z]} rotation={[tilt * 0.05, arc * 0.42, 0]} scale={scale}>
-      <mesh position={[0, 0, -0.025]}>
-        <RoundedBox args={[2.08, 1.34, 0.12]} radius={0.1} smoothness={5}>
-          <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.12} />
-          <Edges scale={1.012} threshold={12} color={project.accent} />
-        </RoundedBox>
-      </mesh>
-      <mesh position={[0, 0, 0.075]}>
-        <planeGeometry args={[1.98, 1.25]} />
-        <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
-      </mesh>
-      <mesh position={[0.87, 0.57, 0.086]}>
-        <sphereGeometry args={[0.025, 12, 12]} />
-        <meshBasicMaterial color={project.accent} />
-      </mesh>
-      <mesh position={[0, -0.68, 0.06]}>
-        <boxGeometry args={[0.76, 0.012, 0.016]} />
-        <meshBasicMaterial color={project.accent} transparent opacity={0.76} />
-      </mesh>
-    </group>
-  </Float>;
+  return (
+    <Float speed={reduced ? 0 : 0.72 + index * 0.06} floatIntensity={reduced ? 0 : 0.05} rotationIntensity={reduced ? 0 : 0.02}>
+      <group position={[x, y, z]} rotation={[0, yaw, 0]} scale={scale}>
+        <mesh position={[0, 0, -0.025]}>
+          <RoundedBox args={[2.08, 1.34, 0.12]} radius={0.1} smoothness={6}>
+            <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.16} />
+            <Edges scale={1.012} threshold={12} color={project.accent} />
+          </RoundedBox>
+        </mesh>
+        <mesh position={[0, 0, 0.075]}>
+          <planeGeometry args={[1.98, 1.25]} />
+          <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh position={[0.87, 0.57, 0.086]}>
+          <sphereGeometry args={[0.025, 12, 12]} />
+          <meshBasicMaterial color={project.accent} />
+        </mesh>
+        <mesh position={[0, -0.68, 0.06]}>
+          <boxGeometry args={[0.76, 0.012, 0.016]} />
+          <meshBasicMaterial color={project.accent} transparent opacity={0.76} />
+        </mesh>
+      </group>
+    </Float>
+  );
 }
 
 function Scene({ position, projects, reduced = false }: Props) {
   const { size } = useThree();
-  const sceneScale = size.width < 520 ? 0.7 : size.width < 680 ? 0.88 : 1.04;
+  const sceneScale = size.width < 520 ? 0.66 : size.width < 760 ? 0.86 : size.width < 900 ? 0.98 : 1.08;
 
-  return <group scale={sceneScale}>
-    <ambientLight intensity={0.72} />
-    <pointLight position={[0,1.8,4.6]} color="#ff62ce" intensity={18} distance={10} decay={2} />
-    <pointLight position={[-4,2.5,-2]} color="#9b5bff" intensity={15} distance={9} decay={2} />
-    <pointLight position={[4,-1.5,1]} color="#d33cce" intensity={7} distance={7} decay={2} />
-    <Globe position={position} reduced={reduced} />
-    <OrbitalRings reduced={reduced} />
-    {projects.map((project,index)=><ProjectPanel key={project.href} project={project} index={index} position={position} count={projects.length} reduced={reduced} />)}
-    <Sparkles count={95} scale={[6.8,4.2,6.8]} size={1.5} speed={reduced?0:0.22} color="#f28ce8" opacity={0.58} />
-    <Sparkles count={30} scale={[5.2,3.4,5.2]} size={2.4} speed={reduced?0:0.12} color="#9b6cff" opacity={0.42} />
-  </group>;
+  return (
+    <group scale={sceneScale}>
+      <ambientLight intensity={0.78} />
+      <pointLight position={[0, 1.8, 4.6]} color="#ff62ce" intensity={20} distance={11} decay={2} />
+      <pointLight position={[-4, 2.5, -2]} color="#9b5bff" intensity={17} distance={10} decay={2} />
+      <pointLight position={[4, -1.5, 1]} color="#d33cce" intensity={8} distance={8} decay={2} />
+      <Globe position={position} reduced={reduced} />
+      <OrbitalRings reduced={reduced} />
+      {projects.map((project, index) => (
+        <ProjectPanel key={project.href} project={project} index={index} position={position} count={projects.length} reduced={reduced} />
+      ))}
+      <Sparkles count={110} scale={[7.2, 4.6, 7.2]} size={1.4} speed={reduced ? 0 : 0.2} color="#f28ce8" opacity={0.62} />
+      <Sparkles count={36} scale={[5.4, 3.6, 5.4]} size={2.1} speed={reduced ? 0 : 0.12} color="#9b6cff" opacity={0.48} />
+    </group>
+  );
 }
 
 export default function OrbitalStage({ position, projects, reduced = false }: Props) {
@@ -169,7 +206,7 @@ export default function OrbitalStage({ position, projects, reduced = false }: Pr
   },[]);
   return <div ref={host} className={styles.sceneCanvas} aria-label="Interactive three-dimensional project globe">
     <Canvas dpr={[1,1.5]} frameloop={visible&&!reduced?"always":"demand"}
-      camera={{position:[0,0,8.5],fov:37,near:0.1,far:60}}
+      camera={{position:[0,0,8.7],fov:36,near:0.1,far:60}}
       gl={{alpha:true,antialias:true,powerPreference:"high-performance"}}
       onCreated={({gl})=>{gl.outputColorSpace=THREE.SRGBColorSpace;gl.setClearColor(0x000000,0);}}>
       <Suspense fallback={null}><Scene position={position} projects={projects} reduced={reduced} /></Suspense>

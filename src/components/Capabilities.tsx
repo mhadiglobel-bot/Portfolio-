@@ -81,18 +81,6 @@ export default function Capabilities() {
         </div>
       </div>
 
-      <div className={styles.skillReadout} aria-live="polite" key={disciplines[active].title}>
-        <span>{String(active + 1).padStart(2, "0")} / 05</span>
-        <div>
-          <h3>{disciplines[active].title}</h3>
-          <p>{disciplines[active].detail}</p>
-        </div>
-      </div>
-
-      <div className={styles.workflow}>
-        <span>BUILD WORKFLOW</span>
-        <p>GitHub &amp; version control <i>·</i> Vercel deployments <i>·</i> Hosting &amp; maintenance <i>·</i> Continuous improvements</p>
-      </div>
     </section>
   );
 }
