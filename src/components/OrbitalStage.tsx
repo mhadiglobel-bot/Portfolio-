@@ -63,17 +63,17 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
   });
   return (
     <group ref={group}>
-      <mesh><sphereGeometry args={[1.62,64,64]} /><meshPhysicalMaterial color="#0a0712" metalness={0.5} roughness={0.42} clearcoat={0.9} transparent opacity={0.94} /></mesh>
+      <mesh><sphereGeometry args={[1.62,64,64]} /><meshPhysicalMaterial color="#0a0712" metalness={0.5} roughness={0.42} clearcoat={0.9} transparent opacity={0.48} depthWrite={false} /></mesh>
       <points geometry={land}><pointsMaterial color="#ee72f5" size={0.028} sizeAttenuation transparent opacity={0.88} depthWrite={false} /></points>
       {[-66,-44,-22,0,22,44,66].map((latitude) => {
         const radians = THREE.MathUtils.degToRad(latitude);
         return <mesh key={latitude} position={[0,Math.sin(radians)*1.625,0]} rotation={[Math.PI/2,0,0]}>
           <torusGeometry args={[Math.cos(radians)*1.625,0.0028,4,112]} />
-          <meshBasicMaterial color="#a76bff" transparent opacity={0.25} />
+          <meshBasicMaterial color="#a76bff" transparent opacity={0.32} depthWrite={false} />
         </mesh>;
       })}
       {Array.from({length:12},(_,index)=><mesh key={index} rotation={[0,(index*Math.PI)/12,0]}>
-        <torusGeometry args={[1.625,0.0025,4,112]} /><meshBasicMaterial color="#d36aff" transparent opacity={0.24} />
+        <torusGeometry args={[1.625,0.0025,4,112]} /><meshBasicMaterial color="#d36aff" transparent opacity={0.3} depthWrite={false} />
       </mesh>)}
       <mesh scale={1.635}><sphereGeometry args={[1,48,48]} /><meshBasicMaterial color="#8c42c8" transparent opacity={0.035} side={THREE.BackSide} depthWrite={false} /></mesh>
     </group>
@@ -110,6 +110,7 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
   const diff = Math.abs(index-position)%count;
   const distance = Math.min(diff,count-diff);
   const scale = 1.2-Math.min(2,distance)*0.19;
+  const backSide = Math.cos(relative) < -0.05;
   const tilt = ((index % 3) - 1) * 0.22;
   const orbitRadius = 2.64 + (index % 2) * 0.14;
   const orbitY = Math.sin(relative*1.6 + index*0.55) * (0.32 + Math.abs(tilt)) + Math.sin(angle*0.8) * tilt;
@@ -117,11 +118,11 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
     <group position={[Math.sin(angle)*orbitRadius,orbitY,Math.cos(angle)*(orbitRadius-0.08)]} rotation={[0,angle-relative*0.72,0]} scale={scale}>
       <mesh position={[0,0,-0.025]}>
         <RoundedBox args={[2.08,1.34,0.12]} radius={0.1} smoothness={5}>
-          <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.12} />
+          <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.12} transparent={backSide} opacity={backSide?0.48:1} depthWrite={!backSide} />
           <Edges scale={1.012} threshold={12} color={project.accent} />
         </RoundedBox>
       </mesh>
-      <mesh position={[0,0,0.075]}><planeGeometry args={[1.98,1.25]} /><meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} /></mesh>
+      <mesh position={[0,0,0.075]}><planeGeometry args={[1.98,1.25]} /><meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} transparent={backSide} opacity={backSide?0.54:1} depthWrite={!backSide} /></mesh>
       <mesh position={[0.87,0.57,0.086]}><sphereGeometry args={[0.025,12,12]} /><meshBasicMaterial color={project.accent} /></mesh>
       <mesh position={[0,-0.68,0.06]}><boxGeometry args={[0.76,0.012,0.016]} /><meshBasicMaterial color={project.accent} transparent opacity={0.76} /></mesh>
     </group>
