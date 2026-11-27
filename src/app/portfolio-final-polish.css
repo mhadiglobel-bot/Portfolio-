@@ -1,0 +1,415 @@
+/* Focused corrections for the original logo reveal and project orbit. */
+
+/* The original seal is a transparent PNG: preserve its full neon artwork. */
+.emblem-plate,
+.emblem-plate-core,
+.emblem-plate img {
+  -webkit-user-select: none;
+  user-select: none;
+}
+.emblem-plate img {
+  -webkit-user-drag: none;
+  pointer-events: none;
+  border-radius: 0;
+  mix-blend-mode: normal;
+  image-rendering: auto;
+}
+
+/* The orbit is its own pinned scene. Project descriptions live below it. */
+.project-reel {
+  overflow: visible;
+}
+.reel-pin-wrap {
+  position: relative;
+}
+.reel-pin-wrap[data-pinned] {
+  height: 520svh;
+}
+.reel-pin-wrap[data-pinned] .reel-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+}
+.reel-pin-wrap[data-pinned] .reel-inner {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  padding-block: clamp(3.8rem, 7svh, 5.4rem) .8rem;
+}
+.reel-pin-wrap[data-pinned] .reel-head {
+  margin-bottom: .35rem;
+}
+.reel-pin-wrap[data-pinned] .orbit-stage {
+  display: block;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+.orbit-stage {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(430px, 70svh, 760px);
+  min-height: 0;
+  perspective: 1500px;
+  isolation: isolate;
+}
+.globe-world {
+  width: min(88vw, 76svh, 780px);
+  transform:
+    translate(-50%, -50%)
+    rotateX(calc(8deg + var(--globe-tilt-x, 0deg)))
+    rotateY(var(--globe-tilt-y, 0deg));
+}
+.globe-atmosphere {
+  filter: blur(42px);
+  opacity: .9;
+  transform: scale(1.2);
+}
+.globe-orbit {
+  width: 124%;
+  height: 48%;
+  border-color: rgba(235, 156, 224, .4);
+  box-shadow:
+    0 0 24px rgba(220, 91, 202, .16),
+    inset 0 0 24px rgba(155, 82, 255, .1);
+}
+.globe-orbit-one {
+  transform: translate(-50%, -50%) rotateX(72deg) rotateZ(-19deg);
+  animation: globe-orbit-spin 26s linear infinite;
+}
+.globe-orbit-two {
+  width: 108%;
+  height: 68%;
+  border-color: rgba(155, 118, 255, .26);
+  animation: globe-orbit-spin-reverse 34s linear infinite;
+}
+.globe-sphere {
+  width: 73%;
+  background:
+    radial-gradient(ellipse at 32% 24%, rgba(255, 183, 226, .18), transparent 34%),
+    radial-gradient(ellipse at 72% 74%, rgba(133, 87, 255, .2), transparent 46%),
+    linear-gradient(145deg, rgba(33, 17, 42, .96), rgba(8, 7, 15, .98) 72%);
+  box-shadow:
+    inset -30px -22px 62px rgba(0,0,0,.68),
+    inset 14px 12px 40px rgba(255,160,219,.11),
+    0 0 0 1px rgba(255,255,255,.025),
+    0 0 78px rgba(196,73,188,.17);
+}
+.globe-grid {
+  opacity: .68;
+  stroke: rgba(232, 164, 222, .52);
+}
+.globe-core-mark {
+  opacity: .42;
+  font-size: clamp(2.3rem, 4.2vw, 4rem);
+}
+.globe-node {
+  width: clamp(160px, 16vw, 230px);
+  aspect-ratio: 1.62;
+  border-radius: .9rem;
+  border-color: rgba(255, 220, 248, .48);
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.58),
+    0 0 26px color-mix(in srgb, var(--project-accent) 26%, transparent);
+  transform:
+    translate3d(var(--node-x, 0px), var(--node-y, 0px), var(--node-z, 0px))
+    translate(-50%, -50%)
+    rotateY(var(--node-turn, 0deg))
+    scale(var(--node-scale, .8));
+  transition:
+    opacity .32s ease,
+    filter .32s ease,
+    border-color .32s ease,
+    box-shadow .32s ease;
+}
+.globe-node img {
+  object-fit: cover;
+  object-position: center top;
+  pointer-events: none;
+  user-select: none;
+}
+.globe-node:focus-visible {
+  outline: 2px solid #f3a1d8;
+  outline-offset: 5px;
+}
+.reel-pin-wrap[data-pinned] .reel-nav {
+  display: flex;
+  margin-top: .1rem;
+}
+.reel-pin-wrap[data-pinned] .reel-nav button {
+  padding-block: .35rem;
+}
+.reel-pin-wrap[data-pinned] .globe-caption,
+.reel-pin-wrap[data-pinned] .globe-footer {
+  left: 1%;
+  right: 1%;
+}
+.reel-progress > i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #ff55a7, #a35cff);
+  box-shadow: 0 0 18px rgba(248, 92, 179, .5);
+  transition: width .08s linear;
+}
+
+/* Project cards follow the full orbit sequence, never beside the globe. */
+.reel-projects {
+  padding-block: clamp(4.5rem, 8vw, 8rem) clamp(6rem, 10vw, 10rem);
+}
+.reel-projects-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1.15rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid rgba(226, 174, 220, .2);
+}
+.reel-projects-heading .folio-label {
+  margin: 0;
+  color: rgba(239, 218, 239, .5);
+}
+.reel-projects-heading h3 {
+  margin: 0;
+  color: #fff;
+  font: 500 clamp(1.8rem, 3.5vw, 3.2rem)/1 var(--font-space), sans-serif;
+  letter-spacing: -.06em;
+}
+.reel-projects-heading h3 em {
+  color: #f2a1d7;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-weight: 400;
+}
+.reel-project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 1.6rem);
+}
+.reel-project-card {
+  --project-card-rx: 0deg;
+  --project-card-ry: 0deg;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(235, 184, 226, .16);
+  border-radius: 1.05rem;
+  background:
+    radial-gradient(ellipse at 90% 0%, color-mix(in srgb, var(--project-accent) 9%, transparent), transparent 48%),
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.012));
+  box-shadow: 0 18px 55px rgba(0,0,0,.2);
+  transform:
+    perspective(1400px)
+    rotateX(var(--project-card-rx))
+    rotateY(var(--project-card-ry))
+    translateY(0);
+  transform-style: preserve-3d;
+  transition:
+    transform .48s cubic-bezier(.2,.8,.2,1),
+    border-color .35s,
+    box-shadow .35s;
+}
+.reel-project-card:hover {
+  border-color: color-mix(in srgb, var(--project-accent) 50%, rgba(255,255,255,.25));
+  box-shadow:
+    0 28px 70px -30px color-mix(in srgb, var(--project-accent) 32%, transparent),
+    0 18px 55px rgba(0,0,0,.24);
+  transform:
+    perspective(1400px)
+    rotateX(var(--project-card-rx))
+    rotateY(var(--project-card-ry))
+    translateY(-5px);
+}
+.reel-project-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #100c14;
+  isolation: isolate;
+}
+.reel-project-media img {
+  object-fit: cover;
+  object-position: center top;
+  transition: transform .75s cubic-bezier(.2,.8,.2,1), filter .5s;
+}
+.reel-project-card:hover .reel-project-media img {
+  transform: scale(1.035);
+  filter: saturate(1.05);
+}
+.reel-project-media::after {
+  content: "";
+  position: absolute;
+  inset: 48% 0 0;
+  background: linear-gradient(transparent, rgba(5,4,8,.45));
+  pointer-events: none;
+}
+.reel-project-media > span {
+  position: absolute;
+  z-index: 2;
+  right: .85rem;
+  top: .85rem;
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid rgba(255,255,255,.26);
+  border-radius: 50%;
+  background: rgba(8,6,12,.68);
+  color: #fff;
+  backdrop-filter: blur(10px);
+  transition: transform .3s, border-color .3s;
+}
+.reel-project-card:hover .reel-project-media > span {
+  transform: translate(2px,-2px);
+  border-color: var(--project-accent);
+}
+.reel-project-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.2rem 1.25rem 1.25rem;
+}
+.reel-project-meta {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  color: rgba(239,226,239,.48);
+  font: 500 .58rem/1.4 ui-monospace, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.reel-project-meta span:first-child {
+  color: color-mix(in srgb, var(--project-accent) 78%, white);
+}
+.reel-project-copy h4 {
+  margin: .85rem 0 .55rem;
+  color: #fff;
+  font: 500 clamp(1.25rem, 1.7vw, 1.75rem)/1.1 var(--font-space), sans-serif;
+  letter-spacing: -.045em;
+}
+.reel-project-copy p {
+  margin: 0;
+  color: rgba(239,226,239,.68);
+  font-size: .88rem;
+  line-height: 1.68;
+}
+.reel-project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
+  color: #fff;
+  font-size: .8rem;
+  transition: color .25s;
+}
+.reel-project-link span {
+  color: #f2a1d7;
+  transition: transform .25s;
+}
+.reel-project-link:hover {
+  color: #f2a1d7;
+}
+.reel-project-link:hover span {
+  transform: translate(3px,-3px);
+}
+@media (max-width: 1050px) {
+  .reel-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .reel-pin-wrap[data-pinned] {
+    height: auto;
+  }
+  .reel-pin-wrap[data-pinned] .reel-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+  .reel-pin-wrap[data-pinned] .reel-inner {
+    display: block;
+    height: auto;
+    padding-block: 4.8rem .6rem;
+  }
+  .reel-head {
+    align-items: flex-end;
+    gap: .75rem;
+  }
+  .reel-head h2 {
+    font-size: clamp(2.4rem, 9vw, 3.7rem);
+  }
+  .reel-head-status .folio-label {
+    display: none;
+  }
+  .orbit-stage {
+    height: clamp(340px, 58svh, 460px);
+  }
+  .globe-world {
+    width: min(78vw, 360px);
+  }
+  .globe-node {
+    width: clamp(88px, 26vw, 112px);
+    border-radius: .55rem;
+  }
+  .globe-node-label {
+    left: .35rem;
+    right: .3rem;
+    bottom: .35rem;
+    gap: .25rem;
+    font-size: .5rem;
+  }
+  .globe-node-label i { font-size: .46rem; }
+  .globe-caption,.globe-footer {
+    font-size: .48rem;
+    letter-spacing: .1em;
+  }
+  .reel-nav { display: none !important; }
+  .reel-projects {
+    padding-block: 2.5rem 5.5rem;
+  }
+  .reel-projects-heading {
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+  .reel-projects-heading h3 {
+    margin-top: .75rem;
+    font-size: 2rem;
+  }
+  .reel-project-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .reel-project-copy { padding: 1rem .95rem 1.05rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reel-pin-wrap[data-pinned] {
+    height: auto;
+  }
+  .reel-pin-wrap[data-pinned] .reel-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+  .reel-pin-wrap[data-pinned] .reel-inner {
+    display: block;
+    height: auto;
+  }
+  .globe-orbit-one,
+  .globe-orbit-two {
+    animation: none !important;
+  }
+  .reel-project-card,
+  .reel-project-media img {
+    transition: none !important;
+    transform: none !important;
+  }
+}

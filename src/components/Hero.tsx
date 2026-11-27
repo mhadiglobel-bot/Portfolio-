@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import RollingText from "./RollingText";
 
+const emblemSource =
+  "https://res.cloudinary.com/dyhprfqyb/image/upload/c_crop,g_center,h_1180,r_max,w_1180/f_png/v1795744708/portfolio/mh-emblem-source.png";
+
 export default function Hero() {
   const scene = useRef<HTMLElement>(null);
+  const [revealStarted, setRevealStarted] = useState(false);
 
   useEffect(() => {
     const root = scene.current;
@@ -17,13 +21,16 @@ export default function Hero() {
     if (!stage || !plate || !core) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = window.matchMedia("(hover:hover) and (pointer:fine)");
     let frame = 0;
 
     const draw = () => {
       frame = 0;
 
       if (reducedMotion.matches) {
-        core.style.setProperty("--emblem-scale", "1");
+        const targetSize = Math.max(window.innerWidth, stage.clientHeight);
+        const startScale = Math.min(1, plate.offsetWidth / Math.max(1, targetSize));
+        core.style.setProperty("--emblem-scale", String(startScale));
         core.style.transform = "";
         plate.style.transform = "";
         plate.style.opacity = "1";
@@ -49,9 +56,8 @@ export default function Hero() {
       const centerY =
         stage.clientHeight / 2 - plate.offsetTop - plate.offsetHeight / 2;
       const targetSize = Math.max(window.innerWidth, stage.clientHeight);
-      const finalScale = targetSize / Math.max(1, plate.offsetWidth);
-      const scale =
-        1 + (finalScale - 1) * Math.pow(progress, 0.82);
+      const startScale = Math.min(1, plate.offsetWidth / Math.max(1, targetSize));
+      const scale = startScale + (1 - startScale) * Math.pow(progress, 0.82);
       const scrollTilt = -12 * Math.sin(Math.PI * progress);
 
       core.style.setProperty("--emblem-scale", String(scale));
@@ -63,7 +69,7 @@ export default function Hero() {
         "px) rotateY(" +
         scrollTilt +
         "deg)";
-      plate.style.opacity = String(Math.min(1, (1 - progress) / 0.08));
+      plate.style.opacity = String(Math.min(1, (1 - progress) / 0.025));
       root.style.setProperty(
         "--type-opacity",
         String(Math.min(1, (1 - progress) / 0.48))
@@ -78,7 +84,6 @@ export default function Hero() {
       if (!frame) frame = requestAnimationFrame(draw);
     };
 
-    const finePointer = window.matchMedia("(hover:hover) and (pointer:fine)");
     const onPointerMove = (event: PointerEvent) => {
       if (root.hasAttribute("data-scrolling")) return;
       const rect = plate.getBoundingClientRect();
@@ -117,15 +122,33 @@ export default function Hero() {
     };
   }, []);
 
+  useEffect(() => {
+    const startReveal = () => setRevealStarted(true);
+    if (document.documentElement.dataset.intro === "done") {
+      startReveal();
+      return;
+    }
+    window.addEventListener("portfolio:intro-done", startReveal, { once: true });
+    return () => window.removeEventListener("portfolio:intro-done", startReveal);
+  }, []);
+
   return (
-    <section ref={scene} id="top" className="signature">
+    <section
+      ref={scene}
+      id="top"
+      className={"signature" + (revealStarted ? " is-revealing" : "")}
+    >
       <div className="signature-stage container-x">
         <div className="signature-type">
           <p className="folio-label">Independent developer &amp; product engineer</p>
           <h1>
             <RollingText animateOnLoad staggerMs={48}>Muhammad</RollingText>
             <br />
-            <em><RollingText animateOnLoad delayOffset={8} staggerMs={48}>Hadi.</RollingText></em>
+            <em>
+              <RollingText animateOnLoad delayOffset={8} staggerMs={48}>
+                Hadi.
+              </RollingText>
+            </em>
           </h1>
           <p className="signature-bio">
             I build websites and digital products, from the interface and database
@@ -140,14 +163,34 @@ export default function Hero() {
           <div className="emblem-halo" />
           <div className="emblem-plate-core">
             <Image
-              src="/mh-emblem.webp"
+              src={emblemSource}
               alt=""
-              width={1254}
-              height={1254}
-              sizes="(max-width: 700px) 48vw, 61svh"
+              width={1180}
+              height={1180}
+              sizes="100vw"
               priority
+              unoptimized
               draggable={false}
             />
+          </div>
+          <div className="emblem-terminal">
+            <div className="emblem-terminal-bar">
+              <span />
+              <span />
+              <span />
+              <b>identity.tsx</b>
+            </div>
+            <div className="emblem-terminal-code">
+              <p className="terminal-line terminal-line-one">
+                <i>const</i> name = <b>&quot;Muhammad Hadi&quot;</b>;
+              </p>
+              <p className="terminal-line terminal-line-two">
+                <i>render</i>(&lt;MH /&gt;);
+              </p>
+              <p className="terminal-line terminal-line-three">
+                <i>deploy</i>(&quot;production&quot;);
+              </p>
+            </div>
           </div>
         </div>
       </div>
