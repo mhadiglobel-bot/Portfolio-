@@ -76,10 +76,12 @@ export default function Work() {
       frame = 0;
       if (!motion.matches || !pin.hasAttribute("data-pinned")) return;
 
-      const progress = Math.max(
-        0,
-        Math.min(1, (window.scrollY - start) / travel)
-      );
+      const relative = window.scrollY - start;
+      const progress = Math.max(0, Math.min(1, relative / travel));
+      const pinState = relative <= 0 ? "before" : relative >= travel ? "after" : "active";
+      if (stage.dataset.pinState !== pinState) {
+        stage.dataset.pinState = pinState;
+      }
       const target = progress * (projects.length - 1);
       const elapsed = previousFrame
         ? Math.min(50, Math.max(1, time - previousFrame))
@@ -125,6 +127,7 @@ export default function Work() {
         pin.dataset.pinned = "true";
       } else {
         delete pin.dataset.pinned;
+        delete stage.dataset.pinState;
       }
 
       jump.current = (index) => {
