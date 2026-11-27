@@ -141,7 +141,7 @@ function CentralCore({ reduced }: { reduced: boolean }) {
 
 function SkillScene({ active, reduced = false }: Props) {
   const {size}=useThree();
-  const sceneScale=size.width<560?0.66:size.width<850?0.78:size.width<1150?0.9:1;
+  const sceneScale=size.width<520?0.58:size.width<680?0.78:1;
   const paths=useMemo(()=>stations.map((station)=>{
     const [x,,z]=station.position;
     return new THREE.CatmullRomCurve3([
@@ -149,8 +149,7 @@ function SkillScene({ active, reduced = false }: Props) {
       new THREE.Vector3(x*0.78,-0.48,z*0.78),new THREE.Vector3(x,-0.48,z),
     ]);
   }),[]);
-  return <>
-    <group scale={sceneScale}>
+  return <group scale={sceneScale}>
       <ambientLight intensity={0.78} />
       <pointLight position={[0,4.5,5]} color="#ff65d1" intensity={22} distance={12} decay={2} />
       <pointLight position={[-4,2.5,-2]} color="#9d62ff" intensity={16} distance={10} decay={2} />
@@ -161,9 +160,7 @@ function SkillScene({ active, reduced = false }: Props) {
       {stations.map((_,index)=><Station key={index} index={index} active={active===index} reduced={reduced} />)}
       <CentralCore reduced={reduced} />
       <Sparkles count={70} scale={[7,2.5,7]} size={1.4} speed={reduced?0:0.2} color="#ee85e6" opacity={0.5} />
-    </group>
-    <EffectComposer multisampling={0}><Bloom intensity={0.8} luminanceThreshold={0.8} luminanceSmoothing={0.16} mipmapBlur /></EffectComposer>
-  </>;
+  </group>;
 }
 
 export default function SkillsStage({ active, reduced = false }: Props) {
@@ -178,7 +175,7 @@ export default function SkillsStage({ active, reduced = false }: Props) {
   },[]);
   return <div ref={host} className={styles.skillCanvas} aria-label="Three-dimensional skills and expertise installation">
     <Canvas dpr={[1,1.4]} frameloop={visible&&!reduced?"always":"demand"}
-      camera={{position:[0,5.3,8.7],fov:37,near:0.1,far:60}}
+      camera={{position:[0,5.3,9.2],fov:37,near:0.1,far:60}}
       gl={{alpha:true,antialias:true,powerPreference:"high-performance"}}
       onCreated={({gl})=>{gl.outputColorSpace=THREE.SRGBColorSpace;gl.setClearColor(0x000000,0);}}>
       <Suspense fallback={null}><SkillScene active={active} reduced={reduced} /></Suspense>
