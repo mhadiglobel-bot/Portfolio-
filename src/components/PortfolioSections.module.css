@@ -181,3 +181,18 @@
   .projectInfo,.skillReadout { animation:none; }
   .visitLink,.index button i,.skillLabel { transition:none; }
 }
+
+.orbitLayout {display:flex;flex-direction:column;gap:.25rem}
+.sceneWrap {order:-1;flex:1;min-height:0;background:radial-gradient(ellipse at 52% 53%,#a3229c24,transparent 54%)}
+.projectInfo {width:100%;max-width:60rem;padding:0;text-align:center;display:block}
+.projectInfo h3 {margin:.15rem 0;font-size:clamp(1.45rem,2.7vw,2.8rem)}
+.projectInfo p {max-width:74ch;margin:auto;line-height:1.45}
+.projectTags {display:none}.visitLink {margin-top:.2rem;padding:.35rem 0}
+.skillJourney {height:380svh;position:relative}
+.skills {position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;padding-block:4.5rem 1rem}
+.skillVisual {flex:1;min-height:0;max-height:59svh;width:100%}
+.chapter {padding:.75rem 1rem;text-align:center;animation:orbit-copy-in .5s both}
+.chapter h3 {font-size:clamp(1.35rem,2.8vw,2.7rem);letter-spacing:-.045em}
+.chapter p {max-width:66ch;margin:.3rem auto;color:#dac8da;line-height:1.5}
+@media(max-width:700px){.skillVisual{display:flex;flex-direction:column;max-height:none}.skillCanvas{flex:1;min-height:0;height:auto}.skillLabels{display:flex;flex-wrap:wrap;justify-content:center;gap:.25rem}.skillLabel:nth-child(n){width:auto;min-height:0;padding:.35rem}.skillLabel span,.skillLabel small{display:none}.skillLabel strong{font-size:.7rem}.chapter p{font-size:.83rem}.skillsHeader>p{display:none}}
+@media(max-height:540px),(prefers-reduced-motion:reduce){.skillJourney,.skills{height:auto}.skills{position:relative}.skillVisual{flex:auto;min-height:330px}.sceneWrap{flex:auto;min-height:300px}}

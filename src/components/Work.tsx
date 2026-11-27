@@ -97,7 +97,7 @@ export default function Work() {
 
           <div className={styles.orbitLayout}>
             <aside className={styles.projectInfo} key={project.href} aria-live="polite">
-              <span className={styles.projectMeta}>{project.index} / 05 <b>·</b> {project.category}</span>
+              <span className={styles.projectMeta}>{project.index} / {String(projects.length).padStart(2,"0")} <b>·</b> {project.category}</span>
               <h3>{project.name}</h3>
               <p>{project.description}</p>
               <div className={styles.projectTags} aria-label="Project disciplines">
@@ -110,7 +110,7 @@ export default function Work() {
 
             <div className={styles.sceneWrap}>
               <OrbitalStage position={position} projects={projects} reduced={reduced} />
-              <span className={styles.sceneNote} aria-hidden="true">LIVE PROJECT ORBIT <i>●</i></span>
+
             </div>
           </div>
 
