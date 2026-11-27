@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1254 1254">
+<defs>
+ <linearGradient id="neon"><stop stop-color="#ff129b"/><stop offset=".5" stop-color="#f145dc"/><stop offset="1" stop-color="#9a35ff"/></linearGradient>
+ <linearGradient id="glass" x2=".22" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#75547b"/><stop offset=".22" stop-color="#241329"/><stop offset=".55" stop-color="#09050e"/><stop offset="1" stop-color="#100715"/></linearGradient>
+ <linearGradient id="glint" x2="0" y2="1"><stop stop-color="#fff2ff" stop-opacity=".6"/><stop offset=".8" stop-color="#98628e" stop-opacity=".04"/></linearGradient>
+ <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10"/></filter>
+ <g id="outline" fill="none" stroke-linejoin="round">
+  <circle cx="627" cy="611" r="543"/>
+  <path d="M244 752V438Q244 395 284 393Q302 391 323 412L450 543Q457 550 466 541L590 409Q610 385 634 397Q655 405 655 438V751Q655 797 615 797Q577 797 577 754V547Q577 531 565 543L485 626Q456 656 424 626L341 541Q327 528 327 547V754Q327 797 286 797Q244 797 244 752Z"/>
+  <path d="M687 751V437Q687 393 729 393Q771 393 771 438V514Q771 530 787 530H903Q918 530 918 514V438Q918 393 963 393Q1008 393 1008 438V752Q1008 797 965 797Q918 797 918 752V637Q918 624 903 624H788Q771 624 771 638V752Q771 797 729 797Q687 797 687 751Z"/>
+ </g>
+</defs>
+<circle cx="627" cy="611" r="548" fill="url(#glass)"/>
+<path d="M155 465C250 105 694 17 963 217C605 149 352 278 155 465Z" fill="url(#glint)"/>
+<circle cx="627" cy="611" r="526" fill="none" stroke="#b689c0" stroke-opacity=".6" stroke-width="3"/>
+<use xlink:href="#outline" stroke="url(#neon)" stroke-width="24" filter="url(#glow)"/>
+<use xlink:href="#outline" stroke="url(#neon)" stroke-width="12"/>
+<use xlink:href="#outline" stroke="#ffe8fc" stroke-width="3.5"/>
+<text x="627" y="908" fill="url(#neon)" stroke="#fdd4ff" stroke-width="1" text-anchor="middle" textLength="767" lengthAdjust="spacingAndGlyphs" font-family="sans-serif" font-weight="600" font-size="70" letter-spacing="5">MUHAMMAD HADI</text>
+</svg>
