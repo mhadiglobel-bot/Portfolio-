@@ -52,7 +52,7 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
   useEffect(() => () => land.dispose(), [land]);
   useFrame(({ clock }, delta) => {
     if (!group.current) return;
-    const target = position * 0.11 + (reduced ? 0 : clock.elapsedTime * 0.018);
+    const target = position * 0.24 + (reduced ? 0 : clock.elapsedTime * 0.018);
     if (reduced) {
       group.current.rotation.y = target;
       group.current.rotation.x = -0.08;
@@ -105,56 +105,55 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
   }, [texture]);
-  const angle = (index/count)*Math.PI*2;
-  const relative = (index-position)*(Math.PI*2/count);
-  const diff = Math.abs(index-position)%count;
-  const distance = Math.min(diff,count-diff);
-  const scale = 1.2-Math.min(2,distance)*0.19;
-  const backSide = Math.cos(relative) < -0.05;
+
+  const relative = ((index - position + count / 2) % count + count) % count - count / 2;
+  const arc = relative * 0.44;
+  const distance = Math.abs(relative);
+  const scale = 1.18 - Math.min(2.5, distance) * 0.16;
   const tilt = ((index % 3) - 1) * 0.22;
-  const orbitRadius = 2.64 + (index % 2) * 0.14;
-  const orbitY = Math.sin(relative*1.6 + index*0.55) * (0.32 + Math.abs(tilt)) + Math.sin(angle*0.8) * tilt;
-  return <Float speed={reduced?0:0.7+index*0.08} floatIntensity={reduced?0:0.045} rotationIntensity={reduced?0:0.018}>
-    <group position={[Math.sin(angle)*orbitRadius,orbitY,Math.cos(angle)*(orbitRadius-0.08)]} rotation={[0,angle-relative*0.72,0]} scale={scale}>
-      <mesh position={[0,0,-0.025]}>
-        <RoundedBox args={[2.08,1.34,0.12]} radius={0.1} smoothness={5}>
-          <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.12} transparent={backSide} opacity={backSide?0.48:1} depthWrite={!backSide} />
+  const radius = 2.64 + (index % 2) * 0.14;
+  const x = Math.sin(arc) * radius;
+  const z = Math.cos(arc) * (radius - 0.08);
+  const y = Math.sin(arc * 1.5 + index * 0.58) * (0.3 + Math.abs(tilt)) + tilt * 0.4;
+
+  return <Float speed={reduced ? 0 : 0.7 + index * 0.08} floatIntensity={reduced ? 0 : 0.045} rotationIntensity={reduced ? 0 : 0.018}>
+    <group position={[x, y, z]} rotation={[tilt * 0.05, arc * 0.42, 0]} scale={scale}>
+      <mesh position={[0, 0, -0.025]}>
+        <RoundedBox args={[2.08, 1.34, 0.12]} radius={0.1} smoothness={5}>
+          <meshPhysicalMaterial color="#100a18" metalness={0.72} roughness={0.2} clearcoat={1} emissive={project.accent} emissiveIntensity={0.12} />
           <Edges scale={1.012} threshold={12} color={project.accent} />
         </RoundedBox>
       </mesh>
-      <mesh position={[0,0,0.075]}><planeGeometry args={[1.98,1.25]} /><meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} transparent={backSide} opacity={backSide?0.54:1} depthWrite={!backSide} /></mesh>
-      <mesh position={[0.87,0.57,0.086]}><sphereGeometry args={[0.025,12,12]} /><meshBasicMaterial color={project.accent} /></mesh>
-      <mesh position={[0,-0.68,0.06]}><boxGeometry args={[0.76,0.012,0.016]} /><meshBasicMaterial color={project.accent} transparent opacity={0.76} /></mesh>
+      <mesh position={[0, 0, 0.075]}>
+        <planeGeometry args={[1.98, 1.25]} />
+        <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0.87, 0.57, 0.086]}>
+        <sphereGeometry args={[0.025, 12, 12]} />
+        <meshBasicMaterial color={project.accent} />
+      </mesh>
+      <mesh position={[0, -0.68, 0.06]}>
+        <boxGeometry args={[0.76, 0.012, 0.016]} />
+        <meshBasicMaterial color={project.accent} transparent opacity={0.76} />
+      </mesh>
     </group>
   </Float>;
 }
 
 function Scene({ position, projects, reduced = false }: Props) {
-  const orbit = useRef<THREE.Group>(null);
   const { size } = useThree();
-  const step = (Math.PI*2)/projects.length;
-  const sceneScale = size.width<520?0.7:size.width<680?0.88:1.04;
-  useFrame((_,delta) => {
-    if (!orbit.current) return;
-    const target = -position*step;
-    if (reduced) {
-      orbit.current.rotation.y = target;
-      return;
-    }
-    orbit.current.rotation.y += (target-orbit.current.rotation.y)*Math.min(1,delta*5.5);
-  });
+  const sceneScale = size.width < 520 ? 0.7 : size.width < 680 ? 0.88 : 1.04;
+
   return <group scale={sceneScale}>
-      <ambientLight intensity={0.72} />
-      <pointLight position={[0,1.8,4.6]} color="#ff62ce" intensity={18} distance={10} decay={2} />
-      <pointLight position={[-4,2.5,-2]} color="#9b5bff" intensity={15} distance={9} decay={2} />
-      <pointLight position={[4,-1.5,1]} color="#d33cce" intensity={7} distance={7} decay={2} />
-      <Globe position={position} reduced={reduced} />
-      <OrbitalRings reduced={reduced} />
-      <group ref={orbit}>
-        {projects.map((project,index)=><ProjectPanel key={project.href} project={project} index={index} position={position} count={projects.length} reduced={reduced} />)}
-      </group>
-      <Sparkles count={95} scale={[6.8,4.2,6.8]} size={1.5} speed={reduced?0:0.22} color="#f28ce8" opacity={0.58} />
-      <Sparkles count={30} scale={[5.2,3.4,5.2]} size={2.4} speed={reduced?0:0.12} color="#9b6cff" opacity={0.42} />
+    <ambientLight intensity={0.72} />
+    <pointLight position={[0,1.8,4.6]} color="#ff62ce" intensity={18} distance={10} decay={2} />
+    <pointLight position={[-4,2.5,-2]} color="#9b5bff" intensity={15} distance={9} decay={2} />
+    <pointLight position={[4,-1.5,1]} color="#d33cce" intensity={7} distance={7} decay={2} />
+    <Globe position={position} reduced={reduced} />
+    <OrbitalRings reduced={reduced} />
+    {projects.map((project,index)=><ProjectPanel key={project.href} project={project} index={index} position={position} count={projects.length} reduced={reduced} />)}
+    <Sparkles count={95} scale={[6.8,4.2,6.8]} size={1.5} speed={reduced?0:0.22} color="#f28ce8" opacity={0.58} />
+    <Sparkles count={30} scale={[5.2,3.4,5.2]} size={2.4} speed={reduced?0:0.12} color="#9b6cff" opacity={0.42} />
   </group>;
 }
 
