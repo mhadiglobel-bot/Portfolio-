@@ -214,3 +214,12 @@
 @keyframes openFacet{from{opacity:.3;transform:translateY(15px) rotateY(45deg) scale(.86)}}
 @media(max-width:700px){.skillVisual{display:flex;flex-direction:column;gap:.5rem}.sculpture{height:24svh;width:100%}.skillLabels{display:flex;flex-wrap:wrap;justify-content:center;gap:.35rem}.skillLabel:nth-child(n){width:auto;padding:.35rem}.window{width:40%}.planet{width:65%;height:auto;max-height:100%}.skillLabel strong{font-size:.85rem}.chapter{padding:.5rem}}
 @media(prefers-reduced-motion:reduce){.plaque{animation:none}}
+.planet{z-index:3;background-color:#120a20;pointer-events:none;box-shadow:inset -4px 2px 11px #ff85da,inset 5px -4px 22px #8720c7,0 0 32px #b3319f52}.trail{z-index:4;pointer-events:none}.trail+.trail{z-index:0}
+.atlas{padding-block:clamp(4rem,7vw,7rem)}
+.stations{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem .8rem;margin-top:2rem;isolation:isolate;background:radial-gradient(ellipse at 50% 48%,#98228135,transparent 66%)}
+.station{position:relative;text-align:left;display:grid;grid-template-columns:minmax(75px,.85fr) 1.25fr;align-items:center;gap:.7rem;color:#f9eefa}
+.station strong,.station span span{display:block}.station strong{font-size:clamp(1rem,1.6vw,1.45rem);line-height:1.1}.station span span{font-size:.88rem;line-height:1.5;color:#d6c4d5;margin-top:.5rem}
+.station .sculpture{height:155px;min-height:0}.station .plaque{width:70%;transition:transform .5s}.station[aria-pressed=true] .plaque{transform:translateY(-9px) rotateY(14deg)}.station .base{width:100%;height:19%;box-shadow:0 7px #421a41,0 14px #251327,0 20px 17px #cc49a244}
+.hub{grid-area:2/2;display:grid;place-items:center;position:relative}.hub b{display:grid;place-items:center;width:78px;aspect-ratio:1;background:linear-gradient(135deg,#e379c889,#48083d);border:2px solid #ffabec;box-shadow:8px 7px #671653,0 0 36px #d356ae;transform:rotate(-10deg) skewY(5deg);font:2rem monospace}.hub:before{content:"";position:absolute;width:240%;height:130%;border:1px solid #ff85de77;border-radius:50%;box-shadow:0 1px 6px #f55bc199;z-index:-1;pointer-events:none}
+.station:last-child{grid-column:3}.station:nth-last-child(2){grid-column:1}
+@media(max-width:800px){.stations{grid-template-columns:1fr 1fr}.hub{display:none}.station:nth-child(n){grid-column:auto}.station{grid-template-columns:1fr;text-align:center;align-content:start}.station .sculpture{width:125px;height:115px;margin:auto}.station span span{font-size:.88rem}}
