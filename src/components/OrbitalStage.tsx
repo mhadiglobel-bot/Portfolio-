@@ -130,6 +130,8 @@ function OrbitalRings({ reduced }: { reduced: boolean }) {
 
 function ProjectPanel({ project, index, position, count, reduced }: { project: Project; index: number; position: number; count: number; reduced: boolean }) {
   const texture = useTexture(project.image);
+  const image = texture.image as HTMLImageElement;
+  const aspect = image.naturalWidth / image.naturalHeight;
   useEffect(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 8;
@@ -157,7 +159,7 @@ function ProjectPanel({ project, index, position, count, reduced }: { project: P
           </RoundedBox>
         </mesh>
         <mesh position={[0, 0, 0.075]}>
-          <planeGeometry args={[Math.min(2.08,1.31*texture.image.width/texture.image.height), Math.min(1.31,2.08*texture.image.height/texture.image.width)]} />
+          <planeGeometry args={[Math.min(2.08,1.31*aspect), Math.min(1.31,2.08/aspect)]} />
           <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[0.92, 0.6, 0.086]}>
