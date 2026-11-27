@@ -196,3 +196,21 @@
 .chapter p {max-width:66ch;margin:.3rem auto;color:#dac8da;line-height:1.5}
 @media(max-width:700px){.skillVisual{display:flex;flex-direction:column;max-height:none}.skillCanvas{flex:1;min-height:0;height:auto}.skillLabels{display:flex;flex-wrap:wrap;justify-content:center;gap:.25rem}.skillLabel:nth-child(n){width:auto;min-height:0;padding:.35rem}.skillLabel span,.skillLabel small{display:none}.skillLabel strong{font-size:.7rem}.chapter p{font-size:.83rem}.skillsHeader>p{display:none}}
 @media(max-height:540px),(prefers-reduced-motion:reduce){.skillJourney,.skills{height:auto}.skills{position:relative}.skillVisual{flex:auto;min-height:330px}.sceneWrap{flex:auto;min-height:300px}}
+.universe {position:absolute;inset:0;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse closest-side at 50% 60%,#80237e50,transparent)}
+.planet {height:91%;aspect-ratio:1;position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);border-radius:50%;background:url(/globe-land.svg) center/cover,radial-gradient(circle at 68% 23%,#6e267b,#201030 48%,#080511 78%);box-shadow:inset -5px 3px 12px #f57de2a6,inset 6px -6px 30px #752ae1,0 0 50px #a8249938}
+.trail {position:absolute;left:8%;width:84%;height:52%;top:28%;transform:rotate(-14deg);border:1px solid #ed85e0;border-bottom:2px solid #ff8ee4;border-radius:50%;box-shadow:0 2px 6px #ee38cc99,inset 0 -2px 7px #f255ce55}
+.trail+.trail {transform:rotate(12deg);opacity:.42}
+.window {position:absolute;width:min(35%,38svh);padding:clamp(3px,.5vw,8px);border:1px solid #ffade7;border-radius:12px;background:linear-gradient(135deg,#ffe2fa9c,#5b155b99 18%,#2b123567 53%,#df70d9c9);box-shadow:inset 1px 1px 3px white,0 0 5px #ff79d9,0 0 19px #f745cf66,0 8px 17px #0009}
+.window img {width:100%;height:auto;max-height:30svh;object-fit:contain;border-radius:6px;background:#150d1d}
+.skillVisual {display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:5%;max-height:56svh}
+.skillLabels {position:static;display:grid;gap:.12rem}
+.skillLabel:nth-child(n){position:static;inset:auto;width:100%;min-height:0;border:0;border-bottom:1px solid #693953;background:none;padding:.55rem .35rem;text-align:left}
+.skillLabel strong{font-size:clamp(.92rem,1.45vw,1.35rem)}
+.skillLabel[aria-pressed=true]{color:#ffc0ec;border-color:#fc8de0;background:linear-gradient(90deg,#ee59c61c,transparent)}
+.sculpture {position:relative;height:100%;max-height:390px;min-height:160px;display:grid;place-items:center;perspective:800px;background:radial-gradient(ellipse at 50% 75%,#ca3aa830,transparent 58%)}
+.plaque {width:min(46%,24svh);aspect-ratio:1;border-radius:13%;color:#ffe3fb;border:2px solid #fb9ae4;background:linear-gradient(135deg,#eeb3ec82,transparent 25%,#9a359f44 73%,#d78fe873);box-shadow:4px 4px 0 #692f73,8px 8px 0 #36163f,inset 0 0 15px #ff98f26b,0 0 24px #ee55c44d;transform:rotateY(-21deg) rotateX(4deg);animation:openFacet .55s both}
+.plaque svg{width:100%;filter:drop-shadow(0 0 4px #ff5acd)}
+.base {position:absolute;top:68%;width:60%;height:18%;border-radius:50%;border:2px solid #d86bd2;background:radial-gradient(ellipse,#e777e3,#531455 45%,#251029 62%,#d265c8 66%,#280d31 71%);box-shadow:0 9px 0 #341338,0 14px 18px #cf4faa55}
+@keyframes openFacet{from{opacity:.3;transform:translateY(15px) rotateY(45deg) scale(.86)}}
+@media(max-width:700px){.skillVisual{display:flex;flex-direction:column;gap:.5rem}.sculpture{height:24svh;width:100%}.skillLabels{display:flex;flex-wrap:wrap;justify-content:center;gap:.35rem}.skillLabel:nth-child(n){width:auto;padding:.35rem}.window{width:40%}.planet{width:65%;height:auto;max-height:100%}.skillLabel strong{font-size:.85rem}.chapter{padding:.5rem}}
+@media(prefers-reduced-motion:reduce){.plaque{animation:none}}
