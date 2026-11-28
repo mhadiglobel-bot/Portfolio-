@@ -20,16 +20,25 @@ type GalleryStop = {
   glow: number;
 };
 
-// Perspective path from the far-left vanishing point to the right foreground.
-// Both distant endpoints meet, so wrapping five projects has no visible jump.
+// Five screens share a single continuous perspective lane. A screen moves
+// smoothly from the foreground into the gallery as another becomes active.
+// The path joins at 0/5, preventing the old jump between ends.
 const stops: GalleryStop[] = [
-  { step: -2.5, x: 19.3, y: 48, scale: .15, z: -670, glow: .3 },
-  { step: -2, x: 27.5, y: 43.5, scale: .29, z: -500, glow: .53 },
-  { step: -1, x: 36.4, y: 27, scale: .56, z: -190, glow: .83 },
-  { step: 0, x: 48.8, y: 18, scale: .87, z: 32, glow: 1 },
-  { step: 1, x: 19.3, y: 49, scale: .19, z: -620, glow: .38 },
-  { step: 2, x: 24, y: 46.5, scale: .23, z: -570, glow: .48 },
-  { step: 2.5, x: 19.3, y: 48, scale: .15, z: -670, glow: .3 },
+  { step: 0, x: 48, y: 24, scale: .92, z: 50, glow: 1 },
+  { step: 1, x: 34.5, y: 31, scale: .68, z: -95, glow: .86 },
+  { step: 2, x: 28, y: 38, scale: .48, z: -210, glow: .7 },
+  { step: 3, x: 24, y: 43, scale: .34, z: -300, glow: .54 },
+  { step: 4, x: 21, y: 47, scale: .24, z: -390, glow: .4 },
+  { step: 5, x: 48, y: 24, scale: .92, z: 50, glow: 1 },
+];
+
+const portalFrames = [
+  { left: 48, top: 12, width: 51, height: 57, opacity: .71 },
+  { left: 42, top: 18, width: 44, height: 50, opacity: .56 },
+  { left: 37, top: 25, width: 36, height: 42, opacity: .43 },
+  { left: 32, top: 31, width: 29, height: 35, opacity: .34 },
+  { left: 28, top: 37, width: 23, height: 27, opacity: .26 },
+  { left: 25, top: 41, width: 17, height: 21, opacity: .19 },
 ];
 
 function getStop(relative: number) {
@@ -60,11 +69,13 @@ function ProjectGlassCard({
   count: number;
   reduced: boolean;
 }) {
-  const relative =
-    ((index - position + count / 2 + count * 4) % count) - count / 2;
+  // A cyclic 0..5 phase keeps the current panel at the front and puts the
+  // other four in visible, progressively smaller positions behind it.
+  const relative = ((index - position) % count + count) % count;
   const stop = getStop(relative);
-  const prominent = Math.abs(relative) < .55;
-  const near = Math.abs(relative) < 1.45;
+  const depth = Math.min(relative, count - relative);
+  const prominent = depth < .55;
+  const near = depth < 1.45;
   const style = {
     "--gallery-x": stop.x + "%",
     "--gallery-y": stop.y + "%",
@@ -72,7 +83,7 @@ function ProjectGlassCard({
     "--gallery-z": stop.z + "px",
     "--gallery-glow": String(stop.glow),
     "--glass-accent": project.accent,
-    zIndex: Math.round(70 - Math.abs(relative) * 12),
+    zIndex: Math.round(80 - depth * 13),
   } as CSSProperties;
 
   return (
@@ -116,7 +127,7 @@ function ProjectGlassCard({
 
 export default function OrbitalStage({ position, projects, reduced = false }: Props) {
   const count = projects.length;
-  const portals = useMemo(() => Array.from({ length: 8 }, (_, index) => index), []);
+  const portals = useMemo(() => portalFrames, []);
   if (count === 0) return null;
 
   return (
@@ -130,18 +141,18 @@ export default function OrbitalStage({ position, projects, reduced = false }: Pr
       <div className={styles.galleryFloor} aria-hidden="true" />
       <div className={styles.galleryTrack} aria-hidden="true" />
 
-      {portals.map((portal) => (
+      {portals.map((frame, index) => (
         <span
           aria-hidden="true"
-          key={portal}
+          key={index}
           className={styles.galleryPortal}
           style={{
-            "--portal-left": (52.6 - portal * 4.62) + "%",
-            "--portal-top": (1.5 + portal * 5.7) + "%",
-            "--portal-width": (55 - portal * 5.15) + "%",
-            "--portal-height": (86 - portal * 8.55) + "%",
-            "--portal-opacity": String(Math.max(.21, 1 - portal * .104)),
-            animationDelay: portal * -0.33 + "s",
+            "--portal-left": frame.left + "%",
+            "--portal-top": frame.top + "%",
+            "--portal-width": frame.width + "%",
+            "--portal-height": frame.height + "%",
+            "--portal-opacity": String(frame.opacity),
+            animationDelay: index * -0.33 + "s",
           } as CSSProperties}
         />
       ))}
