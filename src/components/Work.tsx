@@ -1,18 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import OrbitalStage from "./OrbitalStage";
+import orbit from "./Orbit.module.css";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { projects } from "@/lib/projects";
 import styles from "./PortfolioSections.module.css";
 
-const OrbitalStage = dynamic(() => import("./OrbitalStage"), {
-  ssr: false,
-  loading: () => (
-    <div className={styles.scenePlaceholder} aria-hidden="true">
-      <span>Preparing the infinite gallery</span>
-    </div>
-  ),
-});
+
 
 export default function Work() {
   const root = useRef<HTMLElement>(null);
@@ -93,36 +87,14 @@ export default function Work() {
       style={{ "--travel": (last * 90) + "svh" } as CSSProperties}
       data-reduced={reduced ? "true" : undefined}>
       <div ref={pin} className={styles.pin}>
-        <div className={"container-x " + styles.galleryShell}>
-          <div className={styles.galleryVisual}>
-            <OrbitalStage position={position} projects={projects} reduced={reduced} />
+        <div className={"container-x "+orbit.layout}>
+          <h2>Selected <em>projects.</em></h2>
+          <OrbitalStage position={position} projects={projects} />
+          <div className={orbit.caption} key={project.href}>
+            <h3>{project.name}</h3><p>{project.description}</p>
+            <a href={project.href} target="_blank" rel="noreferrer">View live project ↗</a>
           </div>
-
-          <div className={styles.galleryCopy}>
-            <header className={styles.galleryHeading}>
-              <span className={styles.galleryLabel}>
-                <span className={styles.galleryInfinity} aria-hidden="true">∞</span>
-                INFINITE GALLERY
-              </span>
-              <h2>Selected <em>projects.</em></h2>
-              <span className={styles.galleryAccentLine} aria-hidden="true" />
-              <p>A continuous showcase of my work, crafted for real users and real impact.</p>
-            </header>
-
-            <div className={styles.galleryProjectInfo} key={project.href} aria-live="polite">
-              <span className={styles.galleryCounter}>
-                {project.index} <span aria-hidden="true">/</span> {projects.length.toString().padStart(2, "0")}
-              </span>
-              <h3>{project.name}</h3>
-              <p>{project.description}</p>
-              <a href={project.href} target="_blank" rel="noreferrer"
-                className={styles.galleryViewProject}>
-                View project <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </div>
-
-          <nav className={styles.galleryPagination} aria-label="Select a project">
+          <nav className={orbit.pages} aria-label="Select a project">
             {projects.map((item, index) => (
               <button
                 key={item.href}
@@ -131,7 +103,7 @@ export default function Work() {
                 aria-current={index === active ? "step" : undefined}
                 onClick={() => choose(index)}
               >
-                <span aria-hidden="true" />
+                {item.index}
               </button>
             ))}
           </nav>
