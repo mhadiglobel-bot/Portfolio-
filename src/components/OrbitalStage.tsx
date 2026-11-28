@@ -26,7 +26,7 @@ const stops: GalleryStop[] = [
   { step: -2.5, x: 19.3, y: 48, scale: .15, z: -670, glow: .3 },
   { step: -2, x: 27.5, y: 43.5, scale: .29, z: -500, glow: .53 },
   { step: -1, x: 36.4, y: 27, scale: .56, z: -190, glow: .83 },
-  { step: 0, x: 49.2, y: 9, scale: .78, z: 32, glow: 1 },
+  { step: 0, x: 48.8, y: 9, scale: .87, z: 32, glow: 1 },
   { step: 1, x: 19.3, y: 49, scale: .19, z: -620, glow: .38 },
   { step: 2, x: 24, y: 46.5, scale: .23, z: -570, glow: .48 },
   { step: 2.5, x: 19.3, y: 48, scale: .15, z: -670, glow: .3 },
