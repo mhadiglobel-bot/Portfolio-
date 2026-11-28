@@ -669,11 +669,11 @@
   transform: translateY(100%) scaleY(-1);
   transform-origin: center top;
   border-radius: 8px;
-  opacity: calc(var(--gallery-glow) * .47);
+  opacity: calc(var(--gallery-glow) * .23);
   overflow: hidden;
-  filter: blur(2px) saturate(1.25);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .75), transparent 96%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .75), transparent 96%);
+  filter: blur(5px) saturate(.9) brightness(.78);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .55), transparent 88%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .55), transparent 88%);
 }
 .galleryReflection img { object-fit: cover; }
 @keyframes galleryGlassFloat {
