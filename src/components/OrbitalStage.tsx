@@ -204,7 +204,7 @@ function ProjectPanel({
   const radiusX = 3.95;
   const radiusZ = 2.1;
   const x = Math.sin(angle) * radiusX;
-  const y = Math.sin(angle * 2) * 1.2;
+  const y = Math.sin(angle * 2) * 1.8;
   const z = Math.cos(angle) * radiusZ + 0.35;
   const scale = 1.1 - Math.min(2.5, distance) * 0.15;
   const yaw = -Math.atan2(x, 8.8 - z) * 0.92;
