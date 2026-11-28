@@ -9,7 +9,7 @@ const OrbitalStage = dynamic(() => import("./OrbitalStage"), {
   ssr: false,
   loading: () => (
     <div className={styles.scenePlaceholder} aria-hidden="true">
-      <span>Preparing the orbital field</span>
+      <span>Preparing the infinite gallery</span>
     </div>
   ),
 });
@@ -93,49 +93,48 @@ export default function Work() {
       style={{ "--travel": (last * 90) + "svh" } as CSSProperties}
       data-reduced={reduced ? "true" : undefined}>
       <div ref={pin} className={styles.pin}>
-        <div className={"container-x " + styles.show}>
-          <div className={styles.orbitLayout}>
-            <header className={styles.header}>
-              <span className={styles.workEyebrow}>
-                <i aria-hidden="true" /> {project.index} / {projects.length.toString().padStart(2, "0")} — PROJECTS
+        <div className={"container-x " + styles.galleryShell}>
+          <div className={styles.galleryVisual}>
+            <OrbitalStage position={position} projects={projects} reduced={reduced} />
+          </div>
+
+          <div className={styles.galleryCopy}>
+            <header className={styles.galleryHeading}>
+              <span className={styles.galleryLabel}>
+                <span className={styles.galleryInfinity} aria-hidden="true">∞</span>
+                INFINITE GALLERY
               </span>
               <h2>Selected <em>projects.</em></h2>
-              <p className={styles.workSummary}>
-                A collection of real projects where design, performance
-                and functionality come together.
-              </p>
+              <span className={styles.galleryAccentLine} aria-hidden="true" />
+              <p>A continuous showcase of my work, crafted for real users and real impact.</p>
             </header>
-            <div className={styles.sceneWrap}>
-              <OrbitalStage position={position} projects={projects} reduced={reduced} />
-            </div>
-          </div>
 
-          <div className={styles.workFooter}>
-            <div className={styles.projectInfo} key={project.href} aria-live="polite">
-              <span className={styles.projectCount}>{project.index} / {projects.length.toString().padStart(2, "0")}</span>
+            <div className={styles.galleryProjectInfo} key={project.href} aria-live="polite">
+              <span className={styles.galleryCounter}>
+                {project.index} <span aria-hidden="true">/</span> {projects.length.toString().padStart(2, "0")}
+              </span>
               <h3>{project.name}</h3>
-              <p className={styles.projectCategory}>{project.category}</p>
-              <p className={styles.projectAccessibleDesc}>{project.description}</p>
+              <p>{project.description}</p>
+              <a href={project.href} target="_blank" rel="noreferrer"
+                className={styles.galleryViewProject}>
+                View project <span aria-hidden="true">↗</span>
+              </a>
             </div>
-
-            <nav className={styles.index} aria-label="Select a project">
-              {projects.map((item, index) => (
-                <button
-                  key={item.href}
-                  type="button"
-                  aria-label={"Show " + item.name}
-                  aria-current={index === active ? "step" : undefined}
-                  onClick={() => choose(index)}>
-                  <i aria-hidden="true" />
-                </button>
-              ))}
-            </nav>
-
-            <a className={styles.visitLink} href={project.href}
-              target="_blank" rel="noreferrer">
-              View project <span aria-hidden="true">↗</span>
-            </a>
           </div>
+
+          <nav className={styles.galleryPagination} aria-label="Select a project">
+            {projects.map((item, index) => (
+              <button
+                key={item.href}
+                type="button"
+                aria-label={"Show " + item.name}
+                aria-current={index === active ? "step" : undefined}
+                onClick={() => choose(index)}
+              >
+                <span aria-hidden="true" />
+              </button>
+            ))}
+          </nav>
         </div>
       </div>
     </section>
