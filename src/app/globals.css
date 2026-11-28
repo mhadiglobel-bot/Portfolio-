@@ -74,6 +74,10 @@
     scroll-margin-top: 96px;
   }
 
+  section#work {
+    scroll-margin-top: 0;
+  }
+
   .skip-link {
     position: fixed;
     left: 1rem;

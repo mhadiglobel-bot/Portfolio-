@@ -178,7 +178,7 @@ export default function SmoothScroll() {
       event.preventDefault();
       const distance = Math.abs(el.getBoundingClientRect().top);
       lenis.scrollTo(id === "#top" ? 0 : el as HTMLElement, {
-        offset: id === "#top" ? 0 : -72,
+        offset: id === "#top" || id === "#work" ? 0 : -72,
         duration: Math.min(2.1, .75 + distance / Math.max(innerHeight, 1) * .16),
         easing: t => t*t*(3-2*t),
         lerp: 0,

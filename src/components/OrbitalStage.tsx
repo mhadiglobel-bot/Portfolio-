@@ -76,6 +76,7 @@ function ProjectGlassCard({
   const depth = Math.min(relative, count - relative);
   const prominent = depth < .55;
   const near = depth < 1.45;
+  const next = relative > .001 && relative < 1.5;
   const style = {
     "--gallery-x": stop.x + "%",
     "--gallery-y": stop.y + "%",
@@ -92,6 +93,7 @@ function ProjectGlassCard({
       style={style}
       data-prominent={prominent ? "true" : undefined}
       data-near={near ? "true" : undefined}
+      data-next={next ? "true" : undefined}
       data-reduced={reduced ? "true" : undefined}
       aria-hidden="true"
     >
@@ -104,7 +106,8 @@ function ProjectGlassCard({
               fill
               sizes="(max-width:700px) 95vw, 52vw"
               quality={90}
-              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "auto"}
               draggable={false}
             />
           </div>

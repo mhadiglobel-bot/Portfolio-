@@ -662,20 +662,20 @@
 }
 .galleryReflection {
   position: absolute;
-  top: 102%;
+  top: 100%;
   left: 3%;
   width: 94%;
-  height: 67%;
-  transform: translateY(100%) scaleY(-1);
+  height: 58%;
+  transform: none;
   transform-origin: center top;
   border-radius: 8px;
-  opacity: calc(var(--gallery-glow) * .23);
+  opacity: calc(var(--gallery-glow) * .3);
   overflow: hidden;
-  filter: blur(5px) saturate(.9) brightness(.78);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .55), transparent 88%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .55), transparent 88%);
+  filter: blur(4px) saturate(.9) brightness(.72);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), transparent 92%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), transparent 92%);
 }
-.galleryReflection img { object-fit: cover; }
+.galleryReflection img { object-fit: cover; transform: scaleY(-1); }
 @keyframes galleryGlassFloat {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -5px; }
@@ -1001,4 +1001,63 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .galleryCard { transition: none; }
+}
+
+/* Keep the hero screen's neon bezel inside the frame on compact desktops. */
+@media (min-width: 701px) and (max-width: 1150px) {
+  .galleryCard { width: clamp(250px, 47.5%, 540px); }
+}
+
+/* ---------- Mobile gallery composition: one hero screen, one ghost, neon portals ---------- */
+@media (max-width: 700px) {
+  .galleryShell { padding-top: 4.95rem; }
+  .galleryVisual { inset: 18% 0 11%; }
+  .galleryStage { perspective: 900px; perspective-origin: 50% 42%; }
+
+  .galleryCard,
+  .galleryCard[data-prominent="true"] {
+    left: 9%;
+    top: 11%;
+    width: 82%;
+    transform: translateZ(0) rotateY(-7deg) scale(1);
+    transform-origin: top left;
+  }
+  .galleryCard:not([data-prominent="true"]) { opacity: 0; }
+  .galleryCard[data-next="true"]:not([data-prominent="true"]) {
+    left: 3.5%;
+    top: 6%;
+    opacity: .32;
+    transform: translate3d(0, 0, -90px) rotateY(-7deg) scale(.94);
+  }
+  .galleryCard[data-prominent="true"] .galleryReflection { opacity: .18; }
+
+  .galleryPortal { display: none; }
+  .galleryPortal:nth-child(1),
+  .galleryPortal:nth-child(2) {
+    display: block;
+    left: 4% !important;
+    top: 7% !important;
+    width: 88% !important;
+    height: 57% !important;
+    opacity: .38;
+    transform: rotateY(-7deg) skewY(-1deg);
+  }
+  .galleryPortal:nth-child(2) {
+    left: 8% !important;
+    top: 10.5% !important;
+    width: 80% !important;
+    height: 49% !important;
+    opacity: .18;
+  }
+
+  .galleryFloor { inset: 61% -4% -14% 10%; }
+  .galleryFloor::before { display: none; }
+
+  .galleryTrack {
+    top: 56%;
+    left: 26%;
+    width: 96%;
+    transform: rotate(13deg);
+    opacity: .88;
+  }
 }
