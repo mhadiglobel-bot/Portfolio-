@@ -1,9 +1,14 @@
 "use client";
 
-import OrbitalStage from "./OrbitalStage";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { projects } from "@/lib/projects";
 import styles from "./PortfolioSections.module.css";
+
+const OrbitalStage = dynamic(() => import("./OrbitalStage"), {
+  ssr: false,
+  loading: () => <div className={styles.scenePlaceholder} aria-hidden="true"><span>Preparing the orbital field</span></div>,
+});
 
 
 
