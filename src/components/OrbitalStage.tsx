@@ -55,7 +55,7 @@ function createDotGeometry(step: number, landOnly: boolean) {
 function Globe({ position, reduced }: { position: number; reduced: boolean }) {
   const globe = useRef<THREE.Group>(null);
   const continents = useMemo(() => createDotGeometry(2.3, true), []);
-  const ocean = useMemo(() => createDotGeometry(6.8, false), []);
+  const ocean = useMemo(() => createDotGeometry(5.5, false), []);
   useEffect(() => () => {
     continents.dispose();
     ocean.dispose();
@@ -93,8 +93,8 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
       </mesh>
       <points geometry={ocean}>
         <pointsMaterial
-          color="#c163d5" size={0.018} sizeAttenuation
-          transparent opacity={0.34} depthWrite={false}
+          color="#c46bd8" size={0.029} sizeAttenuation
+          transparent opacity={0.47} depthWrite={false}
         />
       </points>
       <points geometry={continents}>
@@ -106,7 +106,7 @@ function Globe({ position, reduced }: { position: number; reduced: boolean }) {
       </points>
       <points geometry={continents}>
         <pointsMaterial
-          color="#ffa1f3" size={0.043} sizeAttenuation
+          color="#ffadfa" size={0.051} sizeAttenuation
           transparent opacity={0.98} depthWrite={false}
         />
       </points>
