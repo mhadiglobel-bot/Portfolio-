@@ -10,19 +10,19 @@ const disciplines = [
   {
     title: "Web Development",
     short: "Responsive websites, full-stack applications and production-ready interfaces.",
-    detail: "Building responsive web products from the interface through to the application logic, with modern React and Next.js workflows.",
+    detail: "I turn designs into responsive React and Next.js interfaces, including forms, navigation and keyboard interactions.",
     accent: "#ff58c8",
   },
   {
     title: "UI/UX Design",
     short: "Clear visual systems, considered layouts and purposeful interaction.",
-    detail: "Shaping user journeys, interface hierarchy, interaction patterns and motion so complex products feel simple to use.",
+    detail: "I map the steps users take, prototype the key screens and refine the layout before development.",
     accent: "#c58aff",
   },
   {
     title: "AI Integration",
     short: "Practical AI features, LLM APIs and workflow automation.",
-    detail: "Connecting ChatGPT and other AI services to real products, including assistants, structured outputs and automated workflows.",
+    detail: "I connect chatbot conversations to product data and APIs so an assistant can answer questions and trigger useful actions.",
     accent: "#f05acb",
   },
   {
@@ -45,13 +45,18 @@ export default function Capabilities() {
   const [active, setActive] = useState(0);
   return <section id="expertise" className={`container-x ${styles.atlas}`}>
     <header className={styles.skillsHeader}><h2>Skills &amp; <em>expertise.</em></h2></header>
-    <div className={styles.stations}>
-      <div className={styles.hub} aria-hidden="true"><b>〈/〉</b></div>
-      {disciplines.map((skill,i)=><button type="button" key={skill.title} className={styles.station} aria-pressed={active===i}
-        onPointerEnter={()=>setActive(i)} onFocus={()=>setActive(i)} onClick={()=>setActive(i)}>
-        <SkillsStage active={i} title={skill.title}/>
-        <span><strong>{skill.title}</strong><span>{skill.detail}</span></span>
-      </button>)}
+    <div className={styles.workbench}>
+      {[
+        {name:"Design", items:[1,0]},
+        {name:"Engineering", items:[3,2]},
+        {name:"Launch & operations", items:[5,4,6]},
+      ].map(group=><section key={group.name} className={styles.discipline}>
+        <h3>{group.name}</h3>
+        {group.items.map(i=><button type="button" key={i} aria-pressed={active===i} onFocus={()=>setActive(i)} onPointerEnter={()=>setActive(i)} onClick={()=>setActive(i)}>
+          <SkillsStage active={i} title={disciplines[i].title}/>
+          <span><strong>{disciplines[i].title}</strong><span>{disciplines[i].detail}</span></span>
+        </button>)}
+      </section>)}
     </div>
   </section>;
 }
