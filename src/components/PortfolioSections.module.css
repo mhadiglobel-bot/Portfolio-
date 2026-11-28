@@ -909,3 +909,96 @@
   .galleryShell { min-height: 520px; }
   .galleryVisual { bottom: 6%; }
 }
+
+
+/* Perspective correction: bounded gallery ribs, legible screenshots and quieter lighting. */
+.galleryPortal {
+  border-width: 1px;
+  border-color: rgba(252, 93, 226, .72);
+  border-bottom-color: rgba(239, 57, 196, .16);
+  border-radius: clamp(8px, 1.3vw, 16px) clamp(8px, 1.3vw, 16px) 0 0;
+  transform: rotateY(-12deg) skewY(-2deg);
+  box-shadow: 0 -1px 7px rgba(251, 63, 214, .36),
+    0 0 14px rgba(251, 50, 202, .15),
+    inset 0 0 6px rgba(248, 81, 221, .12);
+}
+.galleryCard {
+  transition: top .13s linear, left .13s linear, transform .13s linear, opacity .16s ease;
+}
+.galleryCard[data-prominent="true"] .galleryGlass {
+  border-color: rgba(255, 180, 234, .9);
+  box-shadow:
+    0 0 1px 2px rgba(255, 91, 230, .55),
+    0 0 14px rgba(245, 46, 210, .66),
+    0 0 33px rgba(251, 45, 206, .3),
+    2px 14px 45px rgba(10, 0, 20, .62),
+    inset 1px 2px 2px rgba(255, 255, 255, .7);
+}
+.galleryCard:not([data-prominent="true"]) .galleryGlass {
+  box-shadow:
+    0 0 7px rgba(250, 61, 210, .62),
+    0 0 17px rgba(226, 51, 196, .28),
+    2px 8px 19px rgba(10, 0, 20, .62),
+    inset 1px 1px 2px rgba(255, 255, 255, .35);
+}
+.galleryAtmosphere {
+  background:
+    radial-gradient(ellipse 50% 51% at 81% 28%, rgba(179, 28, 146, .16), transparent 70%),
+    radial-gradient(ellipse 55% 28% at 64% 71%, rgba(159, 28, 141, .13), transparent 76%),
+    linear-gradient(100deg, rgba(13, 3, 16, .54), rgba(12, 2, 20, .08) 57%, rgba(29, 4, 30, .25));
+}
+.galleryFloor {
+  inset: 59% -4% -14% 16%;
+  opacity: .8;
+}
+.galleryFloorMist {
+  inset: 77% 0 0 0;
+  background: linear-gradient(180deg, transparent 18%, rgba(18, 2, 23, .11) 55%, rgba(8, 2, 13, .65));
+}
+.galleryTrack {
+  left: 21%;
+  top: 69%;
+  width: 83%;
+  transform: rotate(16deg);
+  box-shadow: 0 0 5px 1px rgba(255, 40, 206, .6),
+    0 0 20px 2px rgba(241, 37, 210, .27);
+}
+.galleryProjectInfo {
+  width: min(35vw, 380px);
+}
+.galleryProjectInfo h3 {
+  font-size: clamp(1.75rem, 2.65vw, 2.85rem);
+}
+.galleryProjectInfo p {
+  max-width: 38ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (min-width: 701px) and (min-height: 940px) {
+  .galleryCopy { padding-bottom: clamp(1rem, 7svh, 6rem); }
+  .galleryProjectInfo h3 { font-size: clamp(1.7rem, 2.5vw, 2.75rem); }
+  .galleryTrack { top: 66%; }
+}
+@media (max-width: 700px) {
+  .galleryProjectInfo {
+    width: 100%;
+  }
+  .galleryPortal {
+    border-width: 1px;
+    opacity: calc(var(--portal-opacity) * .72);
+  }
+  .galleryTrack {
+    top: 72%;
+    left: 8%;
+    width: 110%;
+  }
+  .galleryCopy { padding-bottom: 0; }
+  .galleryCard:not([data-prominent="true"]) {
+    left: min(var(--gallery-x), 18%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .galleryCard { transition: none; }
+}
