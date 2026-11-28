@@ -666,7 +666,7 @@
   left: 3%;
   width: 94%;
   height: 67%;
-  transform: scaleY(-1);
+  transform: translateY(100%) scaleY(-1);
   transform-origin: center top;
   border-radius: 8px;
   opacity: calc(var(--gallery-glow) * .28);
@@ -848,6 +848,7 @@
     left: 13%;
     top: 12%;
     width: 82%;
+    transform: translateZ(0) rotateY(-11deg) scale(1);
   }
   .galleryPortal { border-width: 1px; border-radius: 12px 12px 0 0; }
   .galleryTrack { top: 74%; left: 8%; width: 110%; }
