@@ -1,18 +1,16 @@
-import type {Project} from "@/lib/projects";
-import s from "./PortfolioSections.module.css";
+import type { Project } from "@/lib/projects";
+import styles from "./PortfolioSections.module.css";
 
-export default function OrbitalStage({position,projects}:{position:number; projects:Project[]; reduced?:boolean}) {
-  return <div className={s.universe} aria-label="Project globe">
-    <div className={s.planet}/><i className={s.trail}/><i className={s.trail}/>
-    {projects.map((p,i)=>{
-      const count=projects.length;
-      const d=((i-position+count*1.5)%count)-count/2;
-      if(Math.abs(d)>2.6)return null;
-      const a=d*2*Math.PI/Math.min(count,5);
-      const depth=(1+Math.cos(a))/2;
-      return <a key={p.href} href={p.href} target="_blank" rel="noreferrer" aria-label={"Visit "+p.name} className={s.window}
-        style={{left:(50+36*Math.sin(a))+"%",top:(32+33*depth-13*Math.sin(a))+"%",zIndex:Math.cos(a)<0 ? 1 : 6+Math.round(depth*4),transform:`translate(-50%,-50%) perspective(700px) rotateY(${-24*Math.sin(a)}deg) scale(${.48+.52*depth})`}}>
-        <img src={p.image} alt={p.name+" homepage"}/>
+export default function OrbitalStage({ position, projects }: { position: number; projects: Project[]; reduced?: boolean }) {
+  return <div className={styles.exhibit}>
+    {projects.map((project,index)=>{
+      const offset=index-position;
+      if(Math.abs(offset)>1.8) return null;
+      const distance=Math.abs(offset);
+      return <a key={project.href} className={styles.print} href={project.href} target="_blank" rel="noreferrer" aria-label={"Visit "+project.name}
+        tabIndex={Math.round(position)===index?0:-1}
+        style={{zIndex:10-Math.round(distance*3),opacity:Math.max(0,1-distance*.56),transform:`translate(-50%,-50%) translateX(${offset*92}%) translateZ(${-distance*200}px) rotateY(${-offset*42}deg)`}}>
+        <img src={project.image} alt={project.name+" website"}/>
       </a>;
     })}
   </div>;

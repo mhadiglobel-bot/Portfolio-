@@ -223,3 +223,16 @@
 .hub{grid-area:2/2;display:grid;place-items:center;position:relative}.hub b{display:grid;place-items:center;width:78px;aspect-ratio:1;background:linear-gradient(135deg,#e379c889,#48083d);border:2px solid #ffabec;box-shadow:8px 7px #671653,0 0 36px #d356ae;transform:rotate(-10deg) skewY(5deg);font:2rem monospace}.hub:before{content:"";position:absolute;width:240%;height:130%;border:1px solid #ff85de77;border-radius:50%;box-shadow:0 1px 6px #f55bc199;z-index:-1;pointer-events:none}
 .station:last-child{grid-column:3}.station:nth-last-child(2){grid-column:1}
 @media(max-width:800px){.stations{grid-template-columns:1fr 1fr}.hub{display:none}.station:nth-child(n){grid-column:auto}.station{grid-template-columns:1fr;text-align:center;align-content:start}.station .sculpture{width:125px;height:115px;margin:auto}.station span span{font-size:.88rem}}
+.exhibit{position:absolute;inset:0;perspective:1000px;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 92%,#c05cad30,transparent 62%)}
+.exhibit:before{content:"";position:absolute;inset:50% -30% -60%;background:repeating-linear-gradient(0deg,transparent 0 39px,#d08cb619 40px),repeating-linear-gradient(90deg,transparent 0 79px,#d08cb619 80px);transform:perspective(420px) rotateX(62deg);mask-image:linear-gradient(transparent,#000)}
+.print{position:absolute;left:50%;top:50%;height:89%;max-width:72%;aspect-ratio:1.5;display:grid;place-items:center;padding:clamp(4px,.65vw,10px);background:linear-gradient(145deg,#493745,#201a22 38%,#352333);border:1px solid #ac829d;border-radius:12px;box-shadow:0 18px 28px #0008,0 2px 0 #b479a8}
+.print img{width:100%;height:100%;object-fit:contain;min-height:0;border-radius:5px}
+.workbench{margin-top:2rem}.discipline{display:grid;grid-template-columns:minmax(140px,.85fr) repeat(3,minmax(0,1.1fr));gap:1.5rem;align-items:start;padding:2rem 0;border-bottom:1px solid #654359}
+.discipline h3{color:#eab6d7;font:italic 400 clamp(1.75rem,3vw,3rem)/1.05 var(--font-instrument),serif}
+.discipline button{position:relative;text-align:left;cursor:pointer;perspective:420px}
+.discipline .sculpture{height:66px;min-height:0;width:78px;background:none;margin-bottom:1rem}.discipline .base{display:none}
+.discipline .plaque{width:52px;border-radius:10px;transition:transform .45s;box-shadow:4px 4px #542d51,8px 8px #301d32}
+.discipline button[aria-pressed=true] .plaque{transform:translateY(-4px) rotateY(24deg) rotateZ(-5deg)}
+.discipline strong,.discipline button span span{display:block}.discipline strong{font-size:1.15rem;line-height:1.25}.discipline button span span{color:#d7c9d5;font-size:.94rem;line-height:1.55;margin-top:.6rem}
+@media(max-width:850px){.discipline{grid-template-columns:repeat(2,minmax(0,1fr))}.discipline h3{grid-column:1/-1}}
+@media(max-width:520px){.discipline{grid-template-columns:1fr;gap:1rem}.discipline button{display:grid;grid-template-columns:66px 1fr;gap:1rem}.discipline .sculpture{width:62px}.print{width:74%;height:auto;max-height:95%;aspect-ratio:1.25}}
