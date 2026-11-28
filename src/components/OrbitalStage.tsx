@@ -156,19 +156,19 @@ function OrbitalRings({ reduced }: { reduced: boolean }) {
   return (
     <group ref={rings}>
       <mesh rotation={[1.12, 0.12, -0.18]} scale={[1.13, 0.76, 1]}>
-        <torusGeometry args={[2.32, 0.012, 6, 220]} />
+        <torusGeometry args={[2.5, 0.018, 6, 220]} />
         <meshBasicMaterial color="#ff4fc8" />
       </mesh>
       <mesh rotation={[1.12, 0.12, -0.18]} scale={[1.13, 0.76, 1]}>
-        <torusGeometry args={[2.32, 0.045, 6, 220]} />
-        <meshBasicMaterial color="#f02ab5" transparent opacity={0.09} depthWrite={false} />
+        <torusGeometry args={[2.5, 0.062, 6, 220]} />
+        <meshBasicMaterial color="#f02ab5" transparent opacity={0.14} depthWrite={false} />
       </mesh>
       <mesh rotation={[0.62, -0.55, 0.88]} scale={[1.04, 0.86, 1]}>
-        <torusGeometry args={[2.64, 0.008, 6, 220]} />
+        <torusGeometry args={[2.88, 0.01, 6, 220]} />
         <meshBasicMaterial color="#a76aff" transparent opacity={0.78} />
       </mesh>
       <mesh rotation={[1.5, 0.75, -0.2]} scale={[1.02, 0.7, 1]}>
-        <torusGeometry args={[2.78, 0.006, 6, 220]} />
+        <torusGeometry args={[3.05, 0.008, 6, 220]} />
         <meshBasicMaterial color="#f6a2e8" transparent opacity={0.5} />
       </mesh>
     </group>
@@ -201,11 +201,14 @@ function ProjectPanel({
   const relative = ((index - position + count / 2) % count + count) % count - count / 2;
   const angle = relative * ((Math.PI * 2) / count);
   const distance = Math.abs(relative);
-  const radius = 2.58;
-  const x = Math.sin(angle) * radius;
-  const y = Math.sin(angle * 2) * 0.82;
-  const z = Math.cos(angle) * radius;
-  const scale = 1.1 - Math.min(2.5, distance) * 0.15;
+  const radiusX = 3.95;
+  const radiusZ = 2.1;
+  const x = Math.sin(angle) * radiusX;
+  const y = Math.sin(angle * 2) * 1.8;
+  const z = Math.cos(angle) * radiusZ + 0.35;
+  const scale = distance <= 1
+    ? 1.08 - distance * 0.26
+    : 0.82 + Math.min(1, distance - 1) * 0.22;
   const yaw = -Math.atan2(x, 8.8 - z) * 0.92;
   const tilt = -Math.sin(angle) * 0.075;
 
@@ -217,7 +220,7 @@ function ProjectPanel({
     >
       <group position={[x, y, z]} rotation={[Math.sin(angle) * 0.035, yaw, tilt]} scale={scale}>
         <mesh position={[0, 0, -0.045]}>
-          <RoundedBox args={[2.14, 1.38, 0.12]} radius={0.1} smoothness={6}>
+          <RoundedBox args={[2.38, 1.48, 0.12]} radius={0.1} smoothness={6}>
             <meshPhysicalMaterial
               color="#100a18"
               metalness={0.68}
@@ -231,16 +234,16 @@ function ProjectPanel({
         </mesh>
 
         <mesh position={[0, 0, 0.025]}>
-          <planeGeometry args={[2.0, 1.25]} />
+          <planeGeometry args={[2.24, 1.35]} />
           <meshBasicMaterial map={texture} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
 
-        <mesh position={[0.9, 0.59, 0.042]}>
+        <mesh position={[1.01, 0.63, 0.042]}>
           <sphereGeometry args={[0.025, 12, 12]} />
           <meshBasicMaterial color={project.accent} />
         </mesh>
-        <mesh position={[0, -0.655, 0.035]}>
-          <boxGeometry args={[0.78, 0.012, 0.014]} />
+        <mesh position={[0, -0.705, 0.035]}>
+          <boxGeometry args={[0.84, 0.012, 0.014]} />
           <meshBasicMaterial color={project.accent} transparent opacity={0.76} />
         </mesh>
       </group>
