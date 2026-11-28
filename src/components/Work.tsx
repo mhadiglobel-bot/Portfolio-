@@ -7,10 +7,12 @@ import styles from "./PortfolioSections.module.css";
 
 const OrbitalStage = dynamic(() => import("./OrbitalStage"), {
   ssr: false,
-  loading: () => <div className={styles.scenePlaceholder} aria-hidden="true"><span>Preparing the orbital field</span></div>,
+  loading: () => (
+    <div className={styles.scenePlaceholder} aria-hidden="true">
+      <span>Preparing the orbital field</span>
+    </div>
+  ),
 });
-
-
 
 export default function Work() {
   const root = useRef<HTMLElement>(null);
@@ -48,7 +50,9 @@ export default function Work() {
         published = displayed;
         setPosition(displayed);
       }
-      if (!media.matches && Math.abs(displayed - target) > 0.001) frame = requestAnimationFrame(draw);
+      if (!media.matches && Math.abs(displayed - target) > 0.001) {
+        frame = requestAnimationFrame(draw);
+      }
     };
 
     const queue = () => { if (!frame) frame = requestAnimationFrame(draw); };
@@ -57,6 +61,7 @@ export default function Work() {
     window.addEventListener("scroll", queue, { passive: true });
     window.addEventListener("resize", queue);
     media.addEventListener("change", configure);
+
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", queue);
@@ -85,42 +90,52 @@ export default function Work() {
 
   return (
     <section id="work" ref={root} className={styles.runway}
-      style={{ "--travel": `${last * 90}svh` } as CSSProperties}
+      style={{ "--travel": (last * 90) + "svh" } as CSSProperties}
       data-reduced={reduced ? "true" : undefined}>
       <div ref={pin} className={styles.pin}>
-        <div className={`container-x ${styles.show}`}>
-          <header className={styles.header}>
-            <div>
-              <h2>Selected <em>projects.</em></h2>
-            </div>
-          </header>
-
+        <div className={"container-x " + styles.show}>
           <div className={styles.orbitLayout}>
-            <aside className={styles.projectInfo} key={project.href} aria-live="polite">
-              <h3>{project.name}</h3>
-              <p>{project.description}</p>
-              <div className={styles.projectTags} aria-label="Project disciplines">
-                {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
-              </div>
-              <a className={styles.visitLink} href={project.href} target="_blank" rel="noreferrer">
-                Visit live project <span aria-hidden="true">↗</span>
-              </a>
-            </aside>
-
+            <header className={styles.header}>
+              <span className={styles.workEyebrow}>
+                <i aria-hidden="true" /> {project.index} / {projects.length.toString().padStart(2, "0")} — PROJECTS
+              </span>
+              <h2>Selected <em>projects.</em></h2>
+              <p className={styles.workSummary}>
+                A collection of real projects where design, performance
+                and functionality come together.
+              </p>
+            </header>
             <div className={styles.sceneWrap}>
               <OrbitalStage position={position} projects={projects} reduced={reduced} />
-
             </div>
           </div>
 
-          <nav className={styles.index} aria-label="Select a project">
-            {projects.map((item, index) => (
-              <button key={item.href} type="button" aria-label={`Show ${item.name}`}
-                aria-current={index === active ? "step" : undefined} onClick={() => choose(index)}>
-                <span>{item.index}</span><i aria-hidden="true" />
-              </button>
-            ))}
-          </nav>
+          <div className={styles.workFooter}>
+            <div className={styles.projectInfo} key={project.href} aria-live="polite">
+              <span className={styles.projectCount}>{project.index} / {projects.length.toString().padStart(2, "0")}</span>
+              <h3>{project.name}</h3>
+              <p className={styles.projectCategory}>{project.category}</p>
+              <p className={styles.projectAccessibleDesc}>{project.description}</p>
+            </div>
+
+            <nav className={styles.index} aria-label="Select a project">
+              {projects.map((item, index) => (
+                <button
+                  key={item.href}
+                  type="button"
+                  aria-label={"Show " + item.name}
+                  aria-current={index === active ? "step" : undefined}
+                  onClick={() => choose(index)}>
+                  <i aria-hidden="true" />
+                </button>
+              ))}
+            </nav>
+
+            <a className={styles.visitLink} href={project.href}
+              target="_blank" rel="noreferrer">
+              View project <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
